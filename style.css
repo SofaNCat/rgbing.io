@@ -1,0 +1,58 @@
+/* 기본 스타일 */
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: Arial, sans-serif; background: linear-gradient(120deg, #e0e7ff, #fef9e7); display: flex; flex-direction: column; align-items: center; justify-content: center; color: #333; margin: 0; min-height: 100vh; }
+
+/* 헤더 스타일 */
+.top-box { text-align: center; margin-top: 30px; }
+h1 { font-size: 2.2em; font-weight: bold; color: #4a4a4a; }
+.top-1 { font-size: 1.1em; margin-top: 10px; }
+
+/* 게임 박스 */
+.game-box { width: 100%; max-width: 700px; padding: 30px; background: rgba(255, 255, 255, 0.9); border-radius: 15px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); margin-top: 20px; }
+h3 { font-size: 1.2em; color: #555; }
+
+/* 색상 상자 */
+.color-container { display: flex; gap: 20px; align-items: center; justify-content: center; text-align: center; margin: 20px 0; }
+.color-box, .preview-box { width: 150px; height: 150px; border-radius: 10px; box-shadow: 0 2px 5px rgba(0, 0, 0, 0.15); }
+
+/* 슬라이더 스타일 */
+.input-group { display: flex; align-items: center; justify-content: center; gap: 10px; margin-bottom: 15px; }
+.slider-container { display: flex; align-items: center; }
+.slider-container button { margin: 0 5px; border: none; color: #fff; font-weight: bold; cursor: pointer; padding: 5px 10px; border-radius: 4px; }
+.red-button { background-color: red; }
+.green-button { background-color: green; }
+.blue-button { background-color: blue; }
+input[type="number"], input[type="range"] { width: 60px; margin: 0 5px; }
+input[type="range"] { width: 200px; margin: 0 5px; }
+
+
+#redSlider { accent-color: red; }
+#greenSlider { accent-color: green; }
+#blueSlider { accent-color: blue; }
+
+
+/* 버튼 스타일 */
+.button-box { display: flex; justify-content: center; gap: 10px; margin-top: 15px; }
+.check-button, .give-up-button, .hint-button { width: 90px; height: 35px; border: none; border-radius: 5px; cursor: pointer; font-weight: bold; background: #dddddd; }
+
+/* 결과 및 설명 박스 */
+.result { margin-top: 15px; font-size: 1.1em; font-weight: bold; color: #333; text-align: center; }
+.description-box { width: 100%; max-width: 700px; padding: 20px; background: rgba(255, 255, 255, 0.9); border-radius: 15px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); margin-top: 30px; text-align: left; }
+.description-title { font-size: 1.3em; font-weight: bold; color: #333; }
+.description-title-1 { color: var(--random-color); text-shadow: 0 4px 8px rgb(233, 233, 233); }
+.description-1 { font-size: 0.9em; color: #777; margin-top: 5px; }
+.color-description { font-size: 1em; margin-top: 15px; margin-left: 10px; margin-right: 5px; color: #555; }
+.copy-hex-button { margin-top: 20px; width: 100px; height: 35px; border: none; border-radius: 5px; cursor: pointer; font-weight: bold; background: #dddddd; float: right; }
+
+
+/* Q&A 박스 */
+.qna-box { width: 100%; max-width: 700px; padding: 20px; margin-bottom: 30px; background: rgba(255, 255, 255, 0.9); border-radius: 15px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); margin-top: 30px; text-align: left; }
+.qna-title { font-size: 1.3em; font-weight: bold; color: var(--random-color); margin-bottom: 20px; text-shadow: 0 4px 8px rgb(233, 233, 233); }
+.qna-1 { margin-bottom: 8px; font-weight: bold; }
+.qna-2 { margin-bottom: 20px; margin-left: 10px; margin-right: 5px; color: #555; }
+.qna-line { text-decoration: underline; text-decoration-style: double; }
+.copy-link { color: blue; text-decoration: underline; cursor: pointer; }
+
+/* 업데이트 박스 */
+.update-box { margin-bottom: 40px; }
+.update-date { font-size: 0.9em; color: #777; margin-top: 5px; }
