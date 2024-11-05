@@ -94,8 +94,10 @@
         <p class="qna-2">RGB 색상을 16진수로 나타내는 방식으로, 주로 웹 디자인에서 많이 사용됩니다. #RRGGBB 형식으로 표현되며, 각각 두 자리의 16진수로 빨강(RR), 초록(GG), 파랑(BB)의 강도를 나타냅니다.</p>
         <p class="qna-1">5. 힌트는 어떻게 사용하나요?</p>
         <p class="qna-2">힌트에서는 RGB 각각의 수치에 대한 유사도를 보여주며, 힌트에서 100%의 수치는 정답이거나 매우 근접한 값이라는 뜻입니다. 힌트 기회는 <span class="qna-line">하루에 10번만</span> 주어지니 신중하게 사용하세요!</p>
-        <p class="qna-1">6. 다른 질문이나 피드백은 어떻게 알려주나요?</p>
-        <p class="qna-2"><span class="copy-link" onclick="copyEmail()">메일</span>로 문의해주시면 감사하겠습니다.</p>
+        <p class="qna-1">6. 이전에 나왔던 색을 볼 수 있나요?</p>
+        <p class="qna-2">여태 나왔던 색들에 대한 정보는 <a class="copy-link" href="https://rgbing.tistory.com/category/%EA%B3%BC%EA%B1%B0%EC%9D%98%20%EC%83%89">여기</a>에서 확인할 수 있습니다.</p>
+        <p class="qna-1">7. 다른 질문이나 피드백은 어떻게 알려주나요?</p>
+        <p class="qna-2"><a class="copy-link" href="https://rgbing.tistory.com/category/%EC%97%85%EB%8D%B0%EC%9D%B4%ED%8A%B8%20%EB%82%B4%EC%9A%A9">여기</a>로 문의해주시면 감사하겠습니다.</p>
     </div>
 
     <div class="update-box">
@@ -337,20 +339,6 @@
                 console.error("복사에 실패했습니다.", err);
             });
         });
-
-        function copyEmail() {
-            const email = "dkim09221@nave.com";
-
-            if (navigator.clipboard && navigator.clipboard.writeText) {
-                navigator.clipboard.writeText(email)
-                    .then(() => alert("이메일 주소가 복사되었습니다"))
-                    .catch(err => console.error("복사 실패:", err));
-            } else {
-                // 메서드 미지원 시 대체 메시지
-                prompt("이메일 복사가 지원되지 않는 환경입니다. 아래를 복사하세요:", email);
-            }
-        }
-
     </script>
 
 </body>
