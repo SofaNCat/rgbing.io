@@ -136,6 +136,8 @@
         };
 
         function loadData() {
+            // 로컬 스토리지에서 제출 데이터를 불러옵니다
+            let submitData = JSON.parse(localStorage.getItem("submitCount")) || {};
             // 날짜가 바뀌면 힌트 사용 횟수를 초기화합니다
             if (submitData.date !== today) {
                 submitData = {
@@ -279,9 +281,6 @@
             // 유사도를 0에서 100%로 변환
             return Math.round((1 - totalDifference / maxDifference) * 100);
         }
-
-        // 로컬 스토리지에서 제출 데이터를 불러옵니다
-        let submitData = JSON.parse(localStorage.getItem("submitCount")) || {};
 
         
 
