@@ -98,9 +98,9 @@
         <p class="qna-1">5. 힌트는 어떻게 사용하나요?</p>
         <p class="qna-2">힌트에서는 RGB 각각의 수치에 대한 유사도를 보여주며, 힌트에서 100%의 수치는 정답이거나 매우 근접한 값이라는 뜻입니다. 힌트 기회는 <span class="qna-line">하루에 10번만</span> 주어지니 신중하게 사용하세요!</p>
         <p class="qna-1">6. 이전에 나왔던 색을 볼 수 있나요?</p>
-        <p class="qna-2">여태 나왔던 색들에 대한 정보는 <a class="copy-link" href="https://rgbing.tistory.com/category/%EA%B3%BC%EA%B1%B0%EC%9D%98%20%EC%83%89">공식 블로그</a>에서 확인할 수 있습니다.</p>
+        <p class="qna-2">여태 나왔던 색들에 대한 정보는 <a class="copy-link" href="https://rgbing.tistory.com/category/%EA%B3%BC%EA%B1%B0%EC%9D%98%20%EC%83%89">여기</a>에서 확인할 수 있습니다.</p>
         <p class="qna-1">7. 다른 질문이나 피드백은 어떻게 알려주나요?</p>
-        <p class="qna-2"><a class="copy-link" href="https://rgbing.tistory.com/category/%EC%97%85%EB%8D%B0%EC%9D%B4%ED%8A%B8%20%EB%82%B4%EC%9A%A9">공식 블로그</a>에서 댓글로 문의해주시면 감사하겠습니다.</p>
+        <p class="qna-2"><a class="copy-link" href="https://rgbing.tistory.com/category/%EC%97%85%EB%8D%B0%EC%9D%B4%ED%8A%B8%20%EB%82%B4%EC%9A%A9">여기</a>로 문의해주시면 감사하겠습니다.</p>
     </div>
 
     <div class="update-box">
@@ -136,25 +136,6 @@
         };
 
         function loadData() {
-            // 로컬 스토리지에서 제출 데이터를 불러옵니다
-            let submitData = JSON.parse(localStorage.getItem("submitCount")) || {};
-            // 날짜가 바뀌면 힌트 사용 횟수를 초기화합니다
-            if (submitData.date !== today) {
-                submitData = {
-                    date: today,
-                    remainingSubmits: submitCount
-                };
-                localStorage.setItem("submitCount", JSON.stringify(submitData));
-
-                hintData = {
-                    date: today,
-                    remainingHints: hintCount
-                };
-                localStorage.setItem("hintData", JSON.stringify(hintData));
-
-                localStorage.setItem('clear', 'false');
-                localStorage.setItem('gaveUp', 'false');
-             }
             
             // 데이터를 불러올 참조를 가져옵니다.
             const colorDataRef = database.ref('/color_data/' + today1);
@@ -229,12 +210,6 @@
         let submitCount = 0;
         let hintCount = 10;
 
-        // 로컬 스토리지에서 제출 데이터를 불러옵니다
-        let submitData = JSON.parse(localStorage.getItem("submitCount")) || {};
-
-        // 로컬 스토리지에서 제출 데이터를 불러옵니다
-        let hintData = JSON.parse(localStorage.getItem("hintData")) || {};
-
         // 슬라이더 업데이트 함수
         function updateSlider(color) {
             const value = document.getElementById(color).value;
@@ -288,7 +263,20 @@
             return Math.round((1 - totalDifference / maxDifference) * 100);
         }
 
-        
+        // 로컬 스토리지에서 제출 데이터를 불러옵니다
+        let submitData = JSON.parse(localStorage.getItem("submitCount")) || {};
+
+        // 날짜가 바뀌면 힌트 사용 횟수를 초기화합니다
+        if (submitData.date !== today) {
+            submitData = {
+                date: today,
+                remainingSubmits: submitCount
+            };
+            localStorage.setItem("submitCount", JSON.stringify(submitData));
+
+            localStorage.setItem('clear', 'false');
+            localStorage.setItem('gaveUp', 'false');
+        }
 
         // 사용자가 입력한 값과 비교
         function checkGuess() {
@@ -317,6 +305,15 @@
 
         // 로컬 스토리지에서 힌트 데이터를 불러옵니다
         let hintData = JSON.parse(localStorage.getItem("hintData")) || {};
+
+        // 날짜가 바뀌면 힌트 사용 횟수를 초기화합니다
+        if (hintData.date !== today) {
+            hintData = {
+                date: today,
+                remainingHints: hintCount
+            };
+            localStorage.setItem("hintData", JSON.stringify(hintData));
+        }
 
         // 포기하기 버튼 클릭 시 호출되는 함수
         function giveUp() {
