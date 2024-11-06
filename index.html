@@ -169,6 +169,18 @@
                 console.log('Date:', date2);
             });
 
+            const viewRef = database.ref('/view/' + today1);
+            // 콜백 함수에서 데이터가 업데이트되었음을 확인합니다.
+            viewRef.transaction(function(currentData) {
+                return currentData + 1;
+            }, function(error, committed, snapshot) {
+            if (error) {
+                console.log('Transaction failed: ' + error);
+            } else if (committed) {
+                console.log('Transaction committed successfully.');
+            }
+            });
+
         }
 
         // Firebase에서 가져온 색상으로 업데이트
