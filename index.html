@@ -4,6 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="style.css">
+    <link rel="icon" href="icon.png" type="image/x-icon">
+    <link rel="shortcut icon" href="icon.png" type="image/x-icon">
+
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
 
@@ -133,6 +136,7 @@
         };
 
         function loadData() {
+            
             // 데이터를 불러올 참조를 가져옵니다.
             const colorDataRef = database.ref('/color_data/' + today1);
                 colorDataRef.once('value', (snapshot) => {
@@ -147,6 +151,7 @@
                 setColorOfTheDay();
 
                 // 데이터를 사용합니다.
+                console.log('Today:', today1);
                 console.log('Red:', redValue);
                 console.log('Blue:', blueValue);
                 console.log('Green:', greenValue);
@@ -176,6 +181,17 @@
 
             document.getElementById("colorDescription").textContent = `${desc}`;
             document.getElementById("updatedate").textContent = `최근 업데이트: ${date2}`;
+
+            // 페이지가 로드될 때 localStorage에서 포기 상태를 확인합니다.
+            const gaveUp = localStorage.getItem('gaveUp');
+            if (gaveUp === 'true') {
+                showAnswer();
+            }
+
+            const clear = localStorage.getItem('clear');
+            if (clear === 'true') {
+                showAnswer();
+            }
         }
 
         // 제출 횟수 카운터
@@ -235,6 +251,21 @@
             return Math.round((1 - totalDifference / maxDifference) * 100);
         }
 
+        // 로컬 스토리지에서 제출 데이터를 불러옵니다
+        let submitData = JSON.parse(localStorage.getItem("submitCount")) || {};
+
+        // 날짜가 바뀌면 힌트 사용 횟수를 초기화합니다
+        if (submitData.date !== today) {
+            submitData = {
+                date: today,
+                remainingSubmits: submitCount
+            };
+            localStorage.setItem("submitCount", JSON.stringify(submitData));
+
+            localStorage.setItem('clear', 'false');
+            localStorage.setItem('gaveUp', 'false');
+        }
+
         // 사용자가 입력한 값과 비교
         function checkGuess() {
             const r = parseInt(document.getElementById("red").value);
@@ -243,42 +274,20 @@
 
             const inputColor = { r, g, b };
             const similarity = calculateSimilarity(inputColor);
-            submitCount++; // 제출 횟수 증가
+            submitData.remainingSubmits++; // 제출 횟수 증가
+            localStorage.setItem("submitCount", JSON.stringify(submitData));
 
             // 정답과 비교하여 메시지 출력
             if (r === redValue && g === greenValue && b === blueValue) {
-                document.getElementById("result").innerHTML = `정답입니다! ${submitCount}번 만에 맞췄습니다.<br>힌트 사용 횟수: ${10-hintData.remainingHints}번`;
+                localStorage.setItem('clear', 'true');
+                showAnswer();
             } else if(similarity == 100) {
                 document.getElementById("result").innerHTML = 
-                    `RGB(${r}, ${g}, ${b}), 거의 다 왔습니다!<br>제출한 횟수: ${submitCount}번, 남은 힌트 횟수: ${hintData.remainingHints}번`;
+                    `RGB(${r}, ${g}, ${b}), 거의 다 왔습니다!<br>제출한 횟수: ${submitData.remainingSubmits}번, 남은 힌트 횟수: ${hintData.remainingHints}번`;
             }
             else {
                 document.getElementById("result").innerHTML = 
-                `RGB(${r}, ${g}, ${b}), 유사도: ${similarity}% 입니다.<br>제출한 횟수: ${submitCount}번, 남은 힌트 횟수: ${hintData.remainingHints}번`;
-            }
-        }
-
-        // 포기하기 버튼 클릭 시 호출되는 함수
-        function giveUp() {
-            const confirmGiveUp = confirm("정답을 확인하시겠습니까?");
-            if (confirmGiveUp) {
-                document.getElementById("result").innerHTML = 
-                    `정답 색상: RGB(${redValue}, ${greenValue}, ${blueValue}) 입니다.<br>제출한 횟수: ${submitCount}번, 힌트 사용 횟수: ${hintCount}번`;
-                
-                // 입력 필드 비활성화
-                document.getElementById("red").disabled = true;
-                document.getElementById("green").disabled = true;
-                document.getElementById("blue").disabled = true;
-                document.getElementById("redSlider").disabled = true;
-                document.getElementById("greenSlider").disabled = true;
-                document.getElementById("blueSlider").disabled = true;
-
-                const arrowButtons = document.querySelectorAll(".slider-container button");
-                arrowButtons.forEach(button => button.disabled = true);
-
-                document.querySelector(".give-up-button").disabled = true;
-                document.querySelector(".hint-button").disabled = true;
-                document.querySelector(".check-button").disabled = true;
+                `RGB(${r}, ${g}, ${b}), 유사도: ${similarity}% 입니다.<br>제출한 횟수: ${submitData.remainingSubmits}번, 남은 힌트 횟수: ${hintData.remainingHints}번`;
             }
         }
 
@@ -292,6 +301,42 @@
                 remainingHints: hintCount
             };
             localStorage.setItem("hintData", JSON.stringify(hintData));
+        }
+
+        // 포기하기 버튼 클릭 시 호출되는 함수
+        function giveUp() {
+            const confirmGiveUp = confirm("정답을 확인하시겠습니까?");
+            if (confirmGiveUp) {
+                localStorage.setItem('gaveUp', 'true');
+                showAnswer();             
+            }
+        }
+
+        // 정답을 표시하고 버튼과 슬라이더를 비활성화하는 함수
+        function showAnswer() {
+            if(localStorage.getItem('gaveUp')) {
+                document.getElementById("result").innerHTML = 
+                `정답 색상: RGB(${redValue}, ${greenValue}, ${blueValue}) 입니다.<br>제출한 횟수: ${submitData.remainingSubmits}번, 힌트 사용 횟수: ${10-hintData.remainingHints}번`;
+            }
+            
+            if(localStorage.getItem('clear')) {
+                document.getElementById("result").innerHTML = `RGB(${redValue}, ${greenValue}, ${blueValue}), 정답입니다! ${submitData.remainingSubmits}번 만에 맞췄습니다.<br>힌트 사용 횟수: ${10-hintData.remainingHints}번`;
+            }
+
+            // 입력 필드 비활성화
+            document.getElementById("red").disabled = true;
+            document.getElementById("green").disabled = true;
+            document.getElementById("blue").disabled = true;
+            document.getElementById("redSlider").disabled = true;
+            document.getElementById("greenSlider").disabled = true;
+            document.getElementById("blueSlider").disabled = true;
+
+            const arrowButtons = document.querySelectorAll(".slider-container button");
+            arrowButtons.forEach(button => button.disabled = true);
+
+            document.querySelector(".give-up-button").disabled = true;
+            document.querySelector(".hint-button").disabled = true;
+            document.querySelector(".check-button").disabled = true;
         }
 
         // 힌트를 보여주는 함수 수정
@@ -339,6 +384,20 @@
                 console.error("복사에 실패했습니다.", err);
             });
         });
+
+        function copyEmail() {
+            const email = "dkim09221@nave.com";
+
+            if (navigator.clipboard && navigator.clipboard.writeText) {
+                navigator.clipboard.writeText(email)
+                    .then(() => alert("이메일 주소가 복사되었습니다"))
+                    .catch(err => console.error("복사 실패:", err));
+            } else {
+                // 메서드 미지원 시 대체 메시지
+                prompt("이메일 복사가 지원되지 않는 환경입니다. 아래를 복사하세요:", email);
+            }
+        }
+
     </script>
 
 </body>
