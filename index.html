@@ -229,6 +229,12 @@
         let submitCount = 0;
         let hintCount = 10;
 
+        // 로컬 스토리지에서 제출 데이터를 불러옵니다
+        let submitData = JSON.parse(localStorage.getItem("submitCount")) || {};
+
+        // 로컬 스토리지에서 제출 데이터를 불러옵니다
+        let hintData = JSON.parse(localStorage.getItem("hintData")) || {};
+
         // 슬라이더 업데이트 함수
         function updateSlider(color) {
             const value = document.getElementById(color).value;
