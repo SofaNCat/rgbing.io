@@ -327,7 +327,7 @@
         function showAnswer() {
             if(localStorage.getItem('gaveUp') == 'true') {
                 document.getElementById("result").innerHTML = 
-                `정답 색상: RGB(${redValue}, ${greenValue}, ${blueValue}) 입니다.<br>제출한 횟수: ${submitData.remainingSubmits}번, 힌트 사용 횟수: ${10-hintData.remainingHints}번`;
+                `정답 색상: RGB(${redValue}, ${greenValue}<br>${blueValue}) 입니다.<br>제출한 횟수: ${submitData.remainingSubmits}번, 힌트 사용 횟수: ${10-hintData.remainingHints}번`;
             }
             
             if(localStorage.getItem('clear') == 'true') {
