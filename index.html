@@ -194,6 +194,8 @@
             document.getElementById("colorDescription").textContent = `${desc}`;
             document.getElementById("updatedate").textContent = `최근 업데이트: ${date2}`;
 
+            const submitData = JSON.parse(localStorage.getItem("submitCount"))
+            
             // 페이지가 로드될 때 localStorage에서 포기 상태를 확인합니다.
             const gaveUp = localStorage.getItem('gaveUp');
             if (gaveUp === 'true') {
@@ -201,7 +203,7 @@
             }
 
             const clear = localStorage.getItem('clear');
-            if (clear === 'true') {
+            if (clear === 'true' && submitData.date == today) {
                 showAnswer();
             }
         }
