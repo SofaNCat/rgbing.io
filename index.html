@@ -109,6 +109,9 @@
 
     <script>
         let redValue, greenValue, blueValue, desc, date2;
+        // 제출 횟수 카운터
+        let submitCount = 0;
+        let hintCount = 10;
 
         // Firebase 초기화
         const firebaseConfig = {
@@ -194,8 +197,6 @@
             document.getElementById("colorDescription").textContent = `${desc}`;
             document.getElementById("updatedate").textContent = `최근 업데이트: ${date2}`;
 
-            const submitData = JSON.parse(localStorage.getItem("submitCount"))
-            
             // 페이지가 로드될 때 localStorage에서 포기 상태를 확인합니다.
             const gaveUp = localStorage.getItem('gaveUp');
             if (gaveUp === 'true') {
@@ -203,14 +204,10 @@
             }
 
             const clear = localStorage.getItem('clear');
-            if (clear === 'true' && submitData.date == today) {
+            if (clear === 'true') {
                 showAnswer();
             }
         }
-
-        // 제출 횟수 카운터
-        let submitCount = 0;
-        let hintCount = 10;
 
         // 슬라이더 업데이트 함수
         function updateSlider(color) {
@@ -328,12 +325,12 @@
 
         // 정답을 표시하고 버튼과 슬라이더를 비활성화하는 함수
         function showAnswer() {
-            if(localStorage.getItem('gaveUp')) {
+            if(localStorage.getItem('gaveUp') == 'true') {
                 document.getElementById("result").innerHTML = 
                 `정답 색상: RGB(${redValue}, ${greenValue}, ${blueValue}) 입니다.<br>제출한 횟수: ${submitData.remainingSubmits}번, 힌트 사용 횟수: ${10-hintData.remainingHints}번`;
             }
             
-            if(localStorage.getItem('clear')) {
+            if(localStorage.getItem('clear') == 'true') {
                 document.getElementById("result").innerHTML = `RGB(${redValue}, ${greenValue}, ${blueValue}), 정답입니다! ${submitData.remainingSubmits}번 만에 맞췄습니다.<br>힌트 사용 횟수: ${10-hintData.remainingHints}번`;
             }
 
