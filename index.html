@@ -85,6 +85,12 @@
         <button id="copy-hex-button" class="copy-hex-button">HEX 값 복사</button>
     </div>
 
+    <div class="description-box">
+        <p class="description-title"><span class="description-title-1">오늘의 색</span><span>은 이런 감정과 잘 어울려요.</span></p>
+        <p class="description-1">(ChatGPT 기반의 설명이라 오류가 있을 수도 있어요)</p>
+        <div id="colorDescription2" class="color-description"></div>
+    </div>
+
     <div class="qna-box">
         <p class="qna-title">Q&A</p>
         <p class="qna-1">1. RGBing은 무엇인가요?</p>
@@ -98,9 +104,9 @@
         <p class="qna-1">5. 힌트는 어떻게 사용하나요?</p>
         <p class="qna-2">힌트에서는 RGB 각각의 수치에 대한 유사도를 보여주며, 힌트에서 100%의 수치는 정답이거나 매우 근접한 값이라는 뜻입니다. 힌트 기회는 <span class="qna-line">하루에 10번만</span> 주어지니 신중하게 사용하세요!</p>
         <p class="qna-1">6. 이전에 나왔던 색을 볼 수 있나요?</p>
-        <p class="qna-2">여태 나왔던 색들에 대한 정보는 <a class="copy-link" href="https://rgbing.tistory.com/category/%EA%B3%BC%EA%B1%B0%EC%9D%98%20%EC%83%89">여기</a>에서 확인할 수 있습니다.</p>
+        <p class="qna-2">여태 나왔던 색들에 대한 정보는 <a class="copy-link" href="https://rgbing.tistory.com/category/%EA%B3%BC%EA%B1%B0%EC%9D%98%20%EC%83%89">공식 블로그</a>에서 확인할 수 있습니다.</p>
         <p class="qna-1">7. 다른 질문이나 피드백은 어떻게 알려주나요?</p>
-        <p class="qna-2"><a class="copy-link" href="https://rgbing.tistory.com/category/%EC%97%85%EB%8D%B0%EC%9D%B4%ED%8A%B8%20%EB%82%B4%EC%9A%A9">여기</a>로 문의해주시면 감사하겠습니다.</p>
+        <p class="qna-2"><a class="copy-link" href="https://rgbing.tistory.com/category/%EC%97%85%EB%8D%B0%EC%9D%B4%ED%8A%B8%20%EB%82%B4%EC%9A%A9">공식 블로그</a>에 댓글로 문의해주시면 감사하겠습니다.</p>
     </div>
 
     <div class="update-box">
@@ -108,7 +114,7 @@
     </div>
 
     <script>
-        let redValue, greenValue, blueValue, desc, date2;
+        let redValue, greenValue, blueValue, desc1, desc2, date2;
         // 제출 횟수 카운터
         let submitCount = 0;
         let hintCount = 10;
@@ -150,7 +156,8 @@
                 redValue = colorData.red;
                 blueValue = colorData.blue;
                 greenValue = colorData.green;
-                desc = colorData.desc;
+                desc1 = colorData.desc1;
+                desc2 = colorData.desc2;
                 setColorOfTheDay();
 
                 // 데이터를 사용합니다.
@@ -194,7 +201,8 @@
             // CSS 변수로 적용
             document.documentElement.style.setProperty('--random-color', `RGB(${redValue}, ${greenValue}, ${blueValue})`);
 
-            document.getElementById("colorDescription").textContent = `${desc}`;
+            document.getElementById("colorDescription").textContent = `${desc1}`;
+            document.getElementById("colorDescription2").textContent = `${desc2}`;
             document.getElementById("updatedate").textContent = `최근 업데이트: ${date2}`;
 
             // 페이지가 로드될 때 localStorage에서 포기 상태를 확인합니다.
@@ -327,11 +335,11 @@
         function showAnswer() {
             if(localStorage.getItem('gaveUp') == 'true') {
                 document.getElementById("result").innerHTML = 
-                `정답 색상: RGB(${redValue}, ${greenValue}<br>${blueValue}) 입니다.<br>제출한 횟수: ${submitData.remainingSubmits}번, 힌트 사용 횟수: ${10-hintData.remainingHints}번`;
+                `포기하다니 아쉽네요.<br>정답 색상: RGB(${redValue}, ${greenValue}, ${blueValue}) 입니다.<br>제출한 횟수: ${submitData.remainingSubmits}번, 힌트 사용 횟수: ${10-hintData.remainingHints}번`;
             }
             
             if(localStorage.getItem('clear') == 'true') {
-                document.getElementById("result").innerHTML = `RGB(${redValue}, ${greenValue}, ${blueValue})<br>정답입니다! ${submitData.remainingSubmits}번 만에 맞췄습니다.<br>힌트 사용 횟수: ${10-hintData.remainingHints}번`;
+                document.getElementById("result").innerHTML = `RGB(${redValue}, ${greenValue}, ${blueValue}), 정답입니다! ${submitData.remainingSubmits}번 만에 맞췄습니다.<br>힌트 사용 횟수: ${10-hintData.remainingHints}번`;
             }
 
             // 입력 필드 비활성화
@@ -395,19 +403,6 @@
                 console.error("복사에 실패했습니다.", err);
             });
         });
-
-        function copyEmail() {
-            const email = "dkim09221@nave.com";
-
-            if (navigator.clipboard && navigator.clipboard.writeText) {
-                navigator.clipboard.writeText(email)
-                    .then(() => alert("이메일 주소가 복사되었습니다"))
-                    .catch(err => console.error("복사 실패:", err));
-            } else {
-                // 메서드 미지원 시 대체 메시지
-                prompt("이메일 복사가 지원되지 않는 환경입니다. 아래를 복사하세요:", email);
-            }
-        }
 
     </script>
 
