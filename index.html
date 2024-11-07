@@ -79,20 +79,20 @@
     </div>
 
     <div class="description-box">
-        <p class="description-title"><span class="description-title-1">🎨 오늘의 색</span><span>은 이런 색이에요!</span></p>
+        <p class="description-title"><span class="description-title-1">오늘의 색</span><span>은 이런 색이에요!</span></p>
         <p class="description-1">(ChatGPT 기반의 설명이라 오류가 있을 수도 있어요)</p>
         <div id="colorDescription" class="color-description"></div>
         <button id="copy-hex-button" class="copy-hex-button">HEX 값 복사</button>
     </div>
 
     <div class="description-box">
-        <p class="description-title"><span class="description-title-1">😃 오늘의 색</span><span>은 이런 감정과 잘 어울려요.</span></p>
+        <p class="description-title"><span class="description-title-1">오늘의 색</span><span>은 이런 감정과 잘 어울려요.</span></p>
         <p class="description-1">(ChatGPT 기반의 설명이라 오류가 있을 수도 있어요)</p>
         <div id="colorDescription2" class="color-description"></div>
     </div>
 
     <div class="qna-box">
-        <p class="qna-title">💡 Q&A</p>
+        <p class="qna-title">Q&A</p>
         <p class="qna-1">1. RGBing은 무엇인가요?</p>
         <p class="qna-2">RGBing은 <span class="qna-line">하루에 한 번</span> 정해지는 오늘의 색을 맞히는 게임입니다. R, G, B 각각의 수치를 조절하고 정답을 제출하면, 오늘의 색상과 얼마나 유사한지 유사도를 백분율로 알려줍니다. 여러분들의 색감 센스를 활용해서 정답을 맞춰보세요.</p>
         <p class="qna-1">2. 유사도란 무엇인가요?</p>
@@ -114,10 +114,32 @@
     </div>
 
     <script>
+        const today = new Date(new Date().getTime() + 9 * 60 * 60 * 1000).toDateString();
+        const today1 = new Date(new Date().getTime() + 9 * 60 * 60 * 1000).toISOString().slice(0, 10);
+        const savedate = today;
+
         let redValue, greenValue, blueValue, desc1, desc2, date2;
-        // 제출 횟수 카운터
+        let submitCount, hintCount;
+
+        /*
         let submitCount = 0;
         let hintCount = 10;
+        */
+
+        // 날짜가 바뀌면 힌트 사용 횟수를 초기화합니다
+        if (localStorage.getItem('todaydate') != today) {
+            localStorage.setItem("submitCount", 0);
+            localStorage.setItem("hintData", 10);
+            localStorage.setItem('clear', 'false');
+            localStorage.setItem('gaveUp', 'false');
+        }
+        localStorage.setItem('todaydate', savedate);
+
+        console.log('today date:' + localStorage.getItem('todaydate'));
+        console.log('submitCount:' + localStorage.getItem('submitCount'));
+        console.log('hintData:' + localStorage.getItem('hintData'));
+        console.log('clear:' + localStorage.getItem('clear'));
+        console.log('gaveUp:' + localStorage.getItem('gaveUp'));
 
         // Firebase 초기화
         const firebaseConfig = {
@@ -133,9 +155,6 @@
         // Firebase 앱 초기화
         const app = firebase.initializeApp(firebaseConfig);
         const database = firebase.database();
-
-        const today = new Date(new Date().getTime() + 9 * 60 * 60 * 1000).toDateString();
-        const today1 = new Date(new Date().getTime() + 9 * 60 * 60 * 1000).toISOString().slice(0, 10);
 
         // 초기화 시 Firebase에서 색상 가져오기
         window.onload = () => {
@@ -270,31 +289,22 @@
             return Math.round((1 - totalDifference / maxDifference) * 100);
         }
 
-        // 로컬 스토리지에서 제출 데이터를 불러옵니다
-        let submitData = JSON.parse(localStorage.getItem("submitCount")) || {};
-
-        // 날짜가 바뀌면 힌트 사용 횟수를 초기화합니다
-        if (submitData.date !== today) {
-            submitData = {
-                date: today,
-                remainingSubmits: submitCount
-            };
-            localStorage.setItem("submitCount", JSON.stringify(submitData));
-
-            localStorage.setItem('clear', 'false');
-            localStorage.setItem('gaveUp', 'false');
-        }
-
         // 사용자가 입력한 값과 비교
         function checkGuess() {
             const r = parseInt(document.getElementById("red").value);
             const g = parseInt(document.getElementById("green").value);
             const b = parseInt(document.getElementById("blue").value);
 
+            localStorage.setItem("user_r", r);
+            localStorage.setItem("user_g", g);
+            localStorage.setItem("user_b", b);
+
             const inputColor = { r, g, b };
             const similarity = calculateSimilarity(inputColor);
-            submitData.remainingSubmits++; // 제출 횟수 증가
-            localStorage.setItem("submitCount", JSON.stringify(submitData));
+            submitData = localStorage.getItem('submitCount');
+            hintData = localStorage.getItem('hintData');
+            submitData++; // 제출 횟수 증가
+            localStorage.setItem("submitCount", submitData);
 
             // 정답과 비교하여 메시지 출력
             if (r === redValue && g === greenValue && b === blueValue) {
@@ -302,24 +312,12 @@
                 showAnswer();
             } else if(similarity == 100) {
                 document.getElementById("result").innerHTML = 
-                    `RGB(${r}, ${g}, ${b}), 거의 다 왔습니다!<br>제출한 횟수: ${submitData.remainingSubmits}번, 남은 힌트 횟수: ${hintData.remainingHints}번`;
+                    `RGB(${r}, ${g}, ${b}), 거의 다 왔습니다!<br>제출한 횟수: ${submitData}번, 남은 힌트 횟수: ${hintData}번`;
             }
             else {
                 document.getElementById("result").innerHTML = 
-                `RGB(${r}, ${g}, ${b}), 유사도: ${similarity}% 입니다.<br>제출한 횟수: ${submitData.remainingSubmits}번, 남은 힌트 횟수: ${hintData.remainingHints}번`;
+                `RGB(${r}, ${g}, ${b}), 유사도: ${similarity}% 입니다.<br>제출한 횟수: ${submitData}번, 남은 힌트 횟수: ${hintData}번`;
             }
-        }
-
-        // 로컬 스토리지에서 힌트 데이터를 불러옵니다
-        let hintData = JSON.parse(localStorage.getItem("hintData")) || {};
-
-        // 날짜가 바뀌면 힌트 사용 횟수를 초기화합니다
-        if (hintData.date !== today) {
-            hintData = {
-                date: today,
-                remainingHints: hintCount
-            };
-            localStorage.setItem("hintData", JSON.stringify(hintData));
         }
 
         // 포기하기 버튼 클릭 시 호출되는 함수
@@ -333,13 +331,26 @@
 
         // 정답을 표시하고 버튼과 슬라이더를 비활성화하는 함수
         function showAnswer() {
+            submitData = localStorage.getItem('submitCount');
+            hintData = localStorage.getItem('hintData');
+
+            const slider_r = document.getElementById("redSlider");
+            const slider_g = document.getElementById("greenSlider");
+            const slider_b = document.getElementById("blueSlider");
+            slider_r.value = localStorage.getItem('user_r');
+            slider_g.value = localStorage.getItem('user_g');
+            slider_b.value = localStorage.getItem('user_b');
+            const previewBox = document.getElementById("previewBox");
+            previewBox.style.backgroundColor = `RGB(${localStorage.getItem('user_r')}, ${localStorage.getItem('user_g')}, ${localStorage.getItem('user_b')})`;
+
+
             if(localStorage.getItem('gaveUp') == 'true') {
                 document.getElementById("result").innerHTML = 
-                `포기하다니 아쉽네요.<br>정답 색상: RGB(${redValue}, ${greenValue}, ${blueValue}) 입니다.<br>제출한 횟수: ${submitData.remainingSubmits}번, 힌트 사용 횟수: ${10-hintData.remainingHints}번`;
+                `포기하다니 아쉽네요.<br>정답 색상: RGB(${redValue}, ${greenValue}, ${blueValue}) 입니다.<br>제출한 횟수: ${submitData}번, 힌트 사용 횟수: ${10-hintData}번`;
             }
             
             if(localStorage.getItem('clear') == 'true') {
-                document.getElementById("result").innerHTML = `RGB(${redValue}, ${greenValue}, ${blueValue})<br>정답입니다! ${submitData.remainingSubmits}번 만에 맞췄습니다.<br>힌트 사용 횟수: ${10-hintData.remainingHints}번`;
+                document.getElementById("result").innerHTML = `RGB(${redValue}, ${greenValue}, ${blueValue})<br>정답입니다! ${submitData}번 만에 맞췄습니다.<br>힌트 사용 횟수: ${10-hintData}번`;
             }
 
             // 입력 필드 비활성화
@@ -362,8 +373,10 @@
         function showHint() {
             const hintOutput = document.getElementById("hint-output");
 
+            hintData = localStorage.getItem('hintData');
+
             // 남은 힌트 횟수가 있는지 확인합니다
-            if (hintData.remainingHints > 0) {
+            if (hintData > 0) {
                 // 힌트를 표시하고 남은 힌트 횟수를 감소시킵니다
                 const r = parseInt(document.getElementById("red").value);
                 const g = parseInt(document.getElementById("green").value);
@@ -377,11 +390,11 @@
                 alert(`R 유사도: ${Math.round((rDiff / 255) * 100)}%\n` +
                     `G 유사도: ${Math.round((gDiff / 255) * 100)}%\n` +
                     `B 유사도: ${Math.round((bDiff / 255) * 100)}%\n` +
-                    `(남은 힌트 횟수: ${hintData.remainingHints - 1}회)`);
+                    `(남은 힌트 횟수: ${hintData - 1}회)`);
                 
                 // 남은 힌트 횟수를 업데이트
-                hintData.remainingHints--;
-                localStorage.setItem("hintData", JSON.stringify(hintData));
+                hintData--;
+                localStorage.setItem("hintData", hintData);
             } else {
                 alert(`오늘의 힌트 사용 횟수를 모두 소진했습니다. 내일 다시 시도해주세요.`);
             }
