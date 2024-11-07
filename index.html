@@ -339,7 +339,7 @@
             }
             
             if(localStorage.getItem('clear') == 'true') {
-                document.getElementById("result").innerHTML = `RGB(${redValue}, ${greenValue}, ${blueValue}), 정답입니다! ${submitData.remainingSubmits}번 만에 맞췄습니다.<br>힌트 사용 횟수: ${10-hintData.remainingHints}번`;
+                document.getElementById("result").innerHTML = `RGB(${redValue}, ${greenValue}, ${blueValue})<br>정답입니다! ${submitData.remainingSubmits}번 만에 맞췄습니다.<br>힌트 사용 횟수: ${10-hintData.remainingHints}번`;
             }
 
             // 입력 필드 비활성화
