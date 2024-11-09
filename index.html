@@ -114,8 +114,18 @@
     </div>
 
     <script>
-        const today = new Date().toLocaleDateString("ko-KR", {timeZone: "Asia/Seoul"}).replace(/\//g, "-");
+        /*
+        const today = new Date(new Date().getTime() + 9 * 60 * 60 * 1000).toDateString();
+        const today1 = new Date(new Date().getTime() + 9 * 60 * 60 * 1000).toISOString().slice(0, 10);
+        */
+        const today = new Date().toLocaleDateString("ko-KR", {
+            year: "numeric",
+            month: "2-digit",
+            day: "2-digit",
+            timeZone: "Asia/Seoul"
+        }).replace(/\./g, "/").replace(/\s/g, "").replace(/\/$/, "");
         const savedate = today;
+
         let redValue, greenValue, blueValue, desc1, desc2, date2;
         let submitCount, hintCount;
 
@@ -133,6 +143,7 @@
             localStorage.setItem('user_r', 0);
             localStorage.setItem('user_g', 0);
             localStorage.setItem('user_b', 0);
+
             localStorage.setItem('todaydate', savedate);
         }
 
