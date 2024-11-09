@@ -114,10 +114,8 @@
     </div>
 
     <script>
-        const today = new Date(new Date().getTime() + 9 * 60 * 60 * 1000).toDateString();
-        const today1 = new Date(new Date().getTime() + 9 * 60 * 60 * 1000).toISOString().slice(0, 10);
+        const today = new Date().toLocaleDateString("ko-KR", {timeZone: "Asia/Seoul"});
         const savedate = today;
-
         let redValue, greenValue, blueValue, desc1, desc2, date2;
         let submitCount, hintCount;
 
@@ -169,7 +167,7 @@
         function loadData() {
             
             // 데이터를 불러올 참조를 가져옵니다.
-            const colorDataRef = database.ref('/color_data/' + today1);
+            const colorDataRef = database.ref('/color_data/' + today);
                 colorDataRef.once('value', (snapshot) => {
                 // 데이터를 JSON 객체로 가져옵니다.
                 const colorData = snapshot.val();
@@ -183,7 +181,7 @@
                 setColorOfTheDay();
 
                 // 데이터를 사용합니다.
-                console.log('Today:', today1);
+                console.log('Today:', today);
                 console.log('Red:', redValue);
                 console.log('Blue:', blueValue);
                 console.log('Green:', greenValue);
@@ -201,7 +199,7 @@
                 console.log('Date:', date2);
             });
 
-            const viewRef = database.ref('/view/' + today1);
+            const viewRef = database.ref('/view/' + today);
             // 콜백 함수에서 데이터가 업데이트되었음을 확인합니다.
             viewRef.transaction(function(currentData) {
                 return currentData + 1;
@@ -313,7 +311,7 @@
             if (r === redValue && g === greenValue && b === blueValue) {
                 localStorage.setItem('clear', 'true');
 
-                const clearRef = database.ref('/clear_user/' + today1);
+                const clearRef = database.ref('/clear_user/' + today);
                 // 콜백 함수에서 데이터가 업데이트되었음을 확인합니다.
                 clearRef.transaction(function(currentData) {
                     return currentData + 1;
