@@ -114,7 +114,7 @@
     </div>
 
     <script>
-        const today = new Date().toLocaleDateString("ko-KR", {timeZone: "Asia/Seoul"});
+        const today = new Date().toLocaleDateString("ko-KR", {timeZone: "Asia/Seoul"}).replace(/\//g, "-");
         const savedate = today;
         let redValue, greenValue, blueValue, desc1, desc2, date2;
         let submitCount, hintCount;
