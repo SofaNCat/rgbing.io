@@ -19,8 +19,10 @@
 </head>
 <body>
     <div class="option-box">
-        <button id="music-toggle" class="music-button">🎵</button>
+        <button id="music-toggle" class="music-button">🔕</button>
         <audio id="background-music" src="Strollin' - TrackTribe.mp3" loop></audio>
+        <button id="wallpaper-toggle" class="music-button" onclick="showWall()">🎨</button>
+        <button id="clear-toggle" class="clear-button" onclick="showClear()"></button>
     </div>
 
     <div class="top-box">
@@ -101,14 +103,14 @@
         <p class="qna-title">Q&A</p>
         <p class="qna-1">1. RGBing은 무엇인가요?</p>
         <p class="qna-2">RGBing은 <span class="qna-line">하루에 한 번</span> 정해지는 오늘의 색을 맞히는 게임입니다. R, G, B 각각의 수치를 조절하고 정답을 제출하면, 오늘의 색상과 얼마나 유사한지 유사도를 백분율로 알려줍니다. 여러분들의 색감 센스를 활용해서 정답을 맞춰보세요.</p>
-        <p class="qna-1">2. 유사도란 무엇인가요?</p>
-        <p class="qna-2">오늘의 색에 대한 값을 바탕으로 제출한 색의 수치가 얼마나 유사한지의 정도를 나타내는 값입니다. 100%에 가까워질 수록 정답에 가까워지고 있다고 이해할 수 있습니다.</p>
-        <p class="qna-1">3. RGB란 무엇인가요?</p>
+        <p class="qna-1">2. RGB란 무엇인가요?</p>
         <p class="qna-2">Red(빨간색), Green(녹색), Blue(파란색) 세 가지 색상 채널을 사용하여 다양한 색을 표현하는 색상 모델입니다. RGB는 각 색상 채널의 강도를 조절하여 원하는 색을 만들 수 있으며, 각 채널의 값은 일반적으로 0에서 255 사이의 숫자로 표현됩니다.</p>
-        <p class="qna-1">4. HEX란 무엇인가요?</p>
-        <p class="qna-2">RGB 색상을 16진수로 나타내는 방식으로, 주로 웹 디자인에서 많이 사용됩니다. #RRGGBB 형식으로 표현되며, 각각 두 자리의 16진수로 빨강(RR), 초록(GG), 파랑(BB)의 강도를 나타냅니다.</p>
-        <p class="qna-1">5. 힌트는 어떻게 사용하나요?</p>
+        <p class="qna-1">3. 유사도란 무엇인가요?</p>
+        <p class="qna-2">오늘의 색에 대한 값을 바탕으로 제출한 색의 수치가 얼마나 유사한지의 정도를 나타내는 값입니다. 100%에 가까워질 수록 정답에 가까워지고 있다고 이해할 수 있습니다.</p>
+        <p class="qna-1">4. 힌트는 어떻게 사용하나요?</p>
         <p class="qna-2">힌트에서는 RGB 각각의 수치에 대한 유사도를 보여주며, 힌트에서 100%의 수치는 정답이거나 매우 근접한 값이라는 뜻입니다. 힌트 기회는 <span class="qna-line">하루에 10번만</span> 주어지니 신중하게 사용하세요!</p>
+        <p class="qna-1">5. HEX 값이란 무엇인가요?</p>
+        <p class="qna-2">RGB 색상을 16진수로 나타내는 방식으로, 주로 웹 디자인에서 많이 사용됩니다. #RRGGBB 형식으로 표현되며, 각각 두 자리의 16진수로 빨강(RR), 초록(GG), 파랑(BB)의 강도를 나타냅니다.</p>
         <p class="qna-1">6. 이전에 나왔던 색을 볼 수 있나요?</p>
         <p class="qna-2">여태 나왔던 색들에 대한 정보는 <a class="copy-link" href="https://rgbing.tistory.com/category/RGBing/%EA%B3%BC%EA%B1%B0%EC%9D%98%20%EC%83%89">공식 블로그</a>에서 확인할 수 있습니다.</p>
         <p class="qna-1">7. 브금에 대한 정보를 알고 싶어요.</p>
@@ -128,10 +130,10 @@
         musicToggleBtn.addEventListener("click", () => {
             if (backgroundMusic.paused) {
                 backgroundMusic.play();
-                musicToggleBtn.textContent = "🎵";
+                musicToggleBtn.textContent = "🔔";
             } else {
                 backgroundMusic.pause();
-                musicToggleBtn.textContent = "🎵";
+                musicToggleBtn.textContent = "🔕";
             }
         });
 
@@ -196,7 +198,7 @@
             
             // 데이터를 불러올 참조를 가져옵니다.
             const colorDataRef = database.ref('/color_data/' + today);
-                colorDataRef.once('value', (snapshot) => {
+            colorDataRef.once('value', (snapshot) => {
                 // 데이터를 JSON 객체로 가져옵니다.
                 const colorData = snapshot.val();
 
@@ -216,7 +218,7 @@
             });
 
             const clearDataRef = database.ref('/clear_user/' + today);
-                clearDataRef.once('value', (snapshot) => {
+            clearDataRef.once('value', (snapshot) => {
                 // 데이터를 JSON 객체로 가져옵니다.
                 const clearData = snapshot.val();
 
@@ -228,7 +230,7 @@
             });
 
             const updateDataRef = database.ref('/update/date');
-                updateDataRef.once('value', (snapshot) => {
+            updateDataRef.once('value', (snapshot) => {
                 // 데이터를 JSON 객체로 가져옵니다.
                 const dateData = snapshot.val();
 
@@ -250,7 +252,6 @@
                 console.log('Transaction committed successfully.');
             }
             });
-
         }
 
         // Firebase에서 가져온 색상으로 업데이트
@@ -261,7 +262,7 @@
             // CSS 변수로 적용
             document.documentElement.style.setProperty('--random-color', `RGB(${redValue}, ${greenValue}, ${blueValue})`);
 
-            document.getElementById("clearcount").innerHTML = `<b>오늘의 색을 맞춘 사람들은 현재까지 총 ${clearcount}명 입니다.</b>`;
+            document.getElementById("clear-toggle").textContent = `🏆 ${clearcount}`;
             document.getElementById("colorDescription").textContent = `${desc1}`;
             document.getElementById("colorDescription2").textContent = `${desc2}`;
             document.getElementById("updatedate").textContent = `최근 업데이트: ${date2}`;
@@ -276,6 +277,17 @@
             if (clear == 'true') {
                 showAnswer();
             }
+        }
+
+        // 성공 횟수 버튼 클릭 시 호출되는 함수
+        function showClear() {
+            alert(`${today}\n오늘의 색을 맞춘 사람들은 현재까지 ${clearcount}명 입니다.`);
+        }
+
+        // 배경화면 버튼 클릭 시 호출되는 함수
+        function showWall() {
+            alert(`오늘의 색을 활용한 배경화면을 제공합니다.\n화면을 캡쳐한 뒤 원하는 크기로 자른 후 사용하면 됩니다.`);
+            window.location.href = 'wallpaper.html';
         }
 
         // 슬라이더 업데이트 함수
@@ -454,7 +466,7 @@
                 hintData--;
                 localStorage.setItem("hintData", hintData);
             } else {
-                alert(`오늘의 힌트 사용 횟수를 모두 소진했습니다. 내일 다시 시도해주세요.`);
+                alert(`오늘의 힌트 사용 횟수를 모두 소진했습니다.\n내일 다시 시도해주세요.`);
             }
         }
 
