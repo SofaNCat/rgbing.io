@@ -4,7 +4,8 @@ body { font-family: Arial, sans-serif; background: linear-gradient(120deg, #e0e7
 
 /* 옵션 상자 */
 .option-box { width: 100%; max-width: 700px; margin-top: 20px; margin-bottom: -10px; }
-.music-button { margin-right: 20px; float: right; width: 35px; height: 35px; border: none; border-radius: 5px; cursor: pointer; font-weight: bold; background: #dddddd; }
+.clear-button { margin-right: 20px; float: right; width: 60px; height: 35px; border: none; border-radius: 5px; cursor: pointer; font-weight: bold; background: #dddddd; box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); }
+.music-button { margin-right: 20px; float: right; width: 35px; height: 35px; border: none; border-radius: 5px; cursor: pointer; font-weight: bold; background: #dddddd; box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); }
 
 
 /* 헤더 스타일 */
