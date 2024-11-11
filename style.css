@@ -14,10 +14,10 @@ h1 { font-size: 2.0em; font-weight: bold; color: #4a4a4a; }
 
 /* 게임 박스 */
 .game-box { width: 100%; max-width: 700px; padding: 30px; background: rgba(255, 255, 255, 0.9); border-radius: 15px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); margin-top: 20px; }
-h3 { font-size: 1.2em; color: #555; }
+h3 { font-size: 1.2em; color: #555; margin-bottom: 10px; }
 
 /* 색상 상자 */
-.color-container { display: flex; gap: 20px; align-items: center; justify-content: center; text-align: center; margin: 20px 0; }
+.color-container { display: flex; gap: 20px; align-items: center; justify-content: center; text-align: center; margin: 20px 0; margin-top: -3px; }
 .color-box, .preview-box { width: 150px; height: 150px; border-radius: 10px; box-shadow: 0 2px 5px rgba(0, 0, 0, 0.15); }
 
 /* 슬라이더 스타일 */
