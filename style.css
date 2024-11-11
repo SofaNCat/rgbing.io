@@ -4,7 +4,7 @@ body { font-family: Arial, sans-serif; background: linear-gradient(120deg, #e0e7
 
 /* 옵션 상자 */
 .option-box { width: 100%; max-width: 700px; margin-top: 20px; margin-bottom: -10px; }
-.music-button { float: right; width: 35px; height: 35px; border: none; border-radius: 5px; cursor: pointer; font-weight: bold; background: #dddddd; }
+.music-button { margin-right: 20px; float: right; width: 35px; height: 35px; border: none; border-radius: 5px; cursor: pointer; font-weight: bold; background: #dddddd; }
 
 
 /* 헤더 스타일 */
