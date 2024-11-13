@@ -19,7 +19,8 @@ h3 { font-size: 1.2em; color: #555; margin-bottom: 10px; }
 
 /* 색상 상자 */
 .color-container { display: flex; gap: 20px; align-items: center; justify-content: center; text-align: center; margin: 20px 0; margin-top: -3px; }
-.color-box, .preview-box { width: 150px; height: 150px; border-radius: 10px; box-shadow: 0 2px 5px rgba(0, 0, 0, 0.15); transition: background-color 0.5s; }
+.color-box, .preview-box { width: 150px; height: 150px; border-radius: 10px; box-shadow: 0 2px 5px rgba(0, 0, 0, 0.15); }
+.color-box { transition: background-color 0.5s; /* 색상 변화 시 부드러운 전환 */ }
 
 /* 슬라이더 스타일 */
 .input-group { display: flex; align-items: center; justify-content: center; gap: 10px; margin-bottom: 15px; }
@@ -50,9 +51,17 @@ input[type="range"] { width: 200px; margin: 0 5px; }
 .color-description { font-size: 1em; margin-top: 15px; margin-left: 10px; margin-right: 5px; color: #555; }
 .copy-hex-button { margin-top: 20px; width: 100px; height: 35px; border: none; border-radius: 5px; cursor: pointer; font-weight: bold; background: #dddddd; float: right; }
 
+.colab-box-top { display: flex; justify-content: center; }
+.colab-box1 { display: flex; justify-content: center; font-size: 15px; width: 100%; max-width: 270px; padding: 20px; background: rgba(255, 255, 255, 0.9); border-radius: 15px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); margin-top: 15px; text-align: center; }
+.colab-box2 { display: flex; justify-content: center; font-size: 15px; width: 100%; max-width: 270px; padding: 20px; background: rgba(255, 255, 255, 0.9); border-radius: 15px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); margin-top: 15px; margin-left: 20px; text-align: center; }
+.colab-info { margin-left: 10px; margin-top: 20px; text-align: left; }
+.colab-color1 { width: 80px; height: 80px; border-radius: 10px; box-shadow: 0 2px 5px rgba(0, 0, 0, 0.15); transition: background-color 0.5s; }
+.colab-color2 { width: 80px; height: 80px; border-radius: 10px; box-shadow: 0 2px 5px rgba(0, 0, 0, 0.15); transition: background-color 0.5s; }
 
 /* Q&A 박스 */
-.qna-box { width: 100%; max-width: 700px; padding: 20px; margin-bottom: 30px; background: rgba(255, 255, 255, 0.9); border-radius: 15px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); margin-top: 30px; text-align: left; }
+.qna-box { width: 100%; max-width: 700px; padding: 20px; background: rgba(255, 255, 255, 0.9); border-radius: 0px 0px 15px 15px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); margin-bottom: -20px; margin-top: 20px; text-align: left; display: none; }
+.qna-box2 { width: 100%; max-width: 700px; height: 60px; padding: 20px; background: rgba(255, 255, 255, 0.9); border-radius: 15px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); margin-top: 30px; margin-bottom: -30px; text-align: left; display: flex; justify-content: space-between; }
+#toggleButton { width: 30px; height: 30px; border-radius: 5px; cursor: pointer; font-weight: bold; background: #dddddd; border: none; float: right; margin-top: -5px; }
 .qna-title { font-size: 1.3em; font-weight: bold; color: var(--random-color); margin-bottom: 20px; text-shadow: 0 4px 8px rgb(233, 233, 233); }
 .qna-1 { margin-bottom: 8px; font-weight: bold; }
 .qna-2 { margin-bottom: 20px; margin-left: 10px; margin-right: 5px; color: #555; }
@@ -60,5 +69,5 @@ input[type="range"] { width: 200px; margin: 0 5px; }
 .copy-link { color: blue; text-decoration: underline; cursor: pointer; }
 
 /* 업데이트 박스 */
-.update-box { margin-bottom: 40px; }
+.update-box { margin-top: 50px; margin-bottom: 40px; }
 .update-date { font-size: 0.9em; color: #777; margin-top: 5px; }
