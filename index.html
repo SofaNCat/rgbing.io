@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="style2.css">
     <link rel="icon" href="icon.png" type="image/x-icon">
     <link rel="shortcut icon" href="icon.png" type="image/x-icon">
 
@@ -22,13 +22,18 @@
         <button id="music-toggle" class="music-button">🔕</button>
         <audio id="background-music" src="Strollin' - TrackTribe.mp3" loop></audio>
         <button id="wallpaper-toggle" class="music-button" onclick="showWall()">🎨</button>
-        <button id="clear-toggle" class="clear-button" onclick="showClear()">🏆</button>
+        <button id="clear-toggle" class="clear-button" onclick="showClear()"></button>
     </div>
 
     <div class="top-box">
         <h1>RGBing - 색 맞추기 게임</h1>
-        <p class="top-1"><b>R, G, B 수치를 조절하여 오늘의 색을 맞혀보세요!</b></p>
+        <p class="top-1"><b>R, G, B 수치를 조절하여 오늘의 색을 맞춰보세요!</b></p>
         <div id="clearcount" class="clear-count"></div>
+    </div>
+
+    <div class="description-box">
+        <p class="description-title"><span class="description-title-1">오늘의 색</span><span>과 관련된 한 줄</span></p>
+        <div id="colorDescription4" class="color-description"></div>
     </div>
 
     <div class="game-box">
@@ -87,6 +92,27 @@
     </div>
 
     <div class="description-box">
+        <p class="description-title"><span class="description-title-1">오늘의 색</span><span>은 이런 색과 어울려요!</span></p>
+        <p class="description-1">(ChatGPT 기반의 설명이라 오류가 있을 수도 있어요)</p>
+        <div class="colab-box-top">
+            <div class="colab-box1">
+                <div class="colab-color1" id="colabColor1"></div>
+                <div class="colab-info">
+                    <div class="colab-color-name1" id="colabColorName1"></div>
+                    <div class="colab-color-rgb1" id="colabColorRGB1"></div>
+                </div>
+            </div>
+            <div class="colab-box2">
+                <div class="colab-color2" id="colabColor2"></div>
+                <div class="colab-info">
+                    <div class="colab-color-name2" id="colabColorName2"></div>
+                    <div class="colab-color-rgb2" id="colabColorRGB2"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="description-box">
         <p class="description-title"><span class="description-title-1">오늘의 색</span><span>은 이런 색이에요!</span></p>
         <p class="description-1">(ChatGPT 기반의 설명이라 오류가 있을 수도 있어요)</p>
         <div id="colorDescription" class="color-description"></div>
@@ -94,13 +120,22 @@
     </div>
 
     <div class="description-box">
-        <p class="description-title"><span class="description-title-1">오늘의 색</span><span>은 이런 감정과 잘 어울려요.</span></p>
+        <p class="description-title"><span class="description-title-1">오늘의 색</span><span>은 이런 감정과 잘 어울려요!</span></p>
         <p class="description-1">(ChatGPT 기반의 설명이라 오류가 있을 수도 있어요)</p>
         <div id="colorDescription2" class="color-description"></div>
     </div>
 
-    <div class="qna-box">
+    <div class="description-box">
+        <p class="description-title"><span class="description-title-1">오늘의 색</span><span>은 이런 곳에 쓰이고 있어요!</span></p>
+        <p class="description-1">(ChatGPT 기반의 설명이라 오류가 있을 수도 있어요)</p>
+        <div id="colorDescription3" class="color-description"></div>
+    </div>
+
+    <div class="qna-box2">
         <p class="qna-title">Q&A</p>
+        <button id="toggleButton" onclick="toggleDiv()">▼</button>
+    </div>
+    <div id="qna-box" class="qna-box">
         <p class="qna-1">1. RGBing은 무엇인가요?</p>
         <p class="qna-2">RGBing은 <span class="qna-line">하루에 한 번</span> 정해지는 오늘의 색을 맞히는 게임입니다. R, G, B 각각의 수치를 조절하고 정답을 제출하면, 오늘의 색상과 얼마나 유사한지 유사도를 백분율로 알려줍니다. 여러분들의 색감 센스를 활용해서 정답을 맞춰보세요.</p>
         <p class="qna-1">2. RGB란 무엇인가요?</p>
@@ -145,7 +180,8 @@
         }).replace(/\./g, "/").replace(/\s/g, "").replace(/\/$/, "");
         const savedate = today;
 
-        let redValue, greenValue, blueValue, desc1, desc2, date2, clearcount;
+        let redValue, greenValue, blueValue, desc1, desc2, desc3, desc4, date2, clearcount;
+        let colab1_n, colab1_c, colab2_n, colab2_c;
         let submitCount, hintCount;
 
         /*
@@ -206,8 +242,16 @@
                 redValue = colorData.red;
                 blueValue = colorData.blue;
                 greenValue = colorData.green;
+
                 desc1 = colorData.desc1;
                 desc2 = colorData.desc2;
+                desc3 = colorData.desc3;
+                desc4 = colorData.desc4;
+
+                colab1_n = colorData.colab1_n;
+                colab1_c = colorData.colab1_c;
+                colab2_n = colorData.colab2_n;
+                colab2_c = colorData.colab2_c;
                 setColorOfTheDay();
 
                 // 데이터를 사용합니다.
@@ -265,8 +309,17 @@
             document.getElementById("clear-toggle").textContent = `🏆 ${clearcount}`;
             document.getElementById("colorDescription").textContent = `${desc1}`;
             document.getElementById("colorDescription2").textContent = `${desc2}`;
+            document.getElementById("colorDescription3").innerHTML = `${desc3}`;
+            document.getElementById("colorDescription4").innerHTML = `<b>${desc4}</b>`;
             document.getElementById("updatedate").textContent = `최근 업데이트: ${date2}`;
 
+            document.getElementById("colabColor1").style.backgroundColor = `${colab1_c}`;
+            document.getElementById("colabColorName1").textContent = `${colab1_n}`;
+            document.getElementById("colabColorRGB1").textContent = `${colab1_c}`;
+            document.getElementById("colabColor2").style.backgroundColor = `${colab2_c}`;
+            document.getElementById("colabColorName2").textContent = `${colab2_n}`;
+            document.getElementById("colabColorRGB2").textContent = `${colab2_c}`;
+            
             // 페이지가 로드될 때 localStorage에서 포기 상태를 확인합니다.
             const gaveUp = localStorage.getItem('gaveUp');
             if (gaveUp == 'true') {
@@ -281,7 +334,7 @@
 
         // 성공 횟수 버튼 클릭 시 호출되는 함수
         function showClear() {
-            alert(`${today}\n오늘의 색을 맞힌 사람들은 현재까지 ${clearcount}명 입니다.`);
+            alert(`${today}\n오늘의 색을 맞춘 사람들은 현재까지 ${clearcount}명 입니다.`);
         }
 
         // 배경화면 버튼 클릭 시 호출되는 함수
@@ -375,7 +428,7 @@
                     console.log('Transaction committed successfully.');
                 }
                 });
-
+                clearcount = clearcount + 1;
                 showAnswer();
             } else if(similarity == 100) {
                 document.getElementById("result").innerHTML = 
@@ -420,7 +473,7 @@
             }
             
             if(localStorage.getItem('clear') == 'true') {
-                document.getElementById("result").innerHTML = `RGB(${redValue}, ${greenValue}, ${blueValue})<br>정답입니다! ${submitData}번 만에 맞췄습니다.<br>힌트 사용 횟수: ${10-hintData}번`;
+                document.getElementById("result").innerHTML = `RGB(${redValue}, ${greenValue}, ${blueValue})<br>정답입니다! ${clearcount}번째로 맞췄습니다.<br>제출한 횟수: ${submitData}번, 힌트 사용 횟수: ${10-hintData}번`;
             }
 
             // 입력 필드 비활성화
@@ -470,7 +523,6 @@
             }
         }
 
-
         // RGB 값을 HEX 값으로 변환하는 함수
         function rgbToHex() {
             return "#" + ((1 << 24) + (redValue << 16) + (greenValue << 8) + blueValue).toString(16).slice(1).toUpperCase();
@@ -486,6 +538,19 @@
                 console.error("복사에 실패했습니다.", err);
             });
         });
+
+        function toggleDiv() {
+            const div = document.getElementById("qna-box");
+            const button = document.getElementById("toggleButton");
+            
+            if (div.style.display == "none") {
+            div.style.display = "block";
+            button.textContent = "▲";
+            } else {
+            div.style.display = "none";
+            button.textContent = "▼";
+            }
+        }
 
     </script>
 
