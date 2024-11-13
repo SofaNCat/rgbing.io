@@ -52,11 +52,11 @@ input[type="range"] { width: 200px; margin: 0 5px; }
 .copy-hex-button { margin-top: 20px; width: 100px; height: 35px; border: none; border-radius: 5px; cursor: pointer; font-weight: bold; background: #dddddd; float: right; }
 
 .colab-box-top { display: flex; justify-content: center; }
-.colab-box1 { display: flex; justify-content: center; font-size: 15px; width: 100%; max-width: 270px; padding: 20px; background: rgba(255, 255, 255, 0.9); border-radius: 15px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); margin-top: 15px; text-align: center; }
-.colab-box2 { display: flex; justify-content: center; font-size: 15px; width: 100%; max-width: 270px; padding: 20px; background: rgba(255, 255, 255, 0.9); border-radius: 15px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); margin-top: 15px; margin-left: 20px; text-align: center; }
-.colab-info { margin-left: 10px; margin-top: 20px; text-align: left; }
-.colab-color1 { width: 80px; height: 80px; border-radius: 10px; box-shadow: 0 2px 5px rgba(0, 0, 0, 0.15); transition: background-color 0.5s; }
-.colab-color2 { width: 80px; height: 80px; border-radius: 10px; box-shadow: 0 2px 5px rgba(0, 0, 0, 0.15); transition: background-color 0.5s; }
+.colab-box1 { display: flex; justify-content: center; font-size: 15px; width: 100%; max-width: 290px; padding: 20px; background: rgba(255, 255, 255, 0.9); border-radius: 15px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); margin-top: 15px; text-align: center; }
+.colab-box2 { display: flex; justify-content: center; font-size: 15px; width: 100%; max-width: 290px; padding: 20px; background: rgba(255, 255, 255, 0.9); border-radius: 15px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); margin-top: 15px; margin-left: 20px; text-align: center; }
+.colab-info { margin-left: 10px; margin-top: 10px; text-align: left; }
+.colab-color1, .colab-color2 { width: 60px; height: 60px; border-radius: 10px; box-shadow: 0 2px 5px rgba(0, 0, 0, 0.15); transition: background-color 0.5s; }
+.colab-color-rgb1, .colab-color-rgb2 { font-size: 12px; }
 
 /* Q&A 박스 */
 .qna-box { width: 100%; max-width: 700px; padding: 20px; background: rgba(255, 255, 255, 0.9); border-radius: 0px 0px 15px 15px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); margin-bottom: -20px; margin-top: 20px; text-align: left; display: none; }
