@@ -35,15 +35,23 @@
       height: 2em;
     }
 
+    img {
+      -webkit-user-drag: none; /* 드래그 방지 (크롬, 사파리) */
+      -moz-user-select: none; /* 선택 방지 (파이어폭스) */
+      -webkit-user-select: none; /* 선택 방지 (크롬, 사파리) */
+      -ms-user-select: none; /* 선택 방지 (엣지) */
+      user-select: none; /* 선택 방지 */
+    }
+
     .hex {
         margin-top: -15px;
-        font-size: 18px;
+        font-size: 20px;
         opacity: 0.8;
     }
   </style>
 </head>
 <body>
-    <div id="logo">
+    <div id="logo" oncontextmenu="return false">
         <img src="logo.png" alt="RGBing Icon">
         <div id="hex" class="hex">RGBing</div>
       </div>
@@ -81,8 +89,12 @@
                 const blue = colorData.blue;
                 const randomColor = `rgb(${red}, ${green}, ${blue})`;
                 document.body.style.backgroundColor = randomColor;
-                //document.getElementById("hex").textContent = `RGBing`;
-              
+
+                /*
+                const hexValue = "#" + ((1 << 24) + (red << 16) + (green << 8) + blue).toString(16).slice(1).toUpperCase();
+                document.getElementById("hex").textContent = `${hexValue}`;
+                */
+
                 console.log('Color:', randomColor);
             } else {
                 console.log("No color data available for today.");
