@@ -21,6 +21,7 @@
     <div class="option-box">
         <button id="music-toggle" class="music-button">🔕</button>
         <audio id="background-music" src="Strollin' - TrackTribe.mp3" loop></audio>
+        <button id="share-toggle" class="music-button" onclick="shareContent()">💌</button>
         <button id="wallpaper-toggle" class="music-button" onclick="showWall()">🎨</button>
         <button id="clear-toggle" class="clear-button" onclick="showClear()"></button>
     </div>
@@ -95,19 +96,21 @@
         <p class="description-title"><span class="description-title-1">오늘의 색</span><span>은 이런 색과 어울려요!</span></p>
         <p class="description-1">(ChatGPT 기반의 설명이라 오류가 있을 수도 있어요)</p>
         <div class="colab-box-top">
-            <div class="colab-box1">
+            <div class="colab-box">
                 <div class="colab-color1" id="colabColor1"></div>
                 <div class="colab-info">
                     <div class="colab-color-name1" id="colabColorName1"></div>
                     <div class="colab-color-rgb1" id="colabColorRGB1"></div>
                 </div>
+                <button id="colab-color-hex1" class="colab-color-hex">#</button>
             </div>
-            <div class="colab-box2">
+            <div class="colab-box">
                 <div class="colab-color2" id="colabColor2"></div>
                 <div class="colab-info">
                     <div class="colab-color-name2" id="colabColorName2"></div>
                     <div class="colab-color-rgb2" id="colabColorRGB2"></div>
                 </div>
+                <button id="colab-color-hex2" class="colab-color-hex">#</button>
             </div>
         </div>
     </div>
@@ -116,7 +119,7 @@
         <p class="description-title"><span class="description-title-1">오늘의 색</span><span>은 이런 색이에요!</span></p>
         <p class="description-1">(ChatGPT 기반의 설명이라 오류가 있을 수도 있어요)</p>
         <div id="colorDescription" class="color-description"></div>
-        <button id="copy-hex-button" class="copy-hex-button">HEX 값 복사</button>
+        <button id="copy-hex-button" class="copy-hex-button">#</button>
     </div>
 
     <div class="description-box">
@@ -181,7 +184,7 @@
         const savedate = today;
 
         let redValue, greenValue, blueValue, desc1, desc2, desc3, desc4, date2, clearcount;
-        let colab1_n, colab1_c, colab2_n, colab2_c;
+        let colab1_n, colab1_c, colab1_h, colab2_n, colab2_c, colab2_h;
         let submitCount, hintCount;
 
         /*
@@ -247,11 +250,6 @@
                 desc2 = colorData.desc2;
                 desc3 = colorData.desc3;
                 desc4 = colorData.desc4;
-
-                colab1_n = colorData.colab1_n;
-                colab1_c = colorData.colab1_c;
-                colab2_n = colorData.colab2_n;
-                colab2_c = colorData.colab2_c;
                 setColorOfTheDay();
 
                 // 데이터를 사용합니다.
@@ -259,6 +257,32 @@
                 console.log('Red:', redValue);
                 console.log('Blue:', blueValue);
                 console.log('Green:', greenValue);
+            });
+
+            // 데이터를 불러올 참조를 가져옵니다.
+            const colabDataRef1 = database.ref('/colab/' + today + '/1/');
+            colabDataRef1.once('value', (snapshot) => {
+                // 데이터를 JSON 객체로 가져옵니다.
+                const colabData1 = snapshot.val();
+
+                // 원하는 값을 추출합니다.
+                colab1_n = colabData1.name;
+                colab1_c = colabData1.color;
+                colab1_h = colabData1.hex;
+                setColorOfTheDay();
+            });
+
+            // 데이터를 불러올 참조를 가져옵니다.
+            const colabDataRef2 = database.ref('/colab/' + today + '/2/');
+            colabDataRef2.once('value', (snapshot) => {
+                // 데이터를 JSON 객체로 가져옵니다.
+                const colabData2 = snapshot.val();
+
+                // 원하는 값을 추출합니다.
+                colab2_n = colabData2.name;
+                colab2_c = colabData2.color;
+                colab2_h = colabData2.hex;
+                setColorOfTheDay();
             });
 
             const clearDataRef = database.ref('/clear_user/' + today);
@@ -307,7 +331,7 @@
             document.documentElement.style.setProperty('--random-color', `RGB(${redValue}, ${greenValue}, ${blueValue})`);
 
             document.getElementById("clear-toggle").textContent = `🏆 ${clearcount}`;
-            document.getElementById("colorDescription").textContent = `${desc1}`;
+            document.getElementById("colorDescription").innerHTML = `${desc1}`;
             document.getElementById("colorDescription2").textContent = `${desc2}`;
             document.getElementById("colorDescription3").innerHTML = `${desc3}`;
             document.getElementById("colorDescription4").innerHTML = `<b>${desc4}</b>`;
@@ -341,6 +365,20 @@
         function showWall() {
             alert(`오늘의 색을 활용한 배경화면을 제공합니다.\n화면을 캡쳐한 뒤 원하는 크기로 자른 후 사용하면 됩니다.`);
             window.location.href = 'wallpaper.html';
+        }
+
+        function shareContent() {
+            if (navigator.share) {
+                navigator.share({
+                    title: 'RGBing - 색 맞추기 게임',
+                    text: '여러분들의 색감 센스를 활용해서 오늘의 색을 맞춰보세요.',
+                    url: window.location.href
+                })
+                .then(() => console.log('공유 성공'))
+                .catch((error) => console.log('공유 실패', error));
+            } else {
+                alert("공유 기능을 지원하지 않는 브라우저입니다.");
+            }
         }
 
         // 슬라이더 업데이트 함수
@@ -531,8 +569,23 @@
         document.getElementById("copy-hex-button").addEventListener("click", function() {
             const hexValue = rgbToHex( );
 
-
             navigator.clipboard.writeText(hexValue).then(() => {
+                alert("HEX 값이 복사되었습니다.");
+            }).catch(err => {
+                console.error("복사에 실패했습니다.", err);
+            });
+        });
+
+        document.getElementById("colab-color-hex1").addEventListener("click", function() {
+            navigator.clipboard.writeText(colab1_h).then(() => {
+                alert("HEX 값이 복사되었습니다.");
+            }).catch(err => {
+                console.error("복사에 실패했습니다.", err);
+            });
+        });
+
+        document.getElementById("colab-color-hex2").addEventListener("click", function() {
+            navigator.clipboard.writeText(colab2_h).then(() => {
                 alert("HEX 값이 복사되었습니다.");
             }).catch(err => {
                 console.error("복사에 실패했습니다.", err);
