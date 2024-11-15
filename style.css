@@ -21,6 +21,7 @@ h3 { font-size: 1.2em; color: #555; margin-bottom: 10px; }
 .color-container { display: flex; gap: 20px; align-items: center; justify-content: center; text-align: center; margin: 20px 0; margin-top: -3px; }
 .color-box, .preview-box { width: 150px; height: 150px; border-radius: 10px; box-shadow: 0 2px 5px rgba(0, 0, 0, 0.15); transition: background-color 0.5s; }
 
+
 /* 슬라이더 스타일 */
 .input-group { display: flex; align-items: center; justify-content: center; gap: 10px; margin-bottom: 15px; }
 .slider-container { display: flex; align-items: center; }
@@ -45,7 +46,7 @@ input[type="range"] { width: 200px; margin: 0 5px; }
 .result { margin-top: 15px; font-size: 1.1em; font-weight: bold; color: #333; text-align: center; }
 .description-box { width: 100%; max-width: 700px; padding: 20px; background: rgba(255, 255, 255, 0.9); border-radius: 15px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); margin-top: 30px; text-align: left; }
 .description-title { font-size: 1.3em; font-weight: bold; color: #333; }
-.description-title-1 { color: var(--random-color); text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8); }
+.color-div { margin-top: 15px; width: 100%; max-width: 650px; height: 5px; background: linear-gradient(to left, rgb(255, 255, 255), var(--random-color)) }
 .description-1 { font-size: 0.9em; color: #777; margin-top: 5px; }
 .color-description { font-size: 1em; margin-top: 15px; margin-left: 10px; margin-right: 5px; color: #555; }
 .copy-hex-button { margin-top: 20px; width: 35px; height: 35px; border: none; border-radius: 5px; cursor: pointer; font-weight: bold; background: #dddddd; float: right; }
@@ -62,7 +63,8 @@ input[type="range"] { width: 200px; margin: 0 5px; }
 .qna-box { width: 100%; max-width: 700px; padding: 20px; background: rgba(255, 255, 255, 0.9); border-radius: 0px 0px 15px 15px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); margin-bottom: -20px; margin-top: 20px; text-align: left; display: none; }
 .qna-box2 { width: 100%; max-width: 700px; height: 60px; padding: 20px; background: rgba(255, 255, 255, 0.9); border-radius: 15px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); margin-top: 30px; margin-bottom: -30px; text-align: left; display: flex; justify-content: space-between; }
 #toggleButton { width: 30px; height: 30px; border-radius: 5px; cursor: pointer; font-weight: bold; background: #dddddd; border: none; float: right; margin-top: -5px; }
-.qna-title { font-size: 1.3em; font-weight: bold; color: var(--random-color); margin-bottom: 20px; text-shadow: 0 4px 8px rgb(233, 233, 233); }
+.qna-title { font-size: 1.3em; font-weight: bold; margin-bottom: 20px; text-shadow: 0 4px 8px rgb(233, 233, 233); }
+.color-div-2 { margin-top: -10px; margin-bottom: 15px; width: 100%; max-width: 650px; height: 5px; background: linear-gradient(to left, rgb(255, 255, 255), var(--random-color)) }
 .qna-1 { margin-bottom: 8px; font-weight: bold; }
 .qna-2 { margin-bottom: 20px; margin-left: 10px; margin-right: 5px; color: #555; }
 .qna-line { text-decoration: underline; text-decoration-style: double; }
