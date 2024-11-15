@@ -33,7 +33,8 @@
     </div>
 
     <div class="description-box">
-        <p class="description-title"><span class="description-title-1">오늘의 색</span><span>과 관련된 한 줄</span></p>
+        <p class="description-title">오늘의 색으로 쓰는 한 줄</p>
+        <div class="color-div"></div>
         <div id="colorDescription4" class="color-description"></div>
     </div>
 
@@ -93,8 +94,9 @@
     </div>
 
     <div class="description-box">
-        <p class="description-title"><span class="description-title-1">오늘의 색</span><span>은 이런 색과 어울려요!</span></p>
+        <p class="description-title">오늘의 색이런 색과 어울려요!</p>
         <p class="description-1">(ChatGPT 기반의 설명이라 오류가 있을 수도 있어요)</p>
+        <div class="color-div"></div>
         <div class="colab-box-top">
             <div class="colab-box">
                 <div class="colab-color1" id="colabColor1"></div>
@@ -116,21 +118,24 @@
     </div>
     
     <div class="description-box">
-        <p class="description-title"><span class="description-title-1">오늘의 색</span><span>은 이런 색이에요!</span></p>
+        <p class="description-title">오늘의 색은 이런 색이에요!</p>
         <p class="description-1">(ChatGPT 기반의 설명이라 오류가 있을 수도 있어요)</p>
+        <div class="color-div"></div>
         <div id="colorDescription" class="color-description"></div>
         <button id="copy-hex-button" class="copy-hex-button">#</button>
     </div>
 
     <div class="description-box">
-        <p class="description-title"><span class="description-title-1">오늘의 색</span><span>은 이런 감정과 잘 어울려요!</span></p>
+        <p class="description-title">오늘의 색은 이런 감정과 잘 어울려요!</p>
         <p class="description-1">(ChatGPT 기반의 설명이라 오류가 있을 수도 있어요)</p>
+        <div class="color-div"></div>
         <div id="colorDescription2" class="color-description"></div>
     </div>
 
     <div class="description-box">
-        <p class="description-title"><span class="description-title-1">오늘의 색</span><span>은 이런 곳에 쓰이고 있어요!</span></p>
+        <p class="description-title">오늘의 색은 이런 곳에 쓰이고 있어요!</p>
         <p class="description-1">(ChatGPT 기반의 설명이라 오류가 있을 수도 있어요)</p>
+        <div class="color-div"></div>
         <div id="colorDescription3" class="color-description"></div>
     </div>
 
@@ -139,6 +144,7 @@
         <button id="toggleButton" onclick="toggleDiv()">▼</button>
     </div>
     <div id="qna-box" class="qna-box">
+        <div class="color-div-2"></div>
         <p class="qna-1">1. RGBing은 무엇인가요?</p>
         <p class="qna-2">RGBing은 <span class="qna-line">하루에 한 번</span> 정해지는 오늘의 색을 맞히는 게임입니다. R, G, B 각각의 수치를 조절하고 정답을 제출하면, 오늘의 색상과 얼마나 유사한지 유사도를 백분율로 알려줍니다. 여러분들의 색감 센스를 활용해서 정답을 맞춰보세요.</p>
         <p class="qna-1">2. RGB란 무엇인가요?</p>
@@ -370,7 +376,7 @@
         function shareContent() {
             if (navigator.share) {
                 navigator.share({
-                    title: 'RGBing - 색 맞추기 게임',
+                    title: '🎨RGBing - 색 맞추기 게임🎨',
                     text: '여러분들의 색감 센스를 활용해서 오늘의 색을 맞춰보세요.',
                     url: window.location.href
                 })
