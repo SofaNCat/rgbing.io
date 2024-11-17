@@ -31,7 +31,7 @@
 
     <div class="top-box">
         <h1>RGBing - 색 맞추기 게임</h1>
-        <p class="top-1"><b>R, G, B 수치를 조절하여 오늘의 색을 맞춰보세요!</b></p>
+        <p id="top-1" class="top-1"><b>0번째 오늘의 색을 맞춰보세요!</b></p>
         <div id="clearcount" class="clear-count"></div>
     </div>
 
@@ -198,12 +198,7 @@
 
         let redValue, greenValue, blueValue, desc1, desc2, desc3, desc4, date2, clearcount;
         let colab1_n, colab1_c, colab1_h, colab2_n, colab2_c, colab2_h;
-        let submitCount, hintCount;
-
-        /*
-        let submitCount = 0;
-        let hintCount = 10;
-        */
+        let submitCount, hintCount, colorCount;
 
         // 날짜가 바뀌면 힌트 사용 횟수를 초기화합니다
         if (localStorage.getItem('todaydate') != today) {
@@ -247,7 +242,6 @@
         };
 
         function loadData() {
-            
             // 데이터를 불러올 참조를 가져옵니다.
             const colorDataRef = database.ref('/color_data/' + today);
             colorDataRef.once('value', (snapshot) => {
@@ -332,6 +326,17 @@
             } else if (committed) {
                 console.log('Transaction committed successfully.');
             }
+            });
+
+            const colorCountDataRef = database.ref('/count');
+            colorCountDataRef.once('value', (snapshot) => {
+                // 데이터를 JSON 객체로 가져옵니다.
+                const colorCountData = snapshot.val();
+
+                // 원하는 값을 추출합니다.
+                document.getElementById("top-1").innerHTML = `<b>${colorCountData}번째 오늘의 색을 맞춰보세요!</b>`;
+
+                console.log('Date:', date2);
             });
         }
 
