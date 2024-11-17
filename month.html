@@ -161,6 +161,19 @@
         // 실행
         fetchColorDataInRange();
 
+        function shareContent() {
+            if (navigator.share) {
+                navigator.share({
+                    title: '🎨RGBing - 색 맞추기 게임🎨',
+                    text: '여러분들의 색감 센스를 활용해서 오늘의 색을 맞춰보세요.',
+                    url: window.location.href
+                })
+                .then(() => console.log('공유 성공'))
+                .catch((error) => console.log('공유 실패', error));
+            } else {
+                alert("공유 기능을 지원하지 않는 브라우저입니다.");
+            }
+        }
     </script>
 
 </body>
