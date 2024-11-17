@@ -19,10 +19,8 @@
 </head>
 <body>
     <div class="option-box">
-        <!--
         <button id="music-toggle" class="music-button">🔕</button>
         <audio id="background-music" src="Strollin' - TrackTribe.mp3" loop></audio>
-        -->
         <button id="share-toggle" class="music-button" onclick="shareContent()">💌</button>
         <button id="color-toggle" class="music-button" onclick="showColor()">🔍</button>
         <button id="wallpaper-toggle" class="music-button" onclick="showWall()">🎨</button>
@@ -176,17 +174,17 @@
         const musicToggleBtn = document.getElementById("music-toggle");
         const backgroundMusic = document.getElementById("background-music");
 
-        /*
         musicToggleBtn.addEventListener("click", () => {
             if (backgroundMusic.paused) {
                 backgroundMusic.play();
                 musicToggleBtn.textContent = "🔔";
+                localStorage.setItem("audioStatus", "on");
             } else {
                 backgroundMusic.pause();
                 musicToggleBtn.textContent = "🔕";
+                localStorage.setItem("audioStatus", "off");
             }
         });
-        */
 
         const today = new Date().toLocaleDateString("ko-KR", {
             year: "numeric",
@@ -233,6 +231,22 @@
         // Firebase 앱 초기화
         const app = firebase.initializeApp(firebaseConfig);
         const database = firebase.database();
+
+        window.addEventListener("DOMContentLoaded", () => {
+            const musicToggleBtn = document.getElementById("music-toggle");
+            const backgroundMusic = document.getElementById("background-music");
+            const audioStatus = localStorage.getItem("audioStatus");
+
+            if (audioStatus === "on") {
+                musicToggleBtn.textContent = "🔔";
+                backgroundMusic.play();
+                localStorage.setItem("audioStatus", "on");
+            } else {
+                musicToggleBtn.textContent = "🔕";
+                backgroundMusic.pause();
+                localStorage.setItem("audioStatus", "off");
+            }
+        });
 
         // 초기화 시 Firebase에서 색상 가져오기
         window.onload = () => {
