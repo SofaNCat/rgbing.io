@@ -74,9 +74,11 @@
             if (backgroundMusic.paused) {
                 backgroundMusic.play();
                 musicToggleBtn.textContent = "🔔";
+                localStorage.setItem("audioStatus", "on");
             } else {
                 backgroundMusic.pause();
                 musicToggleBtn.textContent = "🔕";
+                localStorage.setItem("audioStatus", "off");
             }
         });
 
