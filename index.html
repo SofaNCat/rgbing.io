@@ -332,7 +332,7 @@
                 const colorCountData = snapshot.val();
 
                 // 원하는 값을 추출합니다.
-                document.getElementById("top-1").innerHTML = `<b>${colorCountData}번째 오늘의 색을 맞춰보세요!</b>`;
+                document.getElementById("top-1").innerHTML = `<b>${colorCountData+1}번째 오늘의 색을 맞춰보세요!</b>`;
 
                 console.log('Date:', date2);
             });
