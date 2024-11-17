@@ -51,22 +51,6 @@
     </template>
 
     <script>
-        window.addEventListener("DOMContentLoaded", () => {
-            const musicToggleBtn = document.getElementById("music-toggle");
-            const backgroundMusic = document.getElementById("background-music");
-            const audioStatus = localStorage.getItem("audioStatus");
-
-            if (audioStatus === "on") {
-                musicToggleBtn.textContent = "🔔";
-                backgroundMusic.play();
-                localStorage.setItem("audioStatus", "on");
-            } else {
-                musicToggleBtn.textContent = "🔕";
-                backgroundMusic.pause();
-                localStorage.setItem("audioStatus", "off");
-            }
-        });
-        
         const musicToggleBtn = document.getElementById("music-toggle");
         const backgroundMusic = document.getElementById("background-music");
 
