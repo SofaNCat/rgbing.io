@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style2.css">
+    <link rel="icon" href="icon.png" type="image/x-icon">
+    <link rel="shortcut icon" href="icon.png" type="image/x-icon">
+
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
+
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5483486229407301" crossorigin="anonymous"></script>
+    
+    <title>RGBing - 색 맞추기 게임</title>
+    <style>
+
+    </style>
+</head>
+<body>
+    <div class="option-box">
+        <!--
+        <button id="music-toggle" class="music-button">🔕</button>
+        <audio id="background-music" src="Strollin' - TrackTribe.mp3" loop></audio>
+        -->
+        <button id="share-toggle" class="music-button" onclick="shareContent()">💌</button>
+    </div>
+
+    <div class="top-box">
+        <h1>RGBing - 색 맞추기 게임</h1>
+        <p class="top-1" id="top-1"></p>
+        <div id="clearcount" class="clear-count"></div>
+    </div>
+
+    <div class="show-box" id="color-container">
+        
+    </div>
+
+    <div class="update-box">
+        <div id="updatedate" class="update-date"></div>
+    </div>
+
+    <template id="color-template">
+        <div class="color-box">
+            <div class="color-date" id="colorDate"></div>
+            <div class="color" id="color"></div>
+            <div class="color-info">
+                <div class="color-name" id="colorName"></div>
+                <div class="color-rgb" id="colorRGB"></div>
+            </div>
+            <button id="color-hex" class="color-hex">#</button>
+        </div>
+    </template>
+
+    <script>
+        const musicToggleBtn = document.getElementById("music-toggle");
+        const backgroundMusic = document.getElementById("background-music");
+
+        /*
+        musicToggleBtn.addEventListener("click", () => {
+            if (backgroundMusic.paused) {
+                backgroundMusic.play();
+                musicToggleBtn.textContent = "🔔";
+            } else {
+                backgroundMusic.pause();
+                musicToggleBtn.textContent = "🔕";
+            }
+        });
+        */
+
+        const today = new Date().toLocaleDateString("ko-KR", {
+            year: "numeric",
+            month: "2-digit",
+            day: "2-digit",
+            timeZone: "Asia/Seoul"
+        }).replace(/\./g, "/").replace(/\s/g, "").replace(/\/$/, "");
+
+        // Firebase 초기화
+        const firebaseConfig = {
+            apiKey: "AIzaSyCyyqlzjApUgvJyysZKJIfY4lVz-lWmyEM",
+            authDomain: "rgbing-3a593.firebaseapp.com",
+            projectId: "rgbing-3a593",
+            storageBucket: "rgbing-3a593.firebasestorage.app",
+            messagingSenderId: "503895940241",
+            appId: "1:503895940241:web:5e42593e93572563ac3330",
+            measurementId: "G-RTREG5QN0D"
+        };
+
+        // Firebase 앱 초기화
+        const app = firebase.initializeApp(firebaseConfig);
+        const database = firebase.database();
+
+        const fetchColorDataInRange = async () => {
+            const year = "2024";
+            const month = "11";
+            const startDay = 1;
+            const endDay = new Date().getDate()-1;
+
+            document.getElementById("top-1").innerHTML = `<${month}월의 색>`;
+
+            // Firebase Realtime Database 참조 가져오기
+            const dbRef = firebase.database().ref('/color_data/');
+
+            for (let day = startDay; day <= endDay; day++) {
+                let colorDataRef;
+
+                if(day < 10) {
+                    colorDataRef = database.ref(`/color_data/${year}/${month}/0${day}`);
+                }
+                else {
+                    colorDataRef = database.ref(`/color_data/${year}/${month}/${day}`);
+                }
+
+                if(colorDataRef == null) continue;
+                
+                colorDataRef.once('value', (snapshot) => {
+                    const monthlyData = snapshot.val();
+
+                    const container = document.getElementById("color-container");
+                    const template = document.getElementById("color-template").content.cloneNode(true);
+
+                    // 배경색 설정
+                    const colorBox = template.querySelector(".color");
+                    colorBox.style.backgroundColor = `rgb(${monthlyData.red}, ${monthlyData.green}, ${monthlyData.blue})`;
+
+                    // 날짜 및 RGB 값 설정
+                    template.querySelector(".color-date").textContent = `#${day}`;
+                    template.querySelector(".color-name").textContent = `${monthlyData.name}`;
+                    template.querySelector(".color-rgb").textContent = `RGB(${monthlyData.red}, ${monthlyData.green}, ${monthlyData.blue})`;
+
+                    // HEX 변환 및 버튼 이벤트 추가
+                    const hexButton = template.querySelector(".color-hex");
+                    const hexValue = rgbToHex(monthlyData.red, monthlyData.green, monthlyData.blue);
+                    hexButton.addEventListener("click", () => {
+                        navigator.clipboard.writeText(hexValue)
+                            .then(() => alert("HEX 값이 복사되었습니다."))
+                            .catch(err => console.error("복사에 실패했습니다.", err));
+                    });
+
+                    container.appendChild(template);
+                });
+            }
+
+            const updateDataRef = database.ref('/update/date');
+            updateDataRef.once('value', (snapshot) => {
+                // 데이터를 JSON 객체로 가져옵니다.
+                const dateData = snapshot.val();
+
+                // 원하는 값을 추출합니다.
+                document.getElementById("updatedate").textContent = `최근 업데이트: ${dateData}`;
+
+                console.log('Date:', date2);
+            });
+        };
+
+        // RGB 값을 HEX 값으로 변환하는 함수
+        function rgbToHex(red, green, blue) {
+            return "#" + ((1 << 24) + (red << 16) + (green << 8) + blue).toString(16).slice(1).toUpperCase();
+        }
+
+        // 실행
+        fetchColorDataInRange();
+
+    </script>
+
+</body>
+</html>
+
