@@ -46,7 +46,7 @@ input[type="range"] { width: 200px; margin: 0 5px; }
 .result { margin-top: 15px; font-size: 1.1em; font-weight: bold; color: #333; text-align: center; }
 .description-box { width: 100%; max-width: 700px; padding: 20px; background: rgba(255, 255, 255, 0.9); border-radius: 15px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); margin-top: 30px; text-align: left; }
 .description-title { font-size: 1.3em; font-weight: bold; color: #333; }
-.color-div { margin-top: 15px; width: 100%; max-width: 650px; height: 5px; background: linear-gradient(to left, rgb(255, 255, 255), var(--random-color)) }
+.color-div { margin-top: 15px; width: 100%; max-width: 650px; height: 5px; background: linear-gradient(to left, rgb(255, 255, 255), var(--random-color)); }
 .description-1 { font-size: 0.9em; color: #777; margin-top: 5px; }
 .color-description { font-size: 1em; margin-top: 15px; margin-left: 10px; margin-right: 5px; color: #555; }
 .copy-hex-button { margin-top: 20px; width: 35px; height: 35px; border: none; border-radius: 5px; cursor: pointer; font-weight: bold; background: #dddddd; float: right; }
