@@ -96,7 +96,7 @@
             const startDay = 1;
             const endDay = new Date().getDate()-1;
 
-            document.getElementById("top-1").innerHTML = `<${month}월의 색>`;
+            document.getElementById("top-1").innerHTML = `< 📅 ${month}월의 색 >`;
 
             // Firebase Realtime Database 참조 가져오기
             const dbRef = firebase.database().ref('/color_data/');
@@ -124,7 +124,12 @@
                     colorBox.style.backgroundColor = `rgb(${monthlyData.red}, ${monthlyData.green}, ${monthlyData.blue})`;
 
                     // 날짜 및 RGB 값 설정
-                    template.querySelector(".color-date").textContent = `#${day}`;
+                    if(day < 10) {
+                        template.querySelector(".color-date").textContent = `#0${day}`;
+                    }
+                    else {
+                        template.querySelector(".color-date").textContent = `#${day}`;
+                    }
                     template.querySelector(".color-name").textContent = `${monthlyData.name}`;
                     template.querySelector(".color-rgb").textContent = `RGB(${monthlyData.red}, ${monthlyData.green}, ${monthlyData.blue})`;
 
