@@ -255,6 +255,7 @@
                 desc2 = colorData.desc2;
                 desc3 = colorData.desc3;
                 desc4 = colorData.desc4;
+                colorCount = colorData.cnt;
                 setColorOfTheDay();
 
                 // 데이터를 사용합니다.
@@ -325,17 +326,6 @@
                 console.log('Transaction committed successfully.');
             }
             });
-
-            const colorCountDataRef = database.ref('/count');
-            colorCountDataRef.once('value', (snapshot) => {
-                // 데이터를 JSON 객체로 가져옵니다.
-                const colorCountData = snapshot.val();
-
-                // 원하는 값을 추출합니다.
-                document.getElementById("top-1").innerHTML = `<b>${colorCountData+1}번째 오늘의 색을 맞춰보세요!</b>`;
-
-                console.log('Date:', date2);
-            });
         }
 
         // Firebase에서 가져온 색상으로 업데이트
@@ -346,6 +336,7 @@
             // CSS 변수로 적용
             document.documentElement.style.setProperty('--random-color', `RGB(${redValue}, ${greenValue}, ${blueValue})`);
 
+            document.getElementById("top-1").innerHTML = `<b>${colorCountData}번째 오늘의 색을 맞춰보세요!</b>`;
             document.getElementById("clear-toggle").textContent = `🏆 ${clearcount}`;
             document.getElementById("colorDescription").innerHTML = `${desc1}`;
             document.getElementById("colorDescription2").innerHTML = `${desc2}`;
