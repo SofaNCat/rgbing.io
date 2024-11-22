@@ -99,7 +99,7 @@
             // Firebase Realtime Database 참조 가져오기
             const dbRef = firebase.database().ref('/color_data/');
 
-            for (let day = startDay; day <= endDay; day++) {
+            for (let day = endDay; day >= startDay; day--) {
                 let colorDataRef;
 
                 if(day < 10) {
