@@ -17,6 +17,7 @@
   <div class="option-box">
     <button id="music-toggle" class="music-button">🔕</button>
     <audio id="background-music" src="Strollin' - TrackTribe.mp3" loop></audio>
+    <button id="home-toggle" class="music-button" onclick="goHome()">🏠</button>
     <button id="share-toggle" class="music-button" onclick="shareContent()">💌</button>
 </div>
   <div class="top-box">
@@ -55,6 +56,21 @@
   </div>
 
   <script>
+    const musicToggleBtn = document.getElementById("music-toggle");
+        const backgroundMusic = document.getElementById("background-music");
+
+        musicToggleBtn.addEventListener("click", () => {
+            if (backgroundMusic.paused) {
+                backgroundMusic.play();
+                musicToggleBtn.textContent = "🔔";
+                localStorage.setItem("audioStatus", "on");
+            } else {
+                backgroundMusic.pause();
+                musicToggleBtn.textContent = "🔕";
+                localStorage.setItem("audioStatus", "off");
+            }
+        });
+    
     // 오늘의 색 설정
     let todayColor = { r: 255, g: 255, b: 255 }; // 고정된 RGB 값
 
@@ -208,6 +224,10 @@
       restartGame();
       generateNewQuestion();
     });
+
+    function goHome() {
+            window.location.href = 'index.html';
+    }
 
     function shareContent() {
             if (navigator.share) {
