@@ -21,6 +21,7 @@
     <div class="option-box">
         <button id="music-toggle" class="music-button">🔕</button>
         <audio id="background-music" src="Strollin' - TrackTribe.mp3" loop></audio>
+        <button id="home-toggle" class="music-button" onclick="goHome()">🏠</button>
         <button id="share-toggle" class="music-button" onclick="shareContent()">💌</button>
     </div>
 
@@ -60,6 +61,10 @@
                 localStorage.setItem("audioStatus", "off");
             }
         });
+
+        function goHome() {
+            window.location.href = 'index.html';
+        }
 
         const today = new Date().toLocaleDateString("ko-KR", {
             year: "numeric",
