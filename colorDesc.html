@@ -21,6 +21,7 @@
     <div class="option-box">
         <button id="music-toggle" class="music-button">🔕</button>
         <audio id="background-music" src="Strollin' - TrackTribe.mp3" loop></audio>
+        <button id="home-toggle" class="music-button" onclick="goHome()">🏠</button>
         <button id="share-toggle" class="music-button" onclick="shareContent()">💌</button>
     </div>
 
@@ -189,6 +190,10 @@
             document.getElementById("colabColor2").style.backgroundColor = `${colab2_c}`;
             document.getElementById("colabColorName2").textContent = `${colab2_n}`;
             document.getElementById("colabColorRGB2").textContent = `${colab2_c}`;
+        }
+
+        function goHome() {
+            window.location.href = 'index.html';
         }
 
         function shareContent() {
