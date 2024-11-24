@@ -26,6 +26,7 @@
 
     <div class="top-box">
         <h1>RGBing(알지빙)</h1>
+        <p id="top-1" class="top-1"><b>오늘의 색과 함께하는 게임</b></p>
     </div>
 
     <div class="show-box">
@@ -52,6 +53,16 @@
             <div class="desc">오늘의 색을 활용한 배경화면을 제공합니다.</div>
             <div class="desc">화면을 캡쳐한 뒤 원하는 크기로 자른 후 사용하면 됩니다.</div>
         </div>
+        <div class="category2">📌 기타 링크</div>
+        <div class="gamelist-box" onclick="goInsta()">
+            <div class="title">인스타그램</div>
+            <div class="desc">@my_rgbing</div>
+        </div>
+        <div class="gamelist-box" onclick="goBlog()">
+            <div class="title">공식 블로그</div>
+            <div class="desc">업데이트 내용이 올라옵니다.</div>
+            <div class="desc">질문이나 피드백은 여기에 알려주세요!</div>
+        </div>
     </div>
 
     <div class="update-box">
@@ -59,6 +70,21 @@
     </div>
 
     <script>
+        const musicToggleBtn = document.getElementById("music-toggle");
+        const backgroundMusic = document.getElementById("background-music");
+
+        musicToggleBtn.addEventListener("click", () => {
+            if (backgroundMusic.paused) {
+                backgroundMusic.play();
+                musicToggleBtn.textContent = "🔔";
+                localStorage.setItem("audioStatus", "on");
+            } else {
+                backgroundMusic.pause();
+                musicToggleBtn.textContent = "🔕";
+                localStorage.setItem("audioStatus", "off");
+            }
+        });
+        
         // Firebase 초기화
         const firebaseConfig = {
             apiKey: "AIzaSyCyyqlzjApUgvJyysZKJIfY4lVz-lWmyEM",
@@ -104,6 +130,14 @@
 
         function goWallpaper() {
             window.location.href = 'wallpaper.html';
+        }
+
+        function goInsta() {
+            window.location.href = 'https://www.instagram.com/my_rgbing/profilecard/?igsh=MXI1ZDNqNjExNTJ4dQ==';
+        }
+
+        function goBlog() {
+            window.location.href = 'https://rgbing.tistory.com/';
         }
 
         function shareContent() {
