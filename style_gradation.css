@@ -1,0 +1,37 @@
+/* 기본 스타일 */
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: Arial, sans-serif; background: linear-gradient(120deg, #e0e7ff, #fef9e7); display: flex; flex-direction: column; align-items: center; justify-content: center; color: #333; margin: 0; min-height: 100vh; }
+
+button:hover { background: rgba(152, 152, 152, 0.9); }
+
+/* 옵션 상자 */
+.option-box { width: 100%; max-width: 700px; margin-top: 20px; margin-bottom: -10px; }
+.clear-button { margin-right: 20px; float: right; width: 60px; height: 35px; border: none; border-radius: 5px; cursor: pointer; font-weight: bold; background: #dddddd; box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); }
+.music-button { margin-right: 20px; float: right; width: 35px; height: 35px; border: none; border-radius: 5px; cursor: pointer; font-weight: bold; background: #dddddd; box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); }
+
+/* 헤더 스타일 */
+.top-box { text-align: center; margin-top: 30px; }
+h1 { font-size: 2.0em; font-weight: bold; color: #4a4a4a; }
+.top-1 { font-size: 1.1em; margin-top: 10px; }
+
+/* 게임 박스 */
+.game-box { width: 100%; max-width: 700px; padding: 30px; background: rgba(255, 255, 255, 0.9); border-radius: 15px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); margin-top: 20px; }
+h3 { font-size: 1.2em; color: #555; margin-bottom: 10px; }
+
+.color-section { display: flex; gap: 20px; align-items: center; justify-content: center; text-align: center; margin: 20px 0; margin-top: -3px; }
+.color-box { width: 150px; height: 150px; border-radius: 10px; box-shadow: 0 2px 5px rgba(0, 0, 0, 0.15); transition: background-color 0.5s; }
+.buttons { display: flex; justify-content: center; gap: 10px; margin-top: 15px; }
+button { width: 90px; height: 35px; border: none; border-radius: 5px; cursor: pointer; font-weight: bold; background: #dddddd; }
+.score { display: flex; justify-content: center; margin-top: 20px;  font-size: 18px; font-weight: bold; }
+.result { display: flex; justify-content: center; margin-top: 10px; font-size: 18px; font-weight: bold; }
+.hidden { display: none; }
+
+/* Q&A 박스 */
+.qna-box { width: 100%; max-width: 700px; padding: 20px; background: rgba(255, 255, 255, 0.9); border-radius: 15px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); margin-bottom: 40px; margin-top: 20px; text-align: left; }
+#toggleButton { width: 30px; height: 30px; border-radius: 5px; cursor: pointer; font-weight: bold; background: #dddddd; border: none; float: right; margin-top: -5px; }
+.qna-title { font-size: 1.3em; font-weight: bold; margin-bottom: 20px; text-shadow: 0 4px 8px rgb(233, 233, 233); }
+.color-div-2 { margin-top: -10px; margin-bottom: 15px; width: 100%; max-width: 650px; height: 5px; background: linear-gradient(to left, rgb(255, 255, 255), var(--random-color)) }
+.qna-1 { margin-bottom: 8px; font-weight: bold; }
+.qna-2 { margin-bottom: 20px; margin-left: 10px; margin-right: 5px; color: #555; }
+.qna-line { text-decoration: underline; text-decoration-style: double; }
+.copy-link { color: blue; text-decoration: underline; cursor: pointer; }

@@ -1,0 +1,24 @@
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: Arial, sans-serif; background: linear-gradient(120deg, #e0e7ff, #fef9e7); display: flex; flex-direction: column; align-items: center; justify-content: center; color: #333; margin: 0; min-height: 100vh; }
+
+button:hover { background: rgba(152, 152, 152, 0.9); }
+
+.option-box { width: 100%; max-width: 700px; margin-top: 20px; margin-bottom: -10px; }
+.clear-button { margin-right: 20px; float: right; width: 60px; height: 35px; border: none; border-radius: 5px; cursor: pointer; font-weight: bold; background: #dddddd; box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); }
+.music-button { margin-right: 20px; float: right; width: 35px; height: 35px; border: none; border-radius: 5px; cursor: pointer; font-weight: bold; background: #dddddd; box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); }
+
+.top-box { text-align: center; margin-top: 30px; }
+h1 { font-size: 2.0em; font-weight: bold; color: #4a4a4a; }
+.top-1 { font-size: 1.1em; margin-top: 10px; font-weight: bold; color: #4a4a4a; }
+
+.show-box { width: 100%; max-width: 700px; padding: 30px; background: rgba(255, 255, 255, 0.9); border-radius: 15px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); margin-top: 20px; margin-bottom: 40px; }
+.color-box{ display: flex; font-size: 15px; width: 100%; max-width: 680px; padding: 20px; background: rgba(255, 255, 255, 0.9); border-radius: 15px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); margin-top: 10px; margin-bottom: 10px; text-align: center; }
+.color-info { margin-left: 10px; margin-top: 10px; text-align: left; }
+.color { width: 60px; height: 60px; border-radius: 10px; box-shadow: 0 2px 5px rgba(0, 0, 0, 0.15); transition: background-color 0.5s; }
+.color-date { margin-top: 20px; margin-right: 15px; font-weight: bold; }
+.color-name { font-weight: bold; }
+.color-rgb { margin-top: 5px; }
+.color-hex { width: 35px; height: 35px; border: none; border-radius: 5px; cursor: pointer; font-weight: bold; background: #dddddd; margin-left: auto; margin-top: 10px; }
+
+.update-box { margin-top: 30px; margin-bottom: 40px; }
+.update-date { font-size: 0.9em; color: #777; margin-top: 5px; }
