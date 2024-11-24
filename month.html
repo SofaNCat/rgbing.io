@@ -12,7 +12,7 @@
 
     <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5483486229407301" crossorigin="anonymous"></script>
     
-    <title>RGBing(알지빙) - 색 맞추기 게임</title>
+    <title>RGBing(알지빙)</title>
     <style>
 
     </style>
@@ -25,17 +25,12 @@
     </div>
 
     <div class="top-box">
-        <h1>RGBing - 색 맞추기 게임</h1>
+        <h1>과거의 색</h1>
         <p class="top-1" id="top-1"></p>
-        <div id="clearcount" class="clear-count"></div>
     </div>
 
     <div class="show-box" id="color-container">
         
-    </div>
-
-    <div class="update-box">
-        <div id="updatedate" class="update-date"></div>
     </div>
 
     <template id="color-template">
@@ -143,17 +138,6 @@
                     container.appendChild(template);
                 });
             }
-
-            const updateDataRef = database.ref('/update/date');
-            updateDataRef.once('value', (snapshot) => {
-                // 데이터를 JSON 객체로 가져옵니다.
-                const dateData = snapshot.val();
-
-                // 원하는 값을 추출합니다.
-                document.getElementById("updatedate").textContent = `최근 업데이트: ${dateData}`;
-
-                console.log('Date:', date2);
-            });
         };
 
         // RGB 값을 HEX 값으로 변환하는 함수
