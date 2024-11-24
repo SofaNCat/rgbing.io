@@ -21,6 +21,7 @@
     <div class="option-box">
         <button id="music-toggle" class="music-button">🔕</button>
         <audio id="background-music" src="Strollin' - TrackTribe.mp3" loop></audio>
+        <button id="home-toggle" class="music-button" onclick="goHome()">🏠</button>
         <button id="share-toggle" class="music-button" onclick="shareContent()">💌</button>
         <button id="clear-toggle" class="clear-button" onclick="showClear()">🏆</button>
     </div>
@@ -28,7 +29,6 @@
     <div class="top-box">
         <h1>RGBing - 색 맞추기 게임</h1>
         <p id="top-1" class="top-1"><b>0번째 오늘의 색을 맞춰보세요!</b></p>
-        <div id="clearcount" class="clear-count"></div>
     </div>
 
     <div class="game-box">
@@ -248,6 +248,10 @@
             alert(`${today}\n오늘의 색을 맞춘 사람들은 현재까지 ${clearcount}명 입니다.`);
         }
 
+        function goHome() {
+            window.location.href = 'index.html';
+        }
+
         function shareContent() {
             if (navigator.share) {
                 navigator.share({
@@ -446,6 +450,7 @@
         function rgbToHex() {
             return "#" + ((1 << 24) + (redValue << 16) + (greenValue << 8) + blueValue).toString(16).slice(1).toUpperCase();
         }
+    
     </script>
 
 </body>
