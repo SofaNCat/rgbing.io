@@ -22,6 +22,7 @@
         <button id="music-toggle" class="music-button">🔕</button>
         <audio id="background-music" src="Strollin' - TrackTribe.mp3" loop></audio>
         <button id="share-toggle" class="music-button" onclick="shareContent()">💌</button>
+        <button id="clear-toggle" class="clear-button" onclick="showClear()">👀</button>
     </div>
 
     <div class="top-box">
@@ -70,6 +71,14 @@
     </div>
 
     <script>
+        let view;
+        const today = new Date().toLocaleDateString("ko-KR", {
+            year: "numeric",
+            month: "2-digit",
+            day: "2-digit",
+            timeZone: "Asia/Seoul"
+        }).replace(/\./g, "/").replace(/\s/g, "").replace(/\/$/, "");
+
         const musicToggleBtn = document.getElementById("music-toggle");
         const backgroundMusic = document.getElementById("background-music");
 
@@ -101,16 +110,40 @@
         const database = firebase.database();
 
         function loadData() {
-            // 데이터를 불러올 참조를 가져옵니다.
-            const updateDataRef = database.ref('/update/date');
-            updateDataRef.once('value', (snapshot) => {
-                // 데이터를 JSON 객체로 가져옵니다.
-                const dateData = snapshot.val();
+    // 업데이트 날짜 데이터 불러오기
+    const updateDataRef = database.ref('/update/date');
+    updateDataRef.once('value', (snapshot) => {
+        const dateData = snapshot.val();
+        document.getElementById("updatedate").textContent = `최근 업데이트: ${dateData}`;
+    });
 
-                document.getElementById("updatedate").textContent = `최근 업데이트: ${dateData}`;
-            });
+    // 조회수 데이터 증가시키기
+    const viewRef = database.ref('/view/' + today);
+    viewRef.transaction(
+        function (currentData) {
+            if (currentData === null) {
+                return 1; // 데이터가 없으면 초기값 1로 설정
+            }
+            return currentData + 1; // 기존 값에 +1
+        },
+        function (error, committed, snapshot) {
+            if (error) {
+                console.log('Transaction failed: ' + error);
+            } else if (committed) {
+                console.log('Transaction committed successfully.');
+                const updatedView = snapshot.val();
+                view = updatedView;
+                viewUpdate();
+            }
         }
+    );
+}
+
         loadData();
+
+        function viewUpdate() {
+            document.getElementById("clear-toggle").textContent = `👀 ${view}`;
+        }
 
         function goRgbing() {
             window.location.href = 'rgbing.html';
@@ -138,6 +171,11 @@
 
         function goBlog() {
             window.location.href = 'https://rgbing.tistory.com/';
+        }
+
+        // 성공 횟수 버튼 클릭 시 호출되는 함수
+        function showClear() {
+            alert(`${today}\n오늘의 조회수는 현재까지 ${view}회 입니다.`);
         }
 
         function shareContent() {
