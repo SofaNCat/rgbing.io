@@ -72,7 +72,7 @@
     
     // 오늘의 색 설정
     let todayColor = { r: 255, g: 255, b: 255 }; // 고정된 RGB 값
-    let clearscore;
+    let clearscore, answer;
 
     const today = new Date().toLocaleDateString("ko-KR", {
       year: "numeric",
@@ -120,7 +120,10 @@
           console.error("오늘의 색 데이터를 가져올 수 없습니다.");
         }
       });
-
+      loadScore();
+      
+    } 
+    function loadScore() {
       const clearDataRef = database.ref('/high_score/' + today + '/score/');
         clearDataRef.once('value', (snapshot) => {
             // 데이터를 JSON 객체로 가져옵니다.
@@ -130,7 +133,7 @@
             clearscore = clearData;
             setColorOfTheDay();
         });
-    } 
+    }
 
     function setColorOfTheDay() {
       document.getElementById("clear-toggle").textContent = `🥇 ${clearscore}`;
@@ -168,10 +171,11 @@
       if (isColorChanged) {
         // RGB 값을 약간 변경 (±10 범위에서 랜덤 변화)
         alteredColor = {
-          r: Math.min(255, Math.max(0, todayColor.r + Math.floor(Math.random() * 21 - 10))),
-          g: Math.min(255, Math.max(0, todayColor.g + Math.floor(Math.random() * 21 - 10))),
-          b: Math.min(255, Math.max(0, todayColor.b + Math.floor(Math.random() * 21 - 10))),
+          r: Math.min(255, Math.max(0, todayColor.r + Math.floor(Math.random() * 41 - 20))),
+          g: Math.min(255, Math.max(0, todayColor.g + Math.floor(Math.random() * 41 - 20))),
+          b: Math.min(255, Math.max(0, todayColor.b + Math.floor(Math.random() * 41 - 20))),
         };
+        answer = calculateSimilarity(alteredColor);
       } else {
         // 색상을 그대로 유지
         alteredColor = { ...todayColor };
@@ -191,7 +195,7 @@
 
     // 게임 종료 함수
     function endGame() {
-      resultDisplay.textContent = `게임 오버!`;
+      resultDisplay.textContent = `게임 오버!\n색 유사도: ${answer}%`;
       resultDisplay.style.color = "red";
 
       // 버튼 비활성화
@@ -203,6 +207,7 @@
           score
         });
         alert(`오늘의 최고 점수를 돌파했습니다!`);
+        loadScore();
       }
 
       // 다시하기 버튼 표시
@@ -263,18 +268,35 @@
     }
 
     function shareContent() {
-            if (navigator.share) {
-                navigator.share({
-                    title: '🎨RGBing - 색 맞추기 게임🎨',
-                    text: '여러분들의 색감 센스를 활용해서 오늘의 색을 맞춰보세요.',
-                    url: window.location.href
-                })
-                .then(() => console.log('공유 성공'))
-                .catch((error) => console.log('공유 실패', error));
-            } else {
-                alert("공유 기능을 지원하지 않는 브라우저입니다.");
-            }
-        }
+      if (navigator.share) {
+        navigator.share({
+        title: '🎨RGBing - 색 맞추기 게임🎨',
+        text: '여러분들의 색감 센스를 활용해서 오늘의 색을 맞춰보세요.',
+        url: window.location.href
+        })
+        .then(() => console.log('공유 성공'))
+        .catch((error) => console.log('공유 실패', error));
+      } else {
+        alert("공유 기능을 지원하지 않는 브라우저입니다.");
+      }
+    }
+
+    // 유사도 계산 함수
+    function calculateSimilarity(inputColor) {
+      const rDiff = Math.abs(inputColor.r - todayColor.r);
+      const gDiff = Math.abs(inputColor.g - todayColor.g);
+      const bDiff = Math.abs(inputColor.b - todayColor.b);
+
+      const maxDifference = 255 * 3;
+      const totalDifference = rDiff + gDiff + bDiff;
+
+      if(inputColor != todayColor && Math.round((1 - totalDifference / maxDifference) * 100 == 100)) {
+        return 99;
+      }
+
+      // 유사도를 0에서 100%로 변환
+      return Math.round((1 - totalDifference / maxDifference) * 100);
+    }
 
     // 첫 번째 문제 생성
     generateNewQuestion();
