@@ -23,7 +23,7 @@
 </div>
   <div class="top-box">
     <h1>그라데이션 게임</h1>
-    <p id="top-1" class="top-1"><b>님을 이겨라!</b></p>
+    <p id="top-1" class="top-1"><b></b></p>
   </div>
   <div class="game-box">
     <div class="color-section">
@@ -148,12 +148,21 @@
 
     function setColorOfTheDay() {
       document.getElementById("clear-toggle").textContent = `🥇 ${clearscore}`;
-      document.getElementById("top-1").innerHTML = `<b>'${name}'님을 이겨라!</b>`;
+      if(name != null) {
+        document.getElementById("top-1").innerHTML = `<b>'${name}'님을 이겨라!</b>`;
+      }else {
+        document.getElementById("top-1").innerHTML = `<b>'아직 기록된 점수가 없습니다.</b>`;
+      }
+      
     }
 
     // 성공 횟수 버튼 클릭 시 호출되는 함수
     function showClear() {
-      alert(`${today}\n오늘의 최고 점수는 '${name}'님이 세운 ${clearscore}점 입니다.`);
+      if(name != null) {
+        alert(`${today}\n오늘의 최고 점수는 '${name}'님이 세운 ${clearscore}점 입니다.`);
+      }else {
+        alert(`아직 기록된 점수가 없습니다.`);
+      }
     }
 
     let alteredColor = { ...todayColor }; // 변화된 색 초기값
