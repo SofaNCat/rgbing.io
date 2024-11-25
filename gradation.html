@@ -23,6 +23,7 @@
 </div>
   <div class="top-box">
     <h1>그라데이션 게임</h1>
+    <p id="top-1" class="top-1"><b>님을 이겨라!</b></p>
   </div>
   <div class="game-box">
     <div class="color-section">
@@ -72,7 +73,7 @@
     
     // 오늘의 색 설정
     let todayColor = { r: 255, g: 255, b: 255 }; // 고정된 RGB 값
-    let clearscore, answer;
+    let clearscore, answer, name;
 
     const today = new Date().toLocaleDateString("ko-KR", {
       year: "numeric",
@@ -132,16 +133,27 @@
             // 원하는 값을 추출합니다.
             clearscore = clearData;
             setColorOfTheDay();
-        });
+      });
+
+      const nameDataRef = database.ref('/high_score/' + today + '/name/');
+        nameDataRef.once('value', (snapshot) => {
+            // 데이터를 JSON 객체로 가져옵니다.
+            const nameData = snapshot.val();
+
+            // 원하는 값을 추출합니다.
+            name = nameData;
+            setColorOfTheDay();
+      });
     }
 
     function setColorOfTheDay() {
       document.getElementById("clear-toggle").textContent = `🥇 ${clearscore}`;
+      document.getElementById("top-1").innerHTML = `<b>'${name}'님을 이겨라!</b>`;
     }
 
     // 성공 횟수 버튼 클릭 시 호출되는 함수
     function showClear() {
-      alert(`${today}\n오늘의 최고 점수는 ${clearscore}점 입니다.`);
+      alert(`${today}\n오늘의 최고 점수는 '${name}'님이 세운 ${clearscore}점 입니다.`);
     }
 
     let alteredColor = { ...todayColor }; // 변화된 색 초기값
@@ -166,7 +178,7 @@
     // 새로운 문제 생성 함수
     function generateNewQuestion() {
       // 50% 확률로 색상 변화
-      isColorChanged = Math.random() > 0.4;
+      isColorChanged = Math.random() > 0.35;
 
       if (isColorChanged) {
         // RGB 값을 약간 변경 (±10 범위에서 랜덤 변화)
@@ -179,6 +191,7 @@
       } else {
         // 색상을 그대로 유지
         alteredColor = { ...todayColor };
+        answer = calculateSimilarity(alteredColor);
       }
 
       // 박스 업데이트
@@ -203,10 +216,13 @@
       sameBtn.disabled = true;
 
       if(score > clearscore) {
-        database.ref('/high_score/' + today).set({
+        database.ref('/high_score/' + today).update({
           score
         });
-        alert(`오늘의 최고 점수를 돌파했습니다!`);
+        let userName = prompt("오늘의 최고 점수를 돌파했습니다!\n기록할 닉네임을 작성하세요:");
+        database.ref('/high_score/' + today).update({
+          name: userName
+        });
         loadScore();
       }
 
@@ -234,7 +250,7 @@
 
     // 버튼 클릭 이벤트
     changedBtn.addEventListener("click", () => {
-      if (isColorChanged) {
+      if (calculateSimilarity(alteredColor) != 100) {
         // 정답
         score++;
         scoreDisplay.textContent = `점수: ${score}점`;
@@ -246,7 +262,7 @@
     });
 
     sameBtn.addEventListener("click", () => {
-      if (!isColorChanged) {
+      if (calculateSimilarity(alteredColor) == 100) {
         // 정답
         score++;
         scoreDisplay.textContent = `점수: ${score}점`;
@@ -290,12 +306,8 @@
       const maxDifference = 255 * 3;
       const totalDifference = rDiff + gDiff + bDiff;
 
-      if(inputColor != todayColor && Math.round((1 - totalDifference / maxDifference) * 100 == 100)) {
-        return 99;
-      }
-
       // 유사도를 0에서 100%로 변환
-      return Math.round((1 - totalDifference / maxDifference) * 100);
+      return ((1 - totalDifference / maxDifference) * 100).toFixed(2);
     }
 
     // 첫 번째 문제 생성
