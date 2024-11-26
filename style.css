@@ -67,6 +67,7 @@ input[type="range"] { width: 200px; margin: 0 5px; }
 #toggleButton { width: 30px; height: 30px; border-radius: 5px; cursor: pointer; font-weight: bold; background: #dddddd; border: none; float: right; margin-top: -5px; }
 .qna-title { font-size: 1.3em; font-weight: bold; margin-bottom: 20px; text-shadow: 0 4px 8px rgb(233, 233, 233); }
 .color-div-2 { margin-top: -10px; margin-bottom: 15px; width: 100%; max-width: 650px; height: 5px; background: linear-gradient(to left, rgb(255, 255, 255), var(--random-color)) }
+.color-div-3 { margin-top: -10px; margin-bottom: 15px; width: 100%; max-width: 650px; height: 5px; background: linear-gradient(to left, rgb(255, 255, 255), rgb(87, 87, 87)) }
 .qna-1 { margin-bottom: 8px; font-weight: bold; }
 .qna-2 { margin-bottom: 20px; margin-left: 10px; margin-right: 5px; color: #555; }
 .qna-line { text-decoration: underline; text-decoration-style: double; }
