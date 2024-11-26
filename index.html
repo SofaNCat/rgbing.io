@@ -28,7 +28,15 @@
 
     <div class="top-box">
         <h1>RGBing(알지빙)</h1>
-        <p id="top-1" class="top-1"><b>오늘의 색과 함께하는 게임</b></p>
+        <p id="top-1" class="top-1"><b>매일 바뀌는 오늘의 색을<br>다양하게 즐겨보세요!</b></p>
+    </div>
+
+    <div class="show-box">
+        <div class="category">🎁 이벤트</div>
+        <div class="gamelist-box" onclick="goEvent()">
+            <div class="title">2025 올해의 색 맞추기</div>
+            <div class="desc">2025년 올해의 색을 맞히고 치킨 한 마리 받아 가자!</div>
+        </div>
     </div>
 
     <div class="show-box">
@@ -165,6 +173,10 @@
 
         function viewUpdate() {
             document.getElementById("clear-toggle").textContent = `👀 ${view}`;
+        }
+
+        function goEvent() {
+            window.location.href = 'event.html';
         }
 
         function goRgbing() {
