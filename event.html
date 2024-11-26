@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style.css">
+    <link rel="icon" href="icon.png" type="image/x-icon">
+    <link rel="shortcut icon" href="icon.png" type="image/x-icon">
+
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
+
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5483486229407301" crossorigin="anonymous"></script>
+    
+    <title>RGBing(알지빙)</title>
+    <style>
+       
+    </style>
+</head>
+<body>
+    <div class="option-box">
+        <button id="music-toggle" class="music-button">🔕</button>
+        <audio id="background-music" src="Strollin' - TrackTribe.mp3" loop></audio>
+        <button id="home-toggle" class="music-button" onclick="goHome()">🏠</button>
+        <button id="share-toggle" class="music-button" onclick="shareContent()">💌</button>
+    </div>
+
+    <div class="top-box">
+        <h1>RGBing 이벤트</h1>
+        <p id="top-1" class="top-1"><b>2025년 올해의 색을 맞히고<br>치킨 한 마리 받아 가자!</b></p>
+    </div>
+
+    <div class="game-box">
+        <div class="color-container">
+            <div>
+                <h3>입력한 색</h3>
+                <div class="preview-box" id="previewBox"></div>
+            </div>
+        </div>
+    
+        <!-- R 색상 입력 -->
+        <div class="input-group">
+            <!-- <label for="red">R: </label> -->
+            <div class="slider-container">
+                <button onclick="adjustColor('red', -1)" class="red-button">-</button>
+                <input type="range" id="redSlider" min="0" max="255" value="0" oninput="updateInput('red')">
+                <button onclick="adjustColor('red', 1)" class="red-button">+</button>
+            </div>
+            <input type="number" id="red" min="0" max="255" value="0" oninput="updateSlider('red')">
+        </div>
+
+        <!-- G 색상 입력 -->
+        <div class="input-group">
+            <!-- <label for="green">G: </label> -->
+            <div class="slider-container">
+                <button onclick="adjustColor('green', -1)" class="green-button">-</button>
+                <input type="range" id="greenSlider" min="0" max="255" value="0" oninput="updateInput('green')">
+                <button onclick="adjustColor('green', 1)" class="green-button">+</button>
+            </div>
+            <input type="number" id="green" min="0" max="255" value="0" oninput="updateSlider('green')">
+        </div>
+
+        <!-- B 색상 입력 -->
+        <div class="input-group">
+            <!-- <label for="blue">B: </label> -->
+            <div class="slider-container">
+                <button onclick="adjustColor('blue', -1)" class="blue-button">-</button>
+                <input type="range" id="blueSlider" min="0" max="255" value="0" oninput="updateInput('blue')">
+                <button onclick="adjustColor('blue', 1)" class="blue-button">+</button>
+            </div>
+            <input type="number" id="blue" min="0" max="255" value="0" oninput="updateSlider('blue')">
+        </div>
+
+        <div class="button-box">
+            <button class="check-button" onclick="checkGuess()">제출하기</button>
+        </div>
+
+        <div class="result" id="result"></div>
+        
+    </div>
+
+    <div id="qna-box" class="qna-box">
+        <p class="qna-title">이벤트: 2025 올해의 색 맞히기</p>
+        <div class="color-div-3"></div>
+        <p class="qna-1">1. 이벤트에 어떻게 참여하나요?</p>
+        <p class="qna-2">R, G, B 수치를 각각 조절하여 원하는 색을 정한 뒤, 인스타그램의 사용자 이름(ID)과 함께 제출을 하고, 마지막으로 <a href="https://www.instagram.com/my_rgbing/profilecard/?igsh=MXI1ZDNqNjExNTJ4dQ==">RGBing 인스타그램</a> 팔로우까지 하면 끝! 한 번 제출하면 수정이 불가하니 신중히 색을 골라보세요.<br><br>제출된 RGB 수치 중 팬톤에서 정한 2025 올해의 색과 가장 유사한 수치를 제출한 분에게 인스타그램 DM을 통해 치킨을 보내드립니다!<br><br><b>접수일:</b> 12월 5일 (목) 23:59 까지<br><b>당첨자 발표:</b> 12월 7일 (토) 10:00<br><b>당첨 상품:</b> 황금올리브치킨+콜라1.25L (1명)</p>
+        <p class="qna-1">2. 팬톤(Pantone)은 어떤 회사인가요?</p>
+        <p class="qna-2">팬톤(Pantone)은 색상 표준을 제공하는 세계적인 회사로, 색채 관리 및 색상 시스템의 선두주자입니다. 1962년에 창립된 팬톤은 주로 디자인, 인쇄, 패션, 그래픽 디자인, 제품 개발 등 다양한 산업 분야에서 색상 표준을 제공하며, 색상 관리에 있어 중요한 역할을 합니다.</p>
+        <p class="qna-1">3. 팬톤 올해의 색</p>
+        <p class="qna-2">팬톤 올해의 색은 그 해의 트렌드를 대표하는 색상으로, 사람들이 느끼고 겪는 사회적, 문화적, 감정적 흐름을 반영합니다. 예를 들어, 어떤 해는 자연과 연관된 색이, 다른 해는 혁신적인 변화를 상징하는 색이 선택될 수 있습니다. 이 색은 디자인 세계뿐만 아니라, 제품 개발, 패션, 그래픽 디자인, 인테리어 등 많은 분야에서 영향을 미칩니다.</p>
+        <p class="qna-1">4. 왜 팬톤 올해의 색을 주목해야 할까요?</p>
+        <p class="qna-2"><b>트렌드 예측:</b> 팬톤은 색이 문화, 기술, 정치, 사회적 변화와 어떻게 연결되는지 분석하여, 그 해의 트렌드를 예측합니다. <br><br><b>감정과 분위기:</b> 특정 색상은 사람들에게 특정 감정을 불러일으키거나 분위기를 만듭니다. 예를 들어, 밝고 따뜻한 색은 희망과 에너지를 상징할 수 있고, 차분한 색은 안정감과 평화를 제공합니다. <br><br><b>디자인에 대한 영향:</b> 팬톤 올해의 색은 전 세계 디자이너들에게 영감을 주며, 다양한 분야에서 새로운 창작물을 만들어내는 데 중요한 역할을 합니다.</p>
+        <p class="qna-1">5. 브금에 대한 정보를 알고 싶어요.</p>
+        <p class="qna-2">유튜브 오디오 보관함에 있는 TrackTribe이라는 아티스트의 Strollin' 음악을 사용하고 있어요.</p>
+    </div>
+
+    <script>
+        const musicToggleBtn = document.getElementById("music-toggle");
+        const backgroundMusic = document.getElementById("background-music");
+
+        musicToggleBtn.addEventListener("click", () => {
+            if (backgroundMusic.paused) {
+                backgroundMusic.play();
+                musicToggleBtn.textContent = "🔔";
+                localStorage.setItem("audioStatus", "on");
+            } else {
+                backgroundMusic.pause();
+                musicToggleBtn.textContent = "🔕";
+                localStorage.setItem("audioStatus", "off");
+            }
+        });
+
+        const today = new Date().toLocaleDateString("ko-KR", {
+            year: "numeric",
+            month: "2-digit",
+            day: "2-digit",
+            timeZone: "Asia/Seoul"
+        }).replace(/\./g, "/").replace(/\s/g, "").replace(/\/$/, "");
+        const savedate = today;
+
+        let redValue, greenValue, blueValue;
+
+        // Firebase 초기화
+        const firebaseConfig = {
+            apiKey: "AIzaSyCyyqlzjApUgvJyysZKJIfY4lVz-lWmyEM",
+            authDomain: "rgbing-3a593.firebaseapp.com",
+            projectId: "rgbing-3a593",
+            storageBucket: "rgbing-3a593.firebasestorage.app",
+            messagingSenderId: "503895940241",
+            appId: "1:503895940241:web:5e42593e93572563ac3330",
+            measurementId: "G-RTREG5QN0D"
+        };
+
+        // Firebase 앱 초기화
+        const app = firebase.initializeApp(firebaseConfig);
+        const database = firebase.database();
+
+        function goHome() {
+            window.location.href = 'index.html';
+        }
+
+        function shareContent() {
+            if (navigator.share) {
+                navigator.share({
+                    title: '🎨RGBing - 색 맞추기 게임🎨',
+                    text: '여러분들의 색감 센스를 활용해서 오늘의 색을 맞춰보세요.',
+                    url: window.location.href
+                })
+                .then(() => console.log('공유 성공'))
+                .catch((error) => console.log('공유 실패', error));
+            } else {
+                alert("공유 기능을 지원하지 않는 브라우저입니다.");
+            }
+        }
+
+        // 슬라이더 업데이트 함수
+        function updateSlider(color) {
+            const value = document.getElementById(color).value;
+            document.getElementById(color + "Slider").value = value;
+            updatePreview();
+        }
+
+        // 입력 필드 업데이트 함수
+        function updateInput(color) {
+            const value = document.getElementById(color + "Slider").value;
+            document.getElementById(color).value = value;
+            updatePreview();
+        }
+
+        // 미리보기 업데이트
+        function updatePreview() {
+            const r = document.getElementById("red").value || 0;
+            const g = document.getElementById("green").value || 0;
+            const b = document.getElementById("blue").value || 0;
+
+            const previewBox = document.getElementById("previewBox");
+            previewBox.style.backgroundColor = `RGB(${r}, ${g}, ${b})`;
+        }
+
+        // 색상 조정 버튼 함수
+        function adjustColor(color, change) {
+            const input = document.getElementById(color);
+            let newValue = parseInt(input.value) + change;
+
+            // 범위를 벗어나지 않도록 설정
+            if (newValue < 0) {
+                newValue = 0;
+            } else if (newValue > 255) {
+                newValue = 255;
+            }
+
+            input.value = newValue; // 수치 업데이트
+            updateSlider(color); // 슬라이더와 미리보기 업데이트
+        }
+
+        // 사용자가 입력한 값과 비교
+        function checkGuess() {
+            const r = parseInt(document.getElementById("red").value);
+            const g = parseInt(document.getElementById("green").value);
+            const b = parseInt(document.getElementById("blue").value);
+
+            let userName = prompt("인스타그램 사용자 이름(ID)을 작성해주세요:");
+
+            if(userName != null) {
+                // 사용자 ID가 이미 존재하는지 확인
+                const userRef = database.ref('event/' + userName);
+                userRef.once('value', function(snapshot) {
+                    if (snapshot.exists()) {
+                        alert("이미 존재하는 사용자 ID입니다.");
+                    } else {
+                        // 존재하지 않으면 새로운 데이터 저장
+                        userRef.update({
+                            red: r,
+                            green: g,
+                            blue: b
+                        })
+                        .then(() => {
+                            alert("RGB 값이 제출되었습니다.\n(RGBing 인스타그램까지 팔로우 하셔야 정상적으로 이벤트 접수가 됩니다.)");
+                        })
+                        .catch((error) => {
+                            console.error("데이터 저장 실패: ", error);
+                        });
+                    }
+                });
+            }
+            else alert("취소되었습니다.");
+            
+        }
+    </script>
+
+</body>
+</html>
