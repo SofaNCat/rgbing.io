@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RGBing(알지빙)</title>
+    <link rel="stylesheet" href="style_whack.css">
+    <link rel="icon" href="icon.png" type="image/x-icon">
+    <link rel="shortcut icon" href="icon.png" type="image/x-icon">
+
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
+
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5483486229407301" crossorigin="anonymous"></script>
+</head>
+<body>
+    <div class="option-box">
+        <button id="music-toggle" class="music-button">🔕</button>
+        <audio id="background-music" src="Strollin' - TrackTribe.mp3" loop></audio>
+        <button id="home-toggle" class="music-button" onclick="goHome()">🏠</button>
+        <button id="share-toggle" class="music-button" onclick="shareContent()">💌</button>
+        <button id="clear-toggle" class="clear-button" onclick="showClear()">🥇</button>
+    </div>
+
+    <div class="top-box">
+        <h1>두더지 잡기 게임</h1>
+        <p id="top-1" class="top-1"><b></b></p>
+    </div>
+
+    <div class="game-container">
+        <div class="score-board">
+        <div id="score"><b>점수:</b> 0</div>
+        <div id="lives"><b>목숨:</b> 3.0</div>
+        </div>
+        <div id="game-board" class="game-board"></div>
+        <button id="start-button">게임 시작</button>
+    </div>
+
+    <div id="qna-box" class="qna-box">
+        <p class="qna-title">Q&A</p>
+        <div class="color-div-2"></div>
+        <p class="qna-1">1. 두더지 잡기 게임은 무엇인가요?</p>
+        <p class="qna-2">두더지 잡기기 게임은 <span class="qna-line">하루에 한 번</span> 정해지는 오늘의 색이 나오는 목표 칸을 빠르게 터치하는 게임입니다. 목표 칸을 누르면 목숨이 0.5씩 증가합니다!</p>
+        <p class="qna-1">2. 브금에 대한 정보를 알고 싶어요.</p>
+        <p class="qna-2">유튜브 오디오 보관함에 있는 TrackTribe이라는 아티스트의 Strollin' 음악을 사용하고 있어요.</p>
+    </div>
+
+  <script>
+    const musicToggleBtn = document.getElementById("music-toggle");
+        const backgroundMusic = document.getElementById("background-music");
+
+        musicToggleBtn.addEventListener("click", () => {
+            if (backgroundMusic.paused) {
+                backgroundMusic.play();
+                musicToggleBtn.textContent = "🔔";
+                localStorage.setItem("audioStatus", "on");
+            } else {
+                backgroundMusic.pause();
+                musicToggleBtn.textContent = "🔕";
+                localStorage.setItem("audioStatus", "off");
+            }
+        });
+
+    const gameBoard = document.getElementById("game-board");
+    const scoreDisplay = document.getElementById("score");
+    const livesDisplay = document.getElementById("lives");
+    const startButton = document.getElementById("start-button");
+
+    let score = 0;
+    let lives = 100;
+    let todayColor = "rgb(0, 0, 0)"; // Firebase에서 가져온 색상 예시
+    let targetCellIndex = null;
+    let clickedTarget = false;
+    let timeLimit = 1500; // 초기 색상 표시 시간 (1.5초)
+    let gameInterval = null; // 게임 인터벌을 저장할 변수
+    let speedLevel = 2000; // 초기 속도 (2초)
+    let extraColorThreshold = 3; // 목표 색 외의 다른 색이 등장하는 최소 시간(초)
+    let targetActive = false; // 목표 색 활성 상태 추적
+
+    const today = new Date().toLocaleDateString("ko-KR", {
+        year: "numeric",
+        month: "2-digit",
+        day: "2-digit",
+        timeZone: "Asia/Seoul"
+    }).replace(/\./g, "/").replace(/\s/g, "").replace(/\/$/, "");
+
+    let redValue, greenValue, blueValue;
+    let clearscore, name;
+
+    // Firebase 초기화
+    const firebaseConfig = {
+        apiKey: "AIzaSyCyyqlzjApUgvJyysZKJIfY4lVz-lWmyEM",
+        authDomain: "rgbing-3a593.firebaseapp.com",
+        projectId: "rgbing-3a593",
+        storageBucket: "rgbing-3a593.firebasestorage.app",
+        messagingSenderId: "503895940241",
+        appId: "1:503895940241:web:5e42593e93572563ac3330",
+        measurementId: "G-RTREG5QN0D"
+    };
+
+    // Firebase 앱 초기화
+    const app = firebase.initializeApp(firebaseConfig);
+    const database = firebase.database();
+
+    function loadData() {
+        // 데이터를 불러올 참조를 가져옵니다.
+        const colorDataRef = database.ref('/color_data/' + today);
+        colorDataRef.once('value', (snapshot) => {
+            // 데이터를 JSON 객체로 가져옵니다.
+            const colorData = snapshot.val();
+
+            // 원하는 값을 추출합니다.
+            redValue = colorData.red;
+            blueValue = colorData.blue;
+            greenValue = colorData.green;
+
+            todayColor = `rgb(${redValue}, ${greenValue}, ${blueValue})`;
+            document.documentElement.style.setProperty('--random-color', `RGB(${redValue}, ${greenValue}, ${blueValue})`);
+        });
+
+        const colab1DataRef = database.ref('/colab/' + today + '/1/');
+        colab1DataRef.once('value', (snapshot) => {
+            // 데이터를 JSON 객체로 가져옵니다.
+            const colab1Data = snapshot.val();
+            otherColors.push(colab1Data.hex);
+        });
+
+        const colab2DataRef = database.ref('/colab/' + today + '/2/');
+        colab2DataRef.once('value', (snapshot) => {
+            // 데이터를 JSON 객체로 가져옵니다.
+            const colab2Data = snapshot.val();
+            otherColors.push(colab2Data.hex);
+        });
+
+        const clearDataRef = database.ref('/high_score_2/' + today + '/score/');
+        clearDataRef.once('value', (snapshot) => {
+            // 데이터를 JSON 객체로 가져옵니다.
+            const clearData = snapshot.val();
+
+            // 원하는 값을 추출합니다.
+            clearscore = clearData;
+            setColorOfTheDay();
+      });
+
+      const nameDataRef = database.ref('/high_score_2/' + today + '/name/');
+        nameDataRef.once('value', (snapshot) => {
+            // 데이터를 JSON 객체로 가져옵니다.
+            const nameData = snapshot.val();
+
+            // 원하는 값을 추출합니다.
+            name = nameData;
+            setColorOfTheDay();
+      });
+    }
+    loadData();
+
+    function setColorOfTheDay() {
+      document.getElementById("clear-toggle").textContent = `🥇 ${clearscore}`;
+      if(name != null) {
+        document.getElementById("top-1").innerHTML = `<b>'${name}'님을 이겨라!</b>`;
+      }else {
+        document.getElementById("top-1").innerHTML = `<b>아직 기록된 점수가 없습니다.</b>`;
+      }
+      
+    }
+
+    const otherColors = []; // 다른 색들 (목표 색 제외)
+
+    // 3x3 그리드 생성
+    function createGrid() {
+        gameBoard.innerHTML = ""; // 기존 내용 초기화
+        for (let i = 0; i < 9; i++) {
+            const cell = document.createElement("div");
+            cell.classList.add("cell");
+            cell.addEventListener("click", () => handleCellClick(i));
+            gameBoard.appendChild(cell);
+        }
+    }
+
+    createGrid();
+
+    let cellColors = []; // 각 셀의 색을 관리하는 배열
+
+    // 그리드에서 랜덤한 칸에 오늘의 색을 표시
+    function showTargetColor() {
+        const cells = document.querySelectorAll(".cell");
+
+        // 목숨이 0이면 게임 종료
+        if (lives < 1) {
+            endGame();
+            return; // 게임 종료 후 더 이상 실행되지 않도록 종료
+        }
+
+        // 목표 색 위치를 설정
+        targetCellIndex = Math.floor(Math.random() * 9);
+        cells[targetCellIndex].style.backgroundColor = todayColor; // 목표 색 즉시 설정
+        cellColors[targetCellIndex] = todayColor; // 목표 색을 저장
+        targetActive = true; // 목표 색 활성화
+
+        // 목표 색을 클릭하지 않았으면 클릭을 놓쳤다고 처리
+        clickedTarget = false;  // 목표 색이 나타났을 때 클릭되지 않았으므로 초기화
+
+        // 목표 색 외에 다른 색이 일정 시간 이후에 나타남
+        if (timeLimit <= 1000) {
+            const otherCellIndex = Math.floor(Math.random() * 9);
+            // 목표 색 외의 색을 랜덤으로 선택하여 다른 칸에 색을 설정
+            if (otherCellIndex !== targetCellIndex) {
+            const randomColor = otherColors[0];
+            cells[otherCellIndex].style.backgroundColor = randomColor;
+            cellColors[otherCellIndex] = randomColor; // 다른 색을 저장
+            }
+        }
+
+        if (timeLimit <= 500) {
+            const otherCellIndex = Math.floor(Math.random() * 9);
+            // 목표 색 외의 색을 랜덤으로 선택하여 다른 칸에 색을 설정
+            if (otherCellIndex !== targetCellIndex) {
+            /*const randomColor = otherColors[Math.floor(Math.random() * otherColors.length)];*/
+            const randomColor = otherColors[1];
+            cells[otherCellIndex].style.backgroundColor = randomColor;
+            cellColors[otherCellIndex] = randomColor; // 다른 색을 저장
+            }
+        }
+
+        // 색이 사라짐
+        setTimeout(() => {
+            cells[targetCellIndex].style.backgroundColor = ""; // 목표 색 바로 사라짐
+            cellColors[targetCellIndex] = ""; // 목표 색 색상 값 초기화
+            targetActive = false; // 목표 색 비활성화
+
+            // 목표 색 외의 색도 사라지게 하기
+            cells.forEach((cell, index) => {
+            if (cellColors[index] !== todayColor) {
+                cell.style.backgroundColor = ""; // 목표 색이 아닌 칸만 초기화
+                cellColors[index] = ""; // 해당 칸의 색상 값 초기화
+            }
+            });
+
+            // 색상이 아예 사라진 후에 놓친 목표 색을 체크
+            checkMissedTarget();
+
+            // 색이 표시된 시간을 점차 줄이기
+            if (timeLimit > 400) { // 최소 0.5초까지 유지
+                timeLimit -= 100; // 0.1초씩 줄여줌
+            }
+        }, timeLimit); // 색상 표시 시간
+    }
+
+    // 클릭한 셀 처리
+    function handleCellClick(index) {
+        const cells = document.querySelectorAll(".cell");
+
+        // 목표 색이 비활성화 상태면 클릭 이벤트 무시
+        if (!targetActive) return;
+
+        // 목표 색을 클릭한 경우
+        if (index === targetCellIndex && !clickedTarget) {
+            score += 1;
+            lives += 0.5;
+            clickedTarget = true; // 목표 색을 클릭했다고 표시
+            //cells[index].classList.add("hit");
+            updateScoreboard();
+        } else if (cellColors[index] !== todayColor) {
+            // 목표 색 외의 다른 색을 클릭한 경우 (목표 색이 아닌 타일을 클릭)
+            //cells[index].classList.add("miss");
+            setTimeout(() => {
+                cells[index].classList.remove("miss");
+            }, 500);
+        }
+    }
+
+    // 놓친 목표 확인
+    function checkMissedTarget() {
+        // 목표 색을 클릭하지 않았다면 목숨을 1 감소
+        if (!clickedTarget) {
+            lives -= 1;
+            updateScoreboard();
+        }
+    }
+
+    // 게임 종료
+    function endGame() {
+        clearInterval(gameInterval); // 게임 인터벌 종료
+        alert("게임 오버! 최종 점수: " + score);
+
+        if(score > clearscore) {
+            database.ref('/high_score_2/' + today).update({
+                score
+            });
+            let userName = prompt("오늘의 최고 점수를 돌파했습니다!\n기록할 닉네임을 작성하세요:");
+            database.ref('/high_score_2/' + today).update({
+                name: userName
+            });
+            loadData();
+        }
+
+        // 게임을 종료한 후 버튼을 활성화하거나 추가 동작을 구현할 수 있음
+        startButton.disabled = false; // 게임 끝난 후 버튼을 다시 활성화
+        startButton.textContent = "다시하기"; // 버튼 텍스트 변경
+    }
+
+    // 점수 및 목숨 업데이트
+    function updateScoreboard() {
+        scoreDisplay.innerHTML = `<b>점수:</b> ${score}`;
+        livesDisplay.innerHTML = `<b>목숨:</b> ${lives.toFixed(1)}`;
+    }
+
+    // 게임 시작
+    function startGame() {
+        score = 0;
+        lives = 3;
+        updateScoreboard();
+        createGrid();
+        clearInterval(gameInterval); // 이전 게임이 끝났으면 인터벌을 정리
+        gameInterval = setInterval(showTargetColor, speedLevel); // 2초마다 색상 나타남
+        startButton.disabled = true; // 게임 시작 후 버튼 비활성화
+        startButton.textContent = "진행 중..."; // 버튼 텍스트 변경
+    }
+
+    // 게임 시작 버튼 클릭 시
+    startButton.addEventListener("click", startGame);
+
+    // 성공 횟수 버튼 클릭 시 호출되는 함수
+    function showClear() {
+      if(name != null) {
+        alert(`${today}\n오늘의 최고 점수는 '${name}'님이 세운 ${clearscore}점 입니다.`);
+      }else {
+        alert(`아직 기록된 점수가 없습니다.`);
+      }
+    }
+  </script>
+</body>
+</html>
