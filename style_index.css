@@ -19,7 +19,17 @@ h1 { font-size: 2.0em; font-weight: bold; color: #4a4a4a; }
 .category { font-weight: bold; font-size: 16px; }
 .title { font-weight: bold; font-size: 16px; margin-bottom: 7px; }
 .desc { font-size: 14px; color: #555; }
-
+.high1 { font-size: 14px; color: #555; }
+.high2 { font-size: 14px; color: #555; }
 
 .update-box { margin-top: 30px; margin-bottom: 40px; }
 .update-date { font-size: 0.9em; color: #777; margin-top: 5px; }
+
+.show-box-2 { display: flex; align-items: center; justify-content: space-between; padding: 15px; background-color: #fff; border-radius: 15px; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); width: 100%; max-width: 700px; margin-top: 20px; }
+.color-box { width: 100%; max-width: 110px; height: 110px; border-radius: 8px; background-color: white; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); margin-left: 15px; margin-top: 10px; margin-bottom: 10px; }
+.hash-big-box { display: flex; flex-direction: column; justify-content: space-between; margin-left: 20px; flex-grow: 1; }
+.title { font-family: 'Helvetica', sans-serif; font-size: 14px; color: #333; margin: 5px 0; }
+.date { font-weight: bold; font-size: 16px; color: #000; margin-right: 15px; margin-bottom: 7px; }
+.name { font-weight: bold; font-size: 14px; color: #555; margin-right: 15px; margin-bottom: 5px; }
+.desc4 { font-weight: bold; font-size: 14px; color: #555; margin-right: 15px; margin-bottom: 7px; }
+.hash { font-size: 13px; color: #888; line-height: 1.4; margin-right: 15px; }
