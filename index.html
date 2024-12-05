@@ -2,6 +2,7 @@
 <html lang="ko">
 <head>
     <meta charset="UTF-8">
+    <meta name="description" content="하루마다 정해지는 색을 다양하게 즐겨보세요!">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="style_index.css">
     <link rel="icon" href="icon.png" type="image/x-icon">
@@ -28,7 +29,7 @@
 
     <div class="top-box">
         <h1>RGBing(알지빙)</h1>
-        <p id="top-1" class="top-1"><b>매일 바뀌는 오늘의 색을<br>다양하게 즐겨보세요!</b></p>
+        <p id="top-1" class="top-1"><b>하루마다 정해지는 색을<br>다양하게 즐겨보세요!</b></p>
     </div>
 
     <!--
@@ -41,6 +42,16 @@
     </div>
     -->
 
+    <div class="show-box-2">
+        <div id="color-box" class="color-box"></div>
+        <div class="hash-big-box">
+            <div id="date" class="date"></div>
+            <div id="name" class="name"></div>
+            <div id="desc4" class="desc4"></div>
+            <div id="hash" class="hash"></div>
+        </div>
+    </div>
+
     <div class="show-box">
         <div class="category">🎮 게임</div>
         <div class="gamelist-box" onclick="goRgbing()">
@@ -50,10 +61,12 @@
         <div class="gamelist-box" onclick="goGradation()">
             <div class="title">그라데이션</div>
             <div class="desc">미묘한 색의 차이를 구분해보세요!</div>
+            <div id="high1" class="high1">현재의 1등은 님 입니다.</div>
         </div>
         <div class="gamelist-box" onclick="goWhack()">
             <div class="title">두더지 잡기</div>
             <div class="desc">여러분들의 순발력을 발휘해보세요!</div>
+            <div id="high2" class="high2">현재의 1등은 님 입니다.</div>
         </div>
     </div>
 
@@ -145,35 +158,93 @@
         const app = firebase.initializeApp(firebaseConfig);
         const database = firebase.database();
 
-        function loadData() {
-    // 업데이트 날짜 데이터 불러오기
-    const updateDataRef = database.ref('/update/date');
-    updateDataRef.once('value', (snapshot) => {
-        const dateData = snapshot.val();
-        document.getElementById("updatedate").textContent = `최근 업데이트: ${dateData}`;
-    });
+        let redValue, greenValue, blueValue, desc1, desc2, desc3, desc4, cnt, name, hash;
+        let high1, high2;
 
-    // 조회수 데이터 증가시키기
-    const viewRef = database.ref('/view/' + today);
-    viewRef.transaction(
-        function (currentData) {
-            if (currentData === null) {
-                return 1; // 데이터가 없으면 초기값 1로 설정
-            }
-            return currentData + 1; // 기존 값에 +1
-        },
-        function (error, committed, snapshot) {
-            if (error) {
-                console.log('Transaction failed: ' + error);
-            } else if (committed) {
-                console.log('Transaction committed successfully.');
-                const updatedView = snapshot.val();
-                view = updatedView;
-                viewUpdate();
-            }
+        function loadData() {
+            // 업데이트 날짜 데이터 불러오기
+            const updateDataRef = database.ref('/update/date');
+            updateDataRef.once('value', (snapshot) => {
+                const dateData = snapshot.val();
+                document.getElementById("updatedate").textContent = `최근 업데이트: ${dateData}`;
+            });
+
+            const colorDataRef = database.ref('/color_data/' + today);
+            colorDataRef.once('value', (snapshot) => {
+                // 데이터를 JSON 객체로 가져옵니다.
+                const colorData = snapshot.val();
+
+                // 원하는 값을 추출합니다.
+                redValue = colorData.red;
+                blueValue = colorData.blue;
+                greenValue = colorData.green;
+                desc4 = colorData.desc4;
+                cnt = colorData.cnt;
+                name = colorData.name;
+                hash = colorData.hash;
+
+                setColorOfTheDay();
+            });
+
+            const colorData2Ref = database.ref('/high_score/' + today);
+            colorData2Ref.once('value', (snapshot) => {
+                // 데이터를 JSON 객체로 가져옵니다.
+                const colorData = snapshot.val();
+
+                // 원하는 값을 추출합니다.
+                high1 = colorData.name;
+
+                setColorOfTheDay();
+            });
+
+            const colorData3Ref = database.ref('/high_score_2/' + today);
+            colorData3Ref.once('value', (snapshot) => {
+                // 데이터를 JSON 객체로 가져옵니다.
+                const colorData = snapshot.val();
+
+                // 원하는 값을 추출합니다.
+                high2 = colorData.name;
+
+                setColorOfTheDay();
+            });
+
+            // 조회수 데이터 증가시키기
+            const viewRef = database.ref('/view/' + today);
+            viewRef.transaction(
+                function (currentData) {
+                    if (currentData === null) {
+                        return 1; // 데이터가 없으면 초기값 1로 설정
+                    }
+                    return currentData + 1; // 기존 값에 +1
+                },
+                function (error, committed, snapshot) {
+                    if (error) {
+                        console.log('Transaction failed: ' + error);
+                    } else if (committed) {
+                        console.log('Transaction committed successfully.');
+                        const updatedView = snapshot.val();
+                        view = updatedView;
+                        viewUpdate();
+                    }
+                }
+            );
         }
-    );
-}
+
+        function setColorOfTheDay() {
+            const colorBox = document.getElementById("color-box");
+            colorBox.style.backgroundColor = `rgb(${redValue}, ${greenValue}, ${blueValue})`; 
+
+            // CSS 변수로 적용
+            document.documentElement.style.setProperty('--random-color', `RGB(${redValue}, ${greenValue}, ${blueValue})`);
+
+            document.getElementById("date").innerHTML = `${today} 오늘의 색`;
+            document.getElementById("name").innerHTML = `${cnt}. ${name}`;
+            document.getElementById("desc4").innerHTML = `${desc4}`;
+            document.getElementById("hash").innerHTML = `${hash}`;
+
+            document.getElementById("high1").innerHTML = `현재의 1등은 <b>${high1}</b>님 입니다.`;
+            document.getElementById("high2").innerHTML = `현재의 1등은 <b>${high2}</b>님 입니다.`;
+        }
 
         loadData();
 
