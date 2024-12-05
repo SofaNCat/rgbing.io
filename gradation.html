@@ -217,6 +217,7 @@
 
     // 게임 종료 함수
     function endGame() {
+      alert("게임 오버! 최종 점수: " + score);
       resultDisplay.textContent = `게임 오버!\n색 유사도: ${answer}%`;
       resultDisplay.style.color = "red";
 
