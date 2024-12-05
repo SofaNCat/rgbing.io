@@ -240,9 +240,12 @@
             checkMissedTarget();
 
             // 색이 표시된 시간을 점차 줄이기
-            if (timeLimit > 400) { // 최소 0.5초까지 유지
-                timeLimit -= 100; // 0.1초씩 줄여줌
+            if (timeLimit <= 450 && timeLimit > 400) { // 최소 0.5초까지 유지
+                timeLimit -= 10;
+            } else if(timeLimit > 450) {
+                timeLimit -= 50;
             }
+            console.log(timeLimit);
         }, timeLimit); // 색상 표시 시간
     }
 
@@ -327,6 +330,24 @@
       }else {
         alert(`아직 기록된 점수가 없습니다.`);
       }
+    }
+
+    function goHome() {
+        window.location.href = 'index.html';
+    }
+
+    function shareContent() {
+        if (navigator.share) {
+            navigator.share({
+                title: '🎨RGBing - 색 맞추기 게임🎨',
+                text: '여러분들의 색감 센스를 활용해서 오늘의 색을 맞춰보세요.',
+                url: window.location.href
+            })
+            .then(() => console.log('공유 성공'))
+            .catch((error) => console.log('공유 실패', error));
+        } else {
+            alert("공유 기능을 지원하지 않는 브라우저입니다.");
+        }
     }
   </script>
 </body>
