@@ -30,12 +30,6 @@
     </div>
 
     <div class="description-box1">
-        <p class="description-title">오늘의 색으로 쓰는 한 줄</p>
-        <div class="color-div"></div>
-        <div id="colorDescription4" class="color-description"></div>
-    </div>
-
-    <div class="description-box2">
         <p class="description-title">오늘의 색은 이런 색과 어울려요!</p>
         <p class="description-1">(ChatGPT 기반의 설명이라 오류가 있을 수도 있어요)</p>
         <div class="color-div"></div>
@@ -143,7 +137,6 @@
                 desc1 = colorData.desc1;
                 desc2 = colorData.desc2;
                 desc3 = colorData.desc3;
-                desc4 = colorData.desc4;
                 colorCount = colorData.cnt;
                 setColorOfTheDay();
             });
@@ -182,7 +175,6 @@
             document.getElementById("colorDescription").innerHTML = `${desc1}`;
             document.getElementById("colorDescription2").innerHTML = `${desc2}`;
             document.getElementById("colorDescription3").innerHTML = `${desc3}`;
-            document.getElementById("colorDescription4").innerHTML = `<b>${desc4}</b>`;
 
             document.getElementById("colabColor1").style.backgroundColor = `${colab1_c}`;
             document.getElementById("colabColorName1").textContent = `${colab1_n}`;
