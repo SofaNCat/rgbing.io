@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style_collection.css">
+    <link rel="icon" href="icon.png" type="image/x-icon">
+    <link rel="shortcut icon" href="icon.png" type="image/x-icon">
+
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
+
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5483486229407301" crossorigin="anonymous"></script>
+    
+    <title>RGBing(알지빙)</title>
+</head>
+<body>
+    <div class="option-box">
+        <button id="music-toggle" class="music-button">🔕</button>
+        <audio id="background-music" src="Strollin' - TrackTribe.mp3" loop></audio>
+        <button id="home-toggle" class="music-button" onclick="goHome()">🏠</button>
+        <button id="share-toggle" class="music-button" onclick="shareContent()">💌</button>
+    </div>
+
+    <div class="header">
+        <h1 id="title">년 월 컬렉션</h1>
+        <div class="progress-bar">
+        <div class="progress" id="progress"></div>
+        </div>
+        <p class="progress-text" id="progress-text">진행률: 0/31</p>
+    </div>
+
+    <div class="grid" id="colorGrid"></div>
+
+    <div class="overlay" id="overlay"></div>
+    <div class="popup" id="popup">
+        <div class="popupTitle" id="popupTitle"></div>
+        <p class="popupContent1" id="popupContent1"></p>
+        <p class="popupContent2" id="popupContent2"></p>
+        <div class="popupBtn">
+            <!--<button onclick="closePopup()">HEX 복사</button>-->
+            <button onclick="closePopup()">닫기</button>
+        </div>
+    </div>
+
+  <script>
+    const musicToggleBtn = document.getElementById("music-toggle");
+    const backgroundMusic = document.getElementById("background-music");
+
+    musicToggleBtn.addEventListener("click", () => {
+        if (backgroundMusic.paused) {
+            backgroundMusic.play();
+            musicToggleBtn.textContent = "🔔";
+            localStorage.setItem("audioStatus", "on");
+        } else {
+            backgroundMusic.pause();
+            musicToggleBtn.textContent = "🔕";
+            localStorage.setItem("audioStatus", "off");
+        }
+    });
+
+    // Firebase 초기화
+    const firebaseConfig = {
+        apiKey: "AIzaSyCyyqlzjApUgvJyysZKJIfY4lVz-lWmyEM",
+        authDomain: "rgbing-3a593.firebaseapp.com",
+        projectId: "rgbing-3a593",
+        storageBucket: "rgbing-3a593.firebasestorage.app",
+        messagingSenderId: "503895940241",
+        appId: "1:503895940241:web:5e42593e93572563ac3330",
+        measurementId: "G-RTREG5QN0D"
+    };
+
+    // Firebase 앱 초기화
+    const app = firebase.initializeApp(firebaseConfig);
+    const database = firebase.database();
+
+    const totalDays = new Date(new Date().getFullYear(), new Date().getMonth() + 1, 0).getDate();
+    const collectedColors = [];
+
+    // 컬렉션 초기화
+    function initializeGrid() {
+      const grid = document.getElementById("colorGrid");
+      for (let i = 1; i <= totalDays; i++) {
+        const gridItem = document.createElement("div");
+        gridItem.className = "grid-item";
+        gridItem.textContent = `${i}`;
+        gridItem.dataset.day = i;
+
+        gridItem.addEventListener("click", () => showPopup(i));
+        grid.appendChild(gridItem);
+      }
+    }
+
+    function loadCollectedColors() {
+    const year = new Date().getFullYear();
+    const month = new Date().getMonth() + 1;
+    document.getElementById("title").innerHTML = `${year}년 ${month}월 컬렉션`;
+    const username = localStorage.getItem('userName');
+    for (let day = 1; day <= totalDays; day++) {
+      const dayPath = `${day}`.padStart(2, "0"); // 1 -> "01", 9 -> "09"
+      const path = `users/${username}/${year}/${month}/${dayPath}`;
+
+      firebase.database().ref(path).once("value").then(snapshot => {
+        if (snapshot.exists()) {
+          const { red, green, blue, name } = snapshot.val();
+          const rgbColor = `rgb(${red}, ${green}, ${blue})`;
+
+          // 색상 데이터를 collectedColors 배열에 추가
+          collectedColors.push({ day, color: rgbColor, name });
+
+          // 그리드 업데이트
+          const gridItem = document.querySelector(`.grid-item[data-day="${day}"]`);
+          if (gridItem) {
+            gridItem.style.backgroundColor = rgbColor;
+            gridItem.classList.add("filled");
+          }
+
+          updateProgress();
+        }
+      }).catch(error => {
+        console.error(`Error fetching data for day ${day}:`, error);
+      });
+    }
+  }
+
+    // 진행률 업데이트
+    function updateProgress() {
+      const progress = document.getElementById("progress");
+      const progressText = document.getElementById("progress-text");
+      const filledDays = collectedColors.length;
+
+      const percentage = (filledDays / totalDays) * 100;
+      progress.style.width = `${percentage}%`;
+      progressText.textContent = `진행률: ${filledDays}/${totalDays}`;
+    }
+
+    // 팝업 띄우기
+    function showPopup(day) {
+      const colorData = collectedColors.find(c => c.day === day);
+      const popup = document.getElementById("popup");
+      const overlay = document.getElementById("overlay");
+
+      if (colorData) {
+        document.getElementById("popupTitle").textContent = `${day}일의 색상`;
+        document.getElementById("popupContent1").innerHTML = `${colorData.name}`;
+        document.getElementById("popupContent2").innerHTML = `${colorData.color}`;
+      } else {
+        document.getElementById("popupTitle").textContent = `${day}일`;
+        document.getElementById("popupContent1").textContent = "색상을 얻지 못했습니다.";
+        document.getElementById("popupContent2").innerHTML = ``;
+      }
+
+      popup.style.display = "block";
+      overlay.style.display = "block";
+    }
+
+    // 팝업 닫기
+    function closePopup() {
+      const popup = document.getElementById("popup");
+      const overlay = document.getElementById("overlay");
+
+      popup.style.display = "none";
+      overlay.style.display = "none";
+    }
+
+    function goHome() {
+        window.location.href = 'index.html';
+    }
+
+    function shareContent() {
+        if (navigator.share) {
+            navigator.share({
+                title: '🎨RGBing - 색 맞추기 게임🎨',
+                text: '여러분들의 색감 센스를 활용해서 오늘의 색을 맞춰보세요.',
+                url: window.location.href
+            })
+            .then(() => console.log('공유 성공'))
+            .catch((error) => console.log('공유 실패', error));
+        } else {
+            alert("공유 기능을 지원하지 않는 브라우저입니다.");
+        }
+    }
+
+    // 초기화
+    initializeGrid();
+    loadCollectedColors();
+  </script>
+</body>
+</html>
