@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
+
+  <title>랜덤 색상 생성기</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      text-align: center;
+      padding: 20px;
+    }
+    .color-display {
+      width: 200px;
+      height: 200px;
+      margin: 20px auto;
+      border: 2px solid #000;
+    }
+    button {
+      margin: 10px;
+      padding: 10px 20px;
+      font-size: 16px;
+      cursor: pointer;
+    }
+    .input-container {
+      margin: 20px;
+    }
+    input {
+      padding: 8px;
+      margin: 5px;
+      font-size: 14px;
+    }
+  </style>
+</head>
+<body>
+  <h1>랜덤 색상 생성기</h1>
+  <div id="colorDisplay" class="color-display"></div>
+  <p id="colorValues">RGB 값: -</p>
+
+  <div class="input-container">
+    <label for="dateInput">년/월/일:</label>
+    <input type="date" id="dateInput">
+  </div>
+
+  <button id="randomColorBtn">랜덤 색상</button>
+  <button id="submitBtn">제출</button>
+
+  <p id="submittedData">< 제출된 데이터 ></p>
+
+  <button onclick="desc1()">설명</button>
+  <button onclick="desc2()">감정</button>
+  <button onclick="desc3()">활용</button>
+  <button onclick="desc4()">명언</button>
+  <button onclick="desc5()">해시</button>
+  <button onclick="desc6()">조합</button>
+</body>
+
+<script>
+    const today1 = new Date().toLocaleDateString("ko-KR", {
+      year: "numeric",
+      month: "2-digit",
+      day: "2-digit",
+      timeZone: "Asia/Seoul"
+    }).replace(/\./g, "/").replace(/\s/g, "").replace(/\/$/, "");
+
+    let todaycnt, todaycnt1;
+
+    // Firebase 초기화
+    const firebaseConfig = {
+        apiKey: "AIzaSyCyyqlzjApUgvJyysZKJIfY4lVz-lWmyEM",
+        authDomain: "rgbing-3a593.firebaseapp.com",
+        projectId: "rgbing-3a593",
+        storageBucket: "rgbing-3a593.firebasestorage.app",
+        messagingSenderId: "503895940241",
+        appId: "1:503895940241:web:5e42593e93572563ac3330",
+        measurementId: "G-RTREG5QN0D"
+    };
+
+    // Firebase 앱 초기화
+    const app = firebase.initializeApp(firebaseConfig);
+    const database = firebase.database();
+
+    // 데이터를 불러올 참조를 가져옵니다.
+    const colorDataRef = database.ref('/color_data/' + today1 + '/cnt/');
+    colorDataRef.once('value', (snapshot) => {
+      // 데이터를 JSON 객체로 가져옵니다.
+      todaycnt = snapshot.val();
+      console.log(todaycnt)
+    });
+    
+
+    // DOM 요소 가져오기
+    const colorDisplay = document.getElementById('colorDisplay');
+    const colorValues = document.getElementById('colorValues');
+    const submittedData = document.getElementById('submittedData');
+    const dateInput = document.getElementById('dateInput');
+    const randomColorBtn = document.getElementById('randomColorBtn');
+    const submitBtn = document.getElementById('submitBtn');
+
+    // 색상 값 변수 초기화
+    let currentColor = { r: 0, g: 0, b: 0 };
+
+    // 랜덤 색상 생성 함수
+    function getRandomColor() {
+    return {
+        r: Math.floor(Math.random() * 256),
+        g: Math.floor(Math.random() * 256),
+        b: Math.floor(Math.random() * 256),
+    };
+    }
+
+    // 색상 박스와 값 업데이트 함수
+    function updateColorDisplay(color) {
+        const rgbString = `rgb(${color.r}, ${color.g}, ${color.b})`;
+        colorDisplay.style.backgroundColor = rgbString;
+        colorValues.textContent = `RGB 값: ${color.r}, ${color.g}, ${color.b}`;
+    }
+
+    // "랜덤 색상" 버튼 클릭 이벤트
+    randomColorBtn.addEventListener('click', () => {
+        currentColor = getRandomColor();
+        updateColorDisplay(currentColor);
+    });
+
+    // "제출" 버튼 클릭 이벤트
+    submitBtn.addEventListener('click', () => {
+    const rgbString = `RGB(${currentColor.r}, ${currentColor.g}, ${currentColor.b})`;
+
+    // 날짜 포맷 변환 (yyyy/mm/dd)
+    const rawDate = dateInput.value; // yyyy-mm-dd 형식
+    const formattedDate = rawDate ? rawDate.replace(/-/g, '/') : "날짜 없음";
+
+    // 날짜 차이 계산 (오늘의 날짜에서 선택한 날짜 빼기)
+    const selectedDate = new Date(rawDate); // 사용자가 선택한 날짜
+    const today = new Date(); // 오늘 날짜
+
+    const year = today.getFullYear();
+    const month = today.getMonth() + 1;  // getMonth()는 0부터 시작하므로 1을 더해줍니다.
+    const day = today.getDate();
+      
+    // 날짜 비교 시 시간 부분을 0으로 설정하여 순수한 날짜 차이만 계산
+    selectedDate.setHours(0, 0, 0, 0); 
+    today.setHours(0, 0, 0, 0);
+
+    // 날짜 차이 계산 (일 단위)
+    const timeDiff =  selectedDate - today; // 밀리초 단위 차이
+    const dayDiff = Math.floor(timeDiff / (1000 * 3600 * 24)); // 밀리초를 일수로 변환
+
+    // 계산된 날짜 차이를 순번으로 설정
+    const sequence = isNaN(dayDiff) ? "날짜 오류" : dayDiff;
+
+    submittedData.innerHTML = `< 제출된 데이터 ><br>색상=${rgbString}, 날짜=${formattedDate}, 순번=${sequence+todaycnt}`;
+
+    // 사용자 ID가 이미 존재하는지 확인
+    const userRef = database.ref('color_data/' + formattedDate);
+      userRef.once('value', function(snapshot) {
+        if (snapshot.exists()) {
+          alert("이미 존재하는 날짜입니다.");
+        } else {
+          // 존재하지 않으면 새로운 데이터 저장
+          userRef.update({
+              red: currentColor.r,
+              green: currentColor.g,
+              blue: currentColor.b,
+              cnt: sequence+todaycnt,
+              desc1: "Null",
+              desc2: "Null",
+              desc3: "Null",
+              desc4: "Null",
+              hash: "Null",
+              name: "Null"
+          })
+          .then(() => {
+              alert("정상적으로 저장되었습니다.");
+          })
+          .catch((error) => {
+              console.error("데이터 저장 실패: ", error);
+          });
+
+          database.ref('clear_user/' + formattedDate).set(0)
+
+          database.ref('high_score/' + formattedDate).update({
+            name: "관리자",
+            score: 40
+          })
+
+          database.ref('high_score_2/' + formattedDate).update({
+            name: "관리자",
+            score: 30
+          })
+
+          database.ref('colab/' + formattedDate + '/1').update({
+            color: "Null",
+            hex: "Null",
+            name: "Null"
+          })
+
+          database.ref('colab/' + formattedDate + '/2').update({
+            color: "Null",
+            hex: "Null",
+            name: "Null"
+          })
+        }
+      });
+    });
+
+    function desc1() {
+      navigator.clipboard.writeText(`RGB(${currentColor.r}, ${currentColor.g}, ${currentColor.b})의 색 이름은 뭐고, 어떤 느낌의 색이고, 어떤 것과 잘 어울리는지 설명해줘. RGB 수치는 제외하고 "이 색의 이름은"으로 시작해줘. 그리고 색 이름은 영어로 말해주고 <b>와 </b>로 감싸줘`).then(() => {
+        // 복사가 완료되면 이 부분이 호출된다.
+        alert("복사되었습니다.");
+      });
+    }
+    function desc2() {
+      navigator.clipboard.writeText(`RGB(${currentColor.r}, ${currentColor.g}, ${currentColor.b})의 색은 어떤 감정과 잘 어울려? ~입니다. 체로 써주고, '이 색은'이라고 문장을 시작해줘. 그리고 문단이 넘어갈때 마다 문단을 넘기지 말고 <br><br>을 붙여줘. 세 문단으로 이루어지게 하고, rgb 수치는 언급하지 말아줘`).then(() => {
+        // 복사가 완료되면 이 부분이 호출된다.
+        alert("복사되었습니다.");
+      });
+    }
+    function desc3() {
+      navigator.clipboard.writeText(`RGB(${currentColor.r}, ${currentColor.g}, ${currentColor.b})색이 사회에서 쓰이는 곳을 알려줘, 카테고리마다 해시태그로 7개씩 써줘. 카테고리 별로 해시태그 내용만 알려주고, 카테고리 이름은 <b>와 </b>로 감싸주고, 카테고리별 처음 해시태그가 시작하기 전에 &nbsp;&nbsp;을 문자로 입력해줘. 카테고리 별로 번호를 붙여주고, 카테고리와 해시태그 사이에는 <br>, 다음 카테고리로 넘어가는 문단일 때마다 <br><br>을 써줘. 이 모든 것을 한줄로 써줘`).then(() => {
+        // 복사가 완료되면 이 부분이 호출된다.
+        alert("복사되었습니다.");
+      });
+    }
+    function desc4() {
+      navigator.clipboard.writeText(`RGB(${currentColor.r}, ${currentColor.g}, ${currentColor.b}) 색과 관련된 오늘의 명언을 알려줘. 부가 설명이나 사람 이름은 필요 없이 명언만 큰따옴표 사이에 넣어줘`).then(() => {
+        // 복사가 완료되면 이 부분이 호출된다.
+        alert("복사되었습니다.");
+      });
+    }
+    function desc5() {
+      navigator.clipboard.writeText(`RGB(${currentColor.r}, ${currentColor.g}, ${currentColor.b})`).then(() => {
+        // 복사가 완료되면 이 부분이 호출된다.
+        alert("복사되었습니다.");
+      });
+    }
+    function desc6() {
+      navigator.clipboard.writeText(`RGB(${currentColor.r}, ${currentColor.g}, ${currentColor.b}) 색과 어울리는 색 두 가지를, 색 이름과 rgb 수치와 hex 수치를 알려줘. rgb는 대문자로 써줘`).then(() => {
+        // 복사가 완료되면 이 부분이 호출된다.
+        alert("복사되었습니다.");
+      });
+    }
+</script>
+
+</html>
