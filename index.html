@@ -275,8 +275,14 @@
                         const userRef2 = database.ref('users/' + userName + '/password');
                         userRef2.once('value', function(snapshot) {
                             if (snapshot.val() == userPass) {
-                                localStorage.setItem('userName', userName);
-                                window.location.href = 'collection.html';
+                                if(userName == '관리자') {
+                                    localStorage.setItem('userName', userName);
+                                    window.location.href = 'collection_manager.html';
+                                }
+                                else {
+                                    localStorage.setItem('userName', userName);
+                                    window.location.href = 'collection.html';
+                                }
                             } else {
                                 alert("비밀번호가 틀렸습니다.");
                             }
