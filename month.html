@@ -96,6 +96,13 @@
 
             document.getElementById("top-1").innerHTML = `< ${month}월의 색 >`;
 
+            // 오늘이 1일인 경우 메시지 표시
+            if (endDay < startDay) {
+                const container = document.getElementById("color-container");
+                container.innerHTML = "<p>오늘은 1일이기 때문에 내일부터 추가가 됩니다!</p>";
+                return;
+            }
+
             // Firebase Realtime Database 참조 가져오기
             const dbRef = firebase.database().ref('/color_data/');
 
