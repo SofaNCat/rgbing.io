@@ -3,7 +3,6 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>RGBing(알지빙)</title>
   <link rel="stylesheet" href="style_gradation.css">
   <link rel="icon" href="icon.png" type="image/x-icon">
   <link rel="shortcut icon" href="icon.png" type="image/x-icon">
@@ -12,15 +11,52 @@
   <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
 
   <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5483486229407301" crossorigin="anonymous"></script>
+  
+  <title>RGBing(알지빙)</title>
 </head>
 <body>
-  <div class="option-box">
-    <button id="music-toggle" class="music-button">🔕</button>
-    <audio id="background-music" src="Strollin' - TrackTribe.mp3" loop></audio>
-    <button id="home-toggle" class="music-button" onclick="goHome()">🏠</button>
-    <button id="share-toggle" class="music-button" onclick="shareContent()">💌</button>
-    <button id="clear-toggle" class="clear-button" onclick="showClear()">🥇</button>
-</div>
+  <div class="menu-container">
+    <div id="menu-toggle" class="menu-button">☰</div>
+  </div>
+  <div id="side-menu" class="side-menu">
+      <div class="side-menu-header">
+          <div id="menu-close" class="menu-close">×</div>
+      </div>
+      <div class="menu-list">
+          <div class="menu-category">
+              <li onclick="window.location.href='index.html'">🏠 홈으로</li>
+          </div>
+          <div class="menu-category">
+              <h4>🎮 미니 게임</h4>
+              <ul>
+                  <li onclick="window.location.href='rgbing.html'">색 맞추기</li>
+                  <li onclick="goCollection()">┖ 색 컬렉션</li>
+                  <li onclick="window.location.href='gradation.html'">그라데이션</li>
+                  <li onclick="window.location.href='whack.html'">두더지 잡기</li>
+              </ul>
+          </div>
+          <div class="menu-category">
+              <h4>🎨 오늘의 색</h4>
+              <ul>
+                  <li onclick="window.location.href='month.html'">과거의 색 기록</li>
+              </ul>
+          </div>
+          <div class="menu-category">
+              <h4>📌 기타 링크</h4>
+              <ul>
+                  <li onclick="goInsta()">인스타그램</li>
+                  <li onclick="goBlog()">공식 블로그</li>
+              </ul>
+          </div>
+      </div>
+  </div>
+
+  <div class="option-box"><!--
+      <button id="music-toggle" class="music-button">🔕</button>
+      <audio id="background-music" src="Strollin' - TrackTribe.mp3" loop></audio>
+      <button id="share-toggle" class="music-button" onclick="shareContent()">💌</button>-->
+      <button id="clear-toggle" class="clear-button" onclick="showClear()">🥇</button>
+  </div>
   <div class="top-box">
     <h1>그라데이션 게임</h1>
     <p id="top-1" class="top-1"><b></b></p>
@@ -51,26 +87,9 @@
     <div class="color-div-2"></div>
     <p class="qna-1">1. 그라데이션 게임은 무엇인가요?</p>
     <p class="qna-2">그라데이션 게임은 <span class="qna-line">하루에 한 번</span> 정해지는 오늘의 색을 기준으로 문제의 색이 변하였는지의 여부를 판단하는 게임입니다. 여러분들의 색감 센스를 활용해서 정답을 맞춰보세요. '색 맞추기'와는 다르게 하루에 몇 번이고 도전할 수 있답니다!</p>
-    <p class="qna-1">2. 브금에 대한 정보를 알고 싶어요.</p>
-    <p class="qna-2">유튜브 오디오 보관함에 있는 TrackTribe이라는 아티스트의 Strollin' 음악을 사용하고 있어요.</p>
   </div>
 
   <script>
-    const musicToggleBtn = document.getElementById("music-toggle");
-        const backgroundMusic = document.getElementById("background-music");
-
-        musicToggleBtn.addEventListener("click", () => {
-            if (backgroundMusic.paused) {
-                backgroundMusic.play();
-                musicToggleBtn.textContent = "🔔";
-                localStorage.setItem("audioStatus", "on");
-            } else {
-                backgroundMusic.pause();
-                musicToggleBtn.textContent = "🔕";
-                localStorage.setItem("audioStatus", "off");
-            }
-        });
-    
     // 오늘의 색 설정
     let todayColor = { r: 255, g: 255, b: 255 }; // 고정된 RGB 값
     let clearscore, answer, name;
@@ -289,24 +308,6 @@
       generateNewQuestion();
     });
 
-    function goHome() {
-            window.location.href = 'index.html';
-    }
-
-    function shareContent() {
-      if (navigator.share) {
-        navigator.share({
-        title: '🎨RGBing - 색 맞추기 게임🎨',
-        text: '여러분들의 색감 센스를 활용해서 오늘의 색을 맞춰보세요.',
-        url: window.location.href
-        })
-        .then(() => console.log('공유 성공'))
-        .catch((error) => console.log('공유 실패', error));
-      } else {
-        alert("공유 기능을 지원하지 않는 브라우저입니다.");
-      }
-    }
-
     // 유사도 계산 함수
     function calculateSimilarity(inputColor) {
       const rDiff = Math.abs(inputColor.r - todayColor.r);
@@ -322,6 +323,57 @@
 
     // 첫 번째 문제 생성
     generateNewQuestion();
+
+    const menuToggle = document.getElementById("menu-toggle");
+        const sideMenu = document.getElementById("side-menu");
+        const menuClose = document.getElementById("menu-close");
+
+        menuToggle.addEventListener("click", () => {
+            sideMenu.style.left = "0";
+            menuToggle.style.display = "none"; // 메뉴 버튼 숨기기
+        });
+
+        menuClose.addEventListener("click", () => {
+            sideMenu.style.left = "-250px";
+            menuToggle.style.display = "block";
+        });
+
+        function goCollection() {
+            let userName = prompt("사용자 ID를 입력해주세요:");
+            if(userName != null) {
+                // 사용자 ID가 이미 존재하는지 확인
+                const userRef = database.ref('users/' + userName);
+                userRef.once('value', function(snapshot) {
+                    if (snapshot.exists()) {
+                        let userPass = prompt("사용자 비밀번호를 입력해주세요:");
+                        const userRef2 = database.ref('users/' + userName + '/password');
+                        userRef2.once('value', function(snapshot) {
+                            if (snapshot.val() == userPass) {
+                                if(userName == '관리자') {
+                                    localStorage.setItem('userName', userName);
+                                    window.location.href = 'collection_manager.html';
+                                }
+                                else {
+                                    localStorage.setItem('userName', userName);
+                                    window.location.href = 'collection.html';
+                                }
+                            } else {
+                                alert("비밀번호가 틀렸습니다.");
+                            }
+                        });
+                    } else {
+                        alert("존재하지 않는 ID 입니다.");
+                    }
+                });
+            }
+            else alert("취소되었습니다.");
+        }
+        function goInsta() {
+            window.location.href = 'https://www.instagram.com/sofancat_com/profilecard/?igsh=MXI1ZDNqNjExNTJ4dQ==';
+        }
+        function goBlog() {
+            window.location.href = 'https://rgbing.tistory.com/';
+        }
   </script>
 </body>
 </html>
