@@ -127,84 +127,114 @@
 
     // "제출" 버튼 클릭 이벤트
     submitBtn.addEventListener('click', () => {
-    const rgbString = `RGB(${currentColor.r}, ${currentColor.g}, ${currentColor.b})`;
+      const rgbString = `RGB(${currentColor.r}, ${currentColor.g}, ${currentColor.b})`;
 
     // 날짜 포맷 변환 (yyyy/mm/dd)
     const rawDate = dateInput.value; // yyyy-mm-dd 형식
     const formattedDate = rawDate ? rawDate.replace(/-/g, '/') : "날짜 없음";
 
-    // 날짜 차이 계산 (오늘의 날짜에서 선택한 날짜 빼기)
-    const selectedDate = new Date(rawDate); // 사용자가 선택한 날짜
-    const today = new Date(); // 오늘 날짜
+    if (!rawDate) {
+        alert("날짜를 선택해주세요.");
+        return;
+    }
 
-    const year = today.getFullYear();
-    const month = today.getMonth() + 1;  // getMonth()는 0부터 시작하므로 1을 더해줍니다.
-    const day = today.getDate();
-      
-    // 날짜 비교 시 시간 부분을 0으로 설정하여 순수한 날짜 차이만 계산
-    selectedDate.setHours(0, 0, 0, 0); 
-    today.setHours(0, 0, 0, 0);
+    // 기준 날짜 (2025년 1월 1일)
+    const baseDate = new Date('2025-01-01');
+    baseDate.setHours(0, 0, 0, 0); // 시간 초기화
+
+    // 선택한 날짜
+    const selectedDate = new Date(rawDate);
+    selectedDate.setHours(0, 0, 0, 0); // 시간 초기화
 
     // 날짜 차이 계산 (일 단위)
-    const timeDiff =  selectedDate - today; // 밀리초 단위 차이
-    const dayDiff = Math.floor(timeDiff / (1000 * 3600 * 24)); // 밀리초를 일수로 변환
+    const timeDiff = selectedDate.getTime() - baseDate.getTime(); // 밀리초 단위 차이
+    const dayDiff = Math.round(timeDiff / (1000 * 3600 * 24)); // 밀리초를 일수로 변환
 
-    // 계산된 날짜 차이를 순번으로 설정
-    const sequence = isNaN(dayDiff) ? "날짜 오류" : dayDiff;
+    if (isNaN(dayDiff)) {
+        alert("날짜 계산 중 오류가 발생했습니다.");
+        return;
+    }
 
-    submittedData.innerHTML = `< 제출된 데이터 ><br>색상=${rgbString}, 날짜=${formattedDate}, 순번=${sequence+todaycnt}`;
+    // sequence 계산 (기준 sequence 값 57에 dayDiff를 더함)
+    const sequence = 57 + dayDiff;
 
-    // 사용자 ID가 이미 존재하는지 확인
-    const userRef = database.ref('color_data/' + formattedDate);
-      userRef.once('value', function(snapshot) {
-        if (snapshot.exists()) {
-          alert("이미 존재하는 날짜입니다.");
-        } else {
-          // 존재하지 않으면 새로운 데이터 저장
-          userRef.update({
-              red: currentColor.r,
-              green: currentColor.g,
-              blue: currentColor.b,
-              cnt: sequence+todaycnt,
-              desc1: "Null",
-              desc2: "Null",
-              desc3: "Null",
-              desc4: "Null",
-              hash: "Null",
+    // 제출된 데이터 표시
+    submittedData.innerHTML = `< 제출된 데이터 ><br>색상=${rgbString}, 날짜=${formattedDate}, 순번=${sequence}`;
+
+      // 사용자 ID가 이미 존재하는지 확인
+      const userRef = database.ref('color_data/' + formattedDate);
+        userRef.once('value', function(snapshot) {
+          if (snapshot.exists()) {
+            alert("이미 존재하는 날짜입니다.");
+          } else {
+            // 존재하지 않으면 새로운 데이터 저장
+            userRef.update({
+                red: currentColor.r,
+                green: currentColor.g,
+                blue: currentColor.b,
+                cnt: sequence,
+                desc1: "Null",
+                desc2: "Null",
+                desc4: "Null",
+                hash: "Null",
+                name: "Null"
+            })
+            .then(() => {
+                alert("정상적으로 저장되었습니다.");
+            })
+            .catch((error) => {
+                console.error("데이터 저장 실패: ", error);
+            });
+
+            database.ref('clear_user/' + formattedDate).set(0)
+
+            database.ref('high_score/' + formattedDate).update({
+              name: "관리자",
+              score: 40
+            })
+
+            database.ref('high_score_2/' + formattedDate).update({
+              name: "관리자",
+              score: 30
+            })
+
+            database.ref('colab/' + formattedDate + '/1').update({
+              color: "Null",
+              hex: "Null",
               name: "Null"
-          })
-          .then(() => {
-              alert("정상적으로 저장되었습니다.");
-          })
-          .catch((error) => {
-              console.error("데이터 저장 실패: ", error);
-          });
+            })
 
-          database.ref('clear_user/' + formattedDate).set(0)
+            database.ref('colab/' + formattedDate + '/2').update({
+              color: "Null",
+              hex: "Null",
+              name: "Null"
+            })
 
-          database.ref('high_score/' + formattedDate).update({
-            name: "관리자",
-            score: 40
-          })
+            database.ref('colab/' + formattedDate + '/3').update({
+              color: "Null",
+              hex: "Null",
+              name: "Null"
+            })
 
-          database.ref('high_score_2/' + formattedDate).update({
-            name: "관리자",
-            score: 30
-          })
+            database.ref('colab/' + formattedDate + '/4').update({
+              color: "Null",
+              hex: "Null",
+              name: "Null"
+            })
 
-          database.ref('colab/' + formattedDate + '/1').update({
-            color: "Null",
-            hex: "Null",
-            name: "Null"
-          })
+            database.ref('colab/' + formattedDate + '/5').update({
+              color: "Null",
+              hex: "Null",
+              name: "Null"
+            })
 
-          database.ref('colab/' + formattedDate + '/2').update({
-            color: "Null",
-            hex: "Null",
-            name: "Null"
-          })
-        }
-      });
+            database.ref('colab/' + formattedDate + '/6').update({
+              color: "Null",
+              hex: "Null",
+              name: "Null"
+            })
+          }
+        });
     });
 
     function desc1() {
@@ -214,7 +244,7 @@
       });
     }
     function desc2() {
-      navigator.clipboard.writeText(`RGB(${currentColor.r}, ${currentColor.g}, ${currentColor.b})의 색은 어떤 감정과 잘 어울려? ~입니다. 체로 써주고, '이 색은'이라고 문장을 시작해줘. 그리고 문단이 넘어갈때 마다 문단을 넘기지 말고 <br><br>을 붙여줘. 세 문단으로 이루어지게 하고, rgb 수치는 언급하지 말아줘`).then(() => {
+      navigator.clipboard.writeText(`RGB(${currentColor.r}, ${currentColor.g}, ${currentColor.b})의 색은 어떤 감정과 잘 어울려? ~입니다. 체로 써주고, '이 색은'이라고 문장을 시작해줘. 그리고 문단이 넘어갈때 마다 문단을 넘기지 말고 <br><br>을 붙여줘. 세 문단으로 이루어지게 하고 한 문단 당 적어도 두줄씩은 써줘, rgb 수치는 언급하지 말아줘`).then(() => {
         // 복사가 완료되면 이 부분이 호출된다.
         alert("복사되었습니다.");
       });
@@ -238,7 +268,7 @@
       });
     }
     function desc6() {
-      navigator.clipboard.writeText(`RGB(${currentColor.r}, ${currentColor.g}, ${currentColor.b}) 색과 어울리는 색 두 가지를, 색 이름과 rgb 수치와 hex 수치를 알려줘. rgb는 대문자로 써줘`).then(() => {
+      navigator.clipboard.writeText(`RGB(${currentColor.r}, ${currentColor.g}, ${currentColor.b}) 색을 배경으로 했을 때 글자 색으로 두면 예쁠만한 색 3가지와, RGB(${currentColor.r}, ${currentColor.g}, ${currentColor.b}) 색으로 글자를 쓰고 싶을 때, 배경 색으로 두면 예쁠만한 색 3가지를, 색 이름과 rgb 수치와 hex 수치를 알려줘. rgb 수치는 대문자로 써주고, 다 다른 색으로 추천해줘`).then(() => {
         // 복사가 완료되면 이 부분이 호출된다.
         alert("복사되었습니다.");
       });
