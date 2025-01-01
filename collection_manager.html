@@ -95,12 +95,13 @@
 
     function loadCollectedColors() {
     const year = new Date().getFullYear();
-    const month = new Date().getMonth() + 1;
+    const month = (new Date().getMonth() + 1).toString().padStart(2, '0');
     document.getElementById("title").innerHTML = `${year}년 ${month}월 컬렉션`;
     const username = localStorage.getItem('userName');
     for (let day = 1; day <= totalDays; day++) {
       const dayPath = `${day}`.padStart(2, "0"); // 1 -> "01", 9 -> "09"
       const path = `users/${username}/${year}/${month}/${dayPath}`;
+      console.log(`users/${username}/${year}/${month}/${dayPath}`);
 
       firebase.database().ref(path).once("value").then(snapshot => {
         if (snapshot.exists()) {
