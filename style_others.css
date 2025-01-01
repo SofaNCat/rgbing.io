@@ -176,6 +176,7 @@ button:hover {
     justify-content: center;
     transition: transform 0.3s ease, box-shadow 0.3s ease;
     cursor: pointer;
+    transition: background-color 0.5s;
 }
 .color-box:hover {
     transform: translateY(-5px);
