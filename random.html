@@ -18,6 +18,9 @@
       height: 200px;
       margin: 20px auto;
       border: 2px solid #000;
+      display: flex; /* Flexbox 활성화 */
+      justify-content: center; /* 가로 방향 가운데 정렬 */
+      align-items: center; /* 세로 방향 가운데 정렬 */
     }
     button {
       margin: 10px;
@@ -37,7 +40,9 @@
 </head>
 <body>
   <h1>랜덤 색상 생성기</h1>
-  <div id="colorDisplay" class="color-display"></div>
+  <div id="colorDisplay" class="color-display">
+    <span id="exampleText"><b>예시 텍스트</b></span>
+  </div>
   <p id="colorValues">RGB 값: -</p>
 
   <div class="input-container">
@@ -46,6 +51,8 @@
   </div>
 
   <button id="randomColorBtn">랜덤 색상</button>
+  <button id="blackTextBtn">검정색</button>
+  <button id="whiteTextBtn">흰색</button>
   <button id="submitBtn">제출</button>
 
   <p id="submittedData">< 제출된 데이터 ></p>
@@ -100,6 +107,10 @@
     const randomColorBtn = document.getElementById('randomColorBtn');
     const submitBtn = document.getElementById('submitBtn');
 
+    const exampleText = document.getElementById('exampleText');
+    const blackTextBtn = document.getElementById('blackTextBtn');
+    const whiteTextBtn = document.getElementById('whiteTextBtn');
+
     // 색상 값 변수 초기화
     let currentColor = { r: 0, g: 0, b: 0 };
 
@@ -123,6 +134,21 @@
     randomColorBtn.addEventListener('click', () => {
         currentColor = getRandomColor();
         updateColorDisplay(currentColor);
+    });
+
+    // 텍스트 색 초기값
+    let isBlack = true;
+
+    // 검정색 버튼 클릭 이벤트
+    blackTextBtn.addEventListener('click', () => {
+      exampleText.style.color = 'black';
+      isBlack = true; // 검정색으로 설정
+    });
+
+    // 흰색 버튼 클릭 이벤트
+    whiteTextBtn.addEventListener('click', () => {
+      exampleText.style.color = 'white';
+      isBlack = false; // 흰색으로 설정
     });
 
     // "제출" 버튼 클릭 이벤트
@@ -177,7 +203,8 @@
                 desc2: "Null",
                 desc4: "Null",
                 hash: "Null",
-                name: "Null"
+                name: "Null",
+                black: isBlack,
             })
             .then(() => {
                 alert("정상적으로 저장되었습니다.");
