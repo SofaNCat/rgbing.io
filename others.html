@@ -249,25 +249,29 @@
 
                 // 좋아요 버튼 클릭 이벤트 추가
                 likeBtn.addEventListener("click", async () => {
-                    const isLiked = likeBtn.textContent === "❤️";
-                    const newLikeCount = isLiked ? (like || 0) - 1 : (like || 0) + 1;
-
-                    // UI 업데이트
-                    likeBtn.textContent = isLiked ? "🤍" : "❤️";
-                    likeCountSpan.textContent = newLikeCount;
-
                     try {
+                        // 현재 좋아요 상태 가져오기
+                        const likeSnapshot = await firebase.database().ref(`posts/${today}/${postId}`).once("value");
+                        const postData = likeSnapshot.val();
+
+                        const currentLikes = postData.like || 0; // 현재 좋아요 수
+                        const isLiked = likeBtn.textContent === "❤️"; // 현재 좋아요 상태
+
+                        const updatedLikes = isLiked ? currentLikes - 1 : currentLikes + 1; // 좋아요 수 계산
+
+                        // UI 업데이트
+                        likeBtn.textContent = isLiked ? "🤍" : "❤️";
+                        likeCountSpan.textContent = updatedLikes;
+
                         // Firebase 업데이트
+                        await firebase.database().ref(`posts/${today}/${postId}`).update({ like: updatedLikes });
                         await firebase.database().ref(`posts/${today}/${postId}/likes/${userId}`).set(!isLiked);
-                        await firebase.database().ref(`posts/${today}/${postId}`).update({
-                            like: newLikeCount
-                        });
                     } catch (error) {
                         console.error("좋아요 업데이트 오류:", error);
-                        likeBtn.textContent = isLiked ? "❤️" : "🤍";
-                        likeCountSpan.textContent = like || 0;
+                        alert("좋아요 업데이트 중 문제가 발생했습니다. 다시 시도해주세요.");
                     }
                 });
+
             });
         }
 
