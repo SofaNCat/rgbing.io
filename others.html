@@ -121,6 +121,11 @@
                 redValue = colorData.red;
                 blueValue = colorData.blue;
                 greenValue = colorData.green;
+
+                // 텍스트 색상 변경
+                const isBlack = colorData.black; // Firebase에서 'black' 값 가져오기
+                updateTextColor(isBlack);
+
                 setColorOfTheDay();
             });
         };
@@ -128,6 +133,15 @@
             // CSS 변수로 적용
             document.documentElement.style.setProperty('--random-color', `RGB(${redValue}, ${greenValue}, ${blueValue})`);
         };
+
+        function updateTextColor(isBlack) {
+            const colorTextElement = document.querySelector('.color-text');
+            if (isBlack) {
+                colorTextElement.style.color = 'black';
+            } else {
+                colorTextElement.style.color = 'white';
+            }
+        }
 
         const postListDiv = document.getElementById("post-list");
 
