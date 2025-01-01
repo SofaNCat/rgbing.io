@@ -8,7 +8,7 @@
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
 
-    <title>하루글</title>
+    <title>RGBing(알지빙)</title>
     <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@200..900&display=swap" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
 
@@ -125,6 +125,11 @@
                 redValue = colorData.red;
                 blueValue = colorData.blue;
                 greenValue = colorData.green;
+
+                // 텍스트 색상 변경
+                const isBlack = colorData.black; // Firebase에서 'black' 값 가져오기
+                updateTextColor(isBlack);
+
                 setColorOfTheDay();
             });
         };
@@ -132,6 +137,14 @@
             // CSS 변수로 적용
             document.documentElement.style.setProperty('--random-color', `RGB(${redValue}, ${greenValue}, ${blueValue})`);
         };
+        function updateTextColor(isBlack) {
+            const colorTextElement = document.querySelector('.color-text');
+            if (isBlack) {
+                colorTextElement.style.color = 'black';
+            } else {
+                colorTextElement.style.color = 'white';
+            }
+        }
 
         document.getElementById("saveButton").addEventListener("click", () => {
             const title = document.getElementById("titleInput").value;
