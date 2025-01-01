@@ -204,8 +204,13 @@
                 // 오늘 올라온 게시물 수를 구하기
                 firebase.database().ref(postsPath).once("value").then((snapshot) => {
                     const posts = snapshot.val() || {};
-                    const postCount = Object.keys(posts).length; // 오늘 올라온 게시물 수
-                    const newPostId = postCount + 1; // 새 게시물 번호
+                    const keys = Object.keys(posts);
+
+                    // 가장 큰 번호를 찾아 +1
+                    let newPostId = 1; // 기본값: 1
+                    if (keys.length > 0) {
+                        newPostId = Math.max(...keys.map(Number)) + 1;
+                    }
 
                     // 줄바꿈을 <br>로 변환
                     const formattedContent = textInput.replace(/\n/g, "<br>");
