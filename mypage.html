@@ -294,17 +294,22 @@
                 cardDiv.appendChild(likesDiv);
                 postListDiv.appendChild(cardDiv);
 
-                // 삭제 버튼 추가
-                const deleteDiv = document.createElement("div");
-                deleteDiv.className = "row delete";
-                const deleteButton = document.createElement("button");
-                deleteButton.className = "delete-button";
-                deleteButton.textContent = "삭제";
-                deleteDiv.appendChild(deleteButton);
-                cardDiv.appendChild(deleteDiv);
-
-                // 삭제 버튼 이벤트 추가
-                deleteButton.addEventListener("click", () => deletePost(year, month, day, post.postId));
+                // 카드 클릭 시 삭제 이벤트 추가
+                cardDiv.addEventListener("click", () => {
+                    if (confirm("이 글을 삭제하시겠습니까?")) {
+                        const postPath = `posts/${year}/${month}/${day}/${post.postId}`;
+                        firebase.database().ref(postPath).remove()
+                            .then(() => {
+                                alert("글이 성공적으로 삭제되었습니다.");
+                                // 삭제 후 다시 글 목록 불러오기
+                                loadUserPosts();
+                            })
+                            .catch(error => {
+                                console.error("글 삭제 중 오류 발생:", error);
+                                alert("글 삭제 중 오류가 발생했습니다. 다시 시도해주세요.");
+                            });
+                    }
+                });
 
                 // Firebase에서 좋아요 상태 확인 후 버튼 업데이트
                 firebase.database().ref(`posts/${year}/${month}/${day}/${post.postId}/likes/${userId}`).once("value", (snapshot) => {
@@ -314,37 +319,26 @@
 
                 // 좋아요 버튼 클릭 이벤트 추가
                 likeBtn.addEventListener("click", async () => {
-                    const currentLiked = likeBtn.textContent === "❤️";
-                    const currentLikeCount = parseInt(likeCountSpan.textContent, 10) || 0;
-                    const newLikedState = !currentLiked;
-                    const newLikeCount = newLikedState ? currentLikeCount + 1 : currentLikeCount - 1;
-
-                    // UI 즉시 업데이트
-                    likeBtn.textContent = newLikedState ? "❤️" : "🤍";
-                    likeCountSpan.textContent = newLikeCount;
-
                     try {
-                        // 사용자별 좋아요 상태 저장
-                        await firebase.database().ref(`posts/${year}/${month}/${day}/${post.postId}/likes/${userId}`).set(newLikedState);
+                        // 현재 좋아요 상태 가져오기
+                        const likeSnapshot = await firebase.database().ref(`posts/${today}/${post.postId}`).once("value");
+                        const postData = likeSnapshot.val();
 
-                        // 전체 좋아요 수 계산
-                        const likesSnapshot = await firebase.database().ref(`posts/${year}/${month}/${day}/${post.postId}/likes`).once("value");
-                        const likes = likesSnapshot.val() || {};
-                        const totalLikes = Object.values(likes).filter((liked) => liked).length;
+                        const currentLikes = postData.like || 0; // 현재 좋아요 수
+                        const isLiked = likeBtn.textContent === "❤️"; // 현재 좋아요 상태
 
-                        // Firebase에 전체 좋아요 수 업데이트
-                        await firebase.database().ref(`posts/${year}/${month}/${day}/${post.postId}`).update({
-                            like: totalLikes,
-                        });
+                        const updatedLikes = isLiked ? currentLikes - 1 : currentLikes + 1; // 좋아요 수 계산
 
-                        // 최종 UI 동기화
-                        likeCountSpan.textContent = totalLikes;
+                        // UI 업데이트
+                        likeBtn.textContent = isLiked ? "🤍" : "❤️";
+                        likeCountSpan.textContent = updatedLikes;
+
+                        // Firebase 업데이트
+                        await firebase.database().ref(`posts/${today}/${post.postId}`).update({ like: updatedLikes });
+                        await firebase.database().ref(`posts/${today}/${post.postId}/likes/${userId}`).set(!isLiked);
                     } catch (error) {
-                        console.error("좋아요 처리 중 오류 발생:", error);
-
-                        // 오류 발생 시 UI 롤백
-                        likeBtn.textContent = currentLiked ? "❤️" : "🤍";
-                        likeCountSpan.textContent = currentLikeCount;
+                        console.error("좋아요 업데이트 오류:", error);
+                        alert("좋아요 업데이트 중 문제가 발생했습니다. 다시 시도해주세요.");
                     }
                 });
             });
