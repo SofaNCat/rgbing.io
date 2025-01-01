@@ -1,0 +1,425 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style_keep.css">
+
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
+
+    <title>하루글</title>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@200..900&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
+
+</head>
+<body>
+    <div class="menu-container">
+        <div id="menu-toggle" class="menu-button">☰</div>
+    </div>
+    <div id="side-menu" class="side-menu">
+        <div class="side-menu-header">
+            <div id="menu-close" class="menu-close">×</div>
+        </div>
+        <div class="menu-list">
+            <div class="menu-category">
+                <li onclick="window.location.href='index.html'">🏠 홈으로</li>
+            </div>
+            <div class="menu-category">
+                <h4>🎮 미니 게임</h4>
+                <ul>
+                    <li onclick="window.location.href='rgbing.html'">색 맞추기</li>
+                    <li onclick="window.location.href='gradation.html'">그라데이션</li>
+                    <li onclick="window.location.href='whack.html'">두더지 잡기</li>
+                </ul>
+            </div>
+            <div class="menu-category">
+                <h4>🎨 색 기록장</h4>
+                <ul>
+                    <li onclick="goCollection()">색 컬렉션</li>
+                    <li onclick="window.location.href='month.html'">과거의 색 기록</li>
+                </ul>
+            </div>
+            <div class="menu-category">
+                <h4>✏ 색과 글</h4>
+                <ul>
+                    <li onclick="window.location.href='login.html'">오늘의 글</li>
+                </ul>
+            </div>
+            <div class="menu-category">
+                <h4>📌 기타 링크</h4>
+                <ul>
+                    <li onclick="goInsta()">인스타그램</li>
+                    <li onclick="goBlog()">공식 블로그</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <div class="option-box">
+        <button class="music-button" onclick="window.location.href='keep.html'">🩷</button>
+        <button class="music-button" onclick="window.location.href='mypage.html'">👤</button>
+    </div>
+    
+    <div class="title">내가 작성한 글</div>
+    <div class="sort-options">
+        <label for="sortCriteria">정렬 기준:</label>
+        <select id="sortCriteria" onchange="updateSort()">
+            <option value="latest">최신순</option>
+            <option value="oldest">오래된순</option>
+            <option value="mostLiked">좋아요 많은 순</option>
+        </select>
+    </div>
+    <div class="container" id="post-list">
+        <!-- 좋아요 한 글들이 표시될 자리 -->
+    </div>
+
+    <script>
+        // Firebase 초기화
+        const firebaseConfig = {
+            apiKey: "AIzaSyCyyqlzjApUgvJyysZKJIfY4lVz-lWmyEM",
+            authDomain: "rgbing-3a593.firebaseapp.com",
+            projectId: "rgbing-3a593",
+            storageBucket: "rgbing-3a593.firebasestorage.app",
+            messagingSenderId: "503895940241",
+            appId: "1:503895940241:web:5e42593e93572563ac3330",
+            measurementId: "G-RTREG5QN0D"
+        };
+        firebase.initializeApp(firebaseConfig);
+        const database = firebase.database();
+
+        const today = new Date().toLocaleDateString("ko-KR", {
+            year: "numeric",
+            month: "2-digit",
+            day: "2-digit",
+            timeZone: "Asia/Seoul"
+        }).replace(/\./g, "/").replace(/\s/g, "").replace(/\/$/, "");
+
+        const postListDiv = document.getElementById("post-list");
+        const userId = localStorage.getItem("dailyWrite_user"); // 사용자 ID 가져오기
+        console.log(userId)
+
+        let userPosts = []; // 좋아요한 글을 저장할 배열
+
+        // 사용자가 좋아요한 글 가져오기
+        function loadUserPosts() {
+            firebase.database().ref("posts").once("value").then((snapshot) => {
+                const postsByYear = snapshot.val();
+                userPosts = []; // 초기화
+                postListDiv.innerHTML = ""; // 기존 내용 초기화
+                let hasWritten = false;
+
+                // 모든 연도 순회
+                for (const year in postsByYear) {
+                    const postsByMonth = postsByYear[year];
+
+                    // 모든 월 순회
+                    for (const month in postsByMonth) {
+                        const postsByDay = postsByMonth[month];
+
+                        // 모든 일 순회
+                        for (const day in postsByDay) {
+                            const posts = postsByDay[day];
+
+                            // 모든 글 순회
+                            for (const postId in posts) {
+                                const post = posts[postId];
+
+                                // 작성자 확인
+                                if (post.user === userId) {
+                                    hasWritten = true;
+                                    userPosts.push({
+                                        ...post,
+                                        postId,
+                                        date: `${year}/${month}/${day}` // 날짜 정보 추가
+                                    });     
+                                }
+                            }
+                        }
+                    }
+                }
+
+                if (!hasWritten) {
+                    postListDiv.innerHTML = `
+                        <div style="text-align: center; font-size: 18px; color: #999; padding: 20px;">
+                            아직 작성한 글이 없습니다.
+                        </div>
+                    `;
+                }
+
+                // 기본 정렬(최신순)
+                sortUserPosts('latest');
+            }).catch((error) => {
+                console.error("작성한 글 불러오기 오류:", error);
+                alert("작성한 글을 불러오는 중 오류가 발생했습니다.");
+            });
+        }
+
+        // 좋아요한 글 정렬 업데이트
+        function updateSort() {
+            const sortCriteria = document.getElementById("sortCriteria").value; // 선택한 정렬 기준 가져오기
+            sortUserPosts(sortCriteria);
+        }
+
+        // 정렬 기준에 따라 정렬 및 렌더링
+        function sortUserPosts(criteria) {
+            // 정렬
+            userPosts.sort((a, b) => {
+                if (criteria === 'latest') {
+                    return new Date(b.date + ' ' + b.time) - new Date(a.date + ' ' + a.time); // 최신순
+                } else if (criteria === 'oldest') {
+                    return new Date(a.date + ' ' + a.time) - new Date(b.date + ' ' + b.time); // 오래된 순
+                } else if (criteria === 'mostLiked') {
+                    return b.like - a.like; // 좋아요 많은 순
+                }
+            });
+
+            // 렌더링
+            renderUserPosts();
+        }
+
+        // Firebase에서 red, green, blue 값을 가져와 color-div의 배경색 설정
+        function setColorDivBackground(colorDiv, year, month, day) {
+            firebase.database().ref(`color_data/${year}/${month}/${day}`).once("value").then((snapshot) => {
+                const colorData = snapshot.val();
+                if (colorData) {
+                    const { red, green, blue } = colorData;
+                    const backgroundColor = `rgb(${red}, ${green}, ${blue})`;
+                    colorDiv.style.backgroundColor = backgroundColor; // 각 colorDiv의 배경색 설정
+                } else {
+                    console.warn(`color_data/${year}/${month}/${day}에 데이터가 없습니다.`);
+                    colorDiv.style.backgroundColor = "#ccc"; // 데이터가 없을 때 기본값
+                }
+            }).catch((error) => {
+                console.error(`색상 데이터를 가져오는 중 오류 발생:`, error);
+                colorDiv.style.backgroundColor = "#ccc"; // 오류 발생 시 기본값
+            });
+        }
+
+        // 좋아요한 글 렌더링
+        function renderUserPosts() {
+            postListDiv.innerHTML = ""; // 기존 내용 초기화
+
+            if (userPosts.length === 0) {
+                postListDiv.innerHTML = `
+                    <div style="text-align: center; font-size: 18px; color: #999; padding: 20px;">
+                        아직 작성한 글이 없습니다.
+                    </div>
+                `;
+                return;
+            }
+
+            userPosts.forEach(post => {
+                const likeCount = post.like || 0;
+
+                // 날짜 정보 분리
+                const [year, month, day] = post.date.split("/");
+                
+                // 카드 요소 생성
+                const cardDiv = document.createElement("div");
+                cardDiv.className = "card";
+
+                const rowDiv = document.createElement("div");
+                rowDiv.className = "row";
+                rowDiv.innerHTML = `<p></p><p>${year}/${month}/${day} ${post.time}</p>`;
+                cardDiv.appendChild(rowDiv);
+
+                const centerRowDiv = document.createElement("div");
+                centerRowDiv.className = "row center";
+                centerRowDiv.innerHTML = `<h3>${post.title}</h3>`;
+                cardDiv.appendChild(centerRowDiv);
+
+                const colorDiv = document.createElement("div");
+                colorDiv.className = "color-div";
+                cardDiv.appendChild(colorDiv);
+
+                // Firebase에서 색상 데이터를 가져와 설정
+                setColorDivBackground(colorDiv, year, month, day);
+
+                const contentDiv = document.createElement("div");
+                contentDiv.className = "content";
+
+                // <br> 태그를 줄바꿈(\n)으로 변환
+                const sanitizedContent = post.content.replace(/<br\s*\/?>/g, "\n");
+
+                // 텍스트를 줄 단위로 나누기
+                const lines = sanitizedContent.split("\n");
+                let limitedContent = sanitizedContent;
+
+                // 조건 1: 글자 수가 200자를 초과하는 경우
+                if (sanitizedContent.length > 200) {
+                    limitedContent = sanitizedContent.substring(0, 200) + "...";
+                }
+
+                // 조건 2: 줄 수가 6줄을 초과하는 경우
+                if (lines.length > 6) {
+                    limitedContent = lines.slice(0, 6).join("\n") + "\n...";
+                }
+
+                // 초기 상태로 짧은 텍스트 설정
+                contentDiv.textContent = limitedContent;
+
+                // 토글 상태 변수 추가
+                let isExpanded = false;
+
+                // 클릭 시 긴 글/짧은 글 토글
+                contentDiv.addEventListener("click", () => {
+                    isExpanded = !isExpanded; // 토글 상태 변경
+                    if (isExpanded) {
+                        contentDiv.textContent = sanitizedContent; // 긴 글 표시
+                    } else if (sanitizedContent.split("\n").length > 6) {
+                        // 줄 수가 6줄을 초과하는 경우
+                        contentDiv.textContent = sanitizedContent.split("\n").slice(0, 6).join("\n") + "\n...";
+                    } else {
+                        // 글자 수 200자 미만이고 6줄 이하인 경우
+                        contentDiv.textContent = sanitizedContent;
+                    }
+                });
+                cardDiv.appendChild(contentDiv);
+
+                const likesDiv = document.createElement("div");
+                likesDiv.className = "row likes";
+
+                const likeBtn = document.createElement("button");
+                likeBtn.style.background = "none";
+                likeBtn.style.border = "none";
+                likeBtn.style.cursor = "pointer";
+                likeBtn.textContent = "❤️"; // 기본 상태
+                likesDiv.appendChild(likeBtn);
+
+                const likeCountSpan = document.createElement("span");
+                likeCountSpan.textContent = likeCount;
+                likesDiv.appendChild(likeCountSpan);
+
+                cardDiv.appendChild(likesDiv);
+                postListDiv.appendChild(cardDiv);
+
+                // 삭제 버튼 추가
+                const deleteDiv = document.createElement("div");
+                deleteDiv.className = "row delete";
+                const deleteButton = document.createElement("button");
+                deleteButton.className = "delete-button";
+                deleteButton.textContent = "삭제";
+                deleteDiv.appendChild(deleteButton);
+                cardDiv.appendChild(deleteDiv);
+
+                // 삭제 버튼 이벤트 추가
+                deleteButton.addEventListener("click", () => deletePost(year, month, day, post.postId));
+
+                // Firebase에서 좋아요 상태 확인 후 버튼 업데이트
+                firebase.database().ref(`posts/${year}/${month}/${day}/${post.postId}/likes/${userId}`).once("value", (snapshot) => {
+                    const isLiked = snapshot.val() || false;
+                    likeBtn.textContent = isLiked ? "❤️" : "🤍";
+                });
+
+                // 좋아요 버튼 클릭 이벤트 추가
+                likeBtn.addEventListener("click", async () => {
+                    const currentLiked = likeBtn.textContent === "❤️";
+                    const currentLikeCount = parseInt(likeCountSpan.textContent, 10) || 0;
+                    const newLikedState = !currentLiked;
+                    const newLikeCount = newLikedState ? currentLikeCount + 1 : currentLikeCount - 1;
+
+                    // UI 즉시 업데이트
+                    likeBtn.textContent = newLikedState ? "❤️" : "🤍";
+                    likeCountSpan.textContent = newLikeCount;
+
+                    try {
+                        // 사용자별 좋아요 상태 저장
+                        await firebase.database().ref(`posts/${year}/${month}/${day}/${post.postId}/likes/${userId}`).set(newLikedState);
+
+                        // 전체 좋아요 수 계산
+                        const likesSnapshot = await firebase.database().ref(`posts/${year}/${month}/${day}/${post.postId}/likes`).once("value");
+                        const likes = likesSnapshot.val() || {};
+                        const totalLikes = Object.values(likes).filter((liked) => liked).length;
+
+                        // Firebase에 전체 좋아요 수 업데이트
+                        await firebase.database().ref(`posts/${year}/${month}/${day}/${post.postId}`).update({
+                            like: totalLikes,
+                        });
+
+                        // 최종 UI 동기화
+                        likeCountSpan.textContent = totalLikes;
+                    } catch (error) {
+                        console.error("좋아요 처리 중 오류 발생:", error);
+
+                        // 오류 발생 시 UI 롤백
+                        likeBtn.textContent = currentLiked ? "❤️" : "🤍";
+                        likeCountSpan.textContent = currentLikeCount;
+                    }
+                });
+            });
+        }
+
+        // 글 삭제 함수 추가
+        function deletePost(year, month, day, postId) {
+            if (confirm("이 글을 삭제하시겠습니까?")) {
+                const postPath = `posts/${year}/${month}/${day}/${postId}`;
+                firebase.database().ref(postPath).remove()
+                    .then(() => {
+                        alert("글이 성공적으로 삭제되었습니다.");
+                        // 삭제 후 다시 불러오기
+                        loadUserPosts();
+                    })
+                    .catch(error => {
+                        console.error("글 삭제 중 오류 발생:", error);
+                        alert("글 삭제 중 오류가 발생했습니다. 다시 시도해주세요.");
+                    });
+            }
+        }
+
+        // 페이지 로드 시 좋아요한 글 불러오기
+        document.addEventListener("DOMContentLoaded", loadUserPosts);
+
+        const menuToggle = document.getElementById("menu-toggle");
+        const sideMenu = document.getElementById("side-menu");
+        const menuClose = document.getElementById("menu-close");
+
+        menuToggle.addEventListener("click", () => {
+            sideMenu.style.left = "0";
+            menuToggle.style.display = "none"; // 메뉴 버튼 숨기기
+        });
+
+        menuClose.addEventListener("click", () => {
+            sideMenu.style.left = "-250px";
+            menuToggle.style.display = "block";
+        });
+
+        function goCollection() {
+            let userName = prompt("사용자 ID를 입력해주세요:");
+            if(userName != null) {
+                // 사용자 ID가 이미 존재하는지 확인
+                const userRef = database.ref('users/' + userName);
+                userRef.once('value', function(snapshot) {
+                    if (snapshot.exists()) {
+                        let userPass = prompt("사용자 비밀번호를 입력해주세요:");
+                        const userRef2 = database.ref('users/' + userName + '/password');
+                        userRef2.once('value', function(snapshot) {
+                            if (snapshot.val() == userPass) {
+                                if(userName == '관리자') {
+                                    localStorage.setItem('userName', userName);
+                                    window.location.href = 'collection_manager.html';
+                                }
+                                else {
+                                    localStorage.setItem('userName', userName);
+                                    window.location.href = 'collection.html';
+                                }
+                            } else {
+                                alert("비밀번호가 틀렸습니다.");
+                            }
+                        });
+                    } else {
+                        alert("존재하지 않는 ID 입니다.");
+                    }
+                });
+            }
+            else alert("취소되었습니다.");
+        }
+        function goInsta() {
+            window.location.href = 'https://www.instagram.com/sofancat_com/profilecard/?igsh=MXI1ZDNqNjExNTJ4dQ==';
+        }
+        function goBlog() {
+            window.location.href = 'https://rgbing.tistory.com/';
+        }
+    </script>
+</body>
+</html>

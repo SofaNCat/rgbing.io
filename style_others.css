@@ -1,0 +1,260 @@
+/* 기본 스타일 */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+body {
+    font-family: "Noto Serif KR", serif;
+    background: linear-gradient(120deg, #e0e7ff, #fef9e7);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    /*justify-content: center;*/
+    color: #333;
+    margin: 0;
+    min-height: 100vh;
+}
+button {
+    font-family: "Noto Serif KR", serif;
+}
+button:hover {
+    background: rgba(152, 152, 152, 0.9);
+}
+
+/* 카테고리 상자 */
+.menu-container {
+    position: fixed;
+    top: 25px;
+    left: 20px;
+    z-index: 1100; /* 메뉴보다 위에 위치 */
+}
+.menu-button {
+    font-size: 24px;
+    background-color: transparent;
+    border: none;
+    cursor: pointer;
+    z-index: 1100; /* 메뉴보다 위에 위치 */
+    color: #4a4a4a; /* 버튼 색상 */
+}
+.menu-button:hover {
+    background-color: transparent;
+}
+.side-menu {
+    font-family: Arial, sans-serif;
+    position: fixed;
+    top: 0;
+    left: -250px;
+    width: 250px;
+    height: 100%;
+    background-color: white; /* 어울리는 색상으로 변경 */
+    color: white;
+    box-shadow: 2px 0 5px rgba(0, 0, 0, 0.5);
+    overflow-y: auto;
+    transition: left 0.3s ease-in-out;
+    z-index: 999;
+}
+.side-menu-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px;
+    background-color: #eaeaea;
+    color: #4a4a4a;
+}
+.menu-close {
+    font-size: 24px;
+    background-color: transparent;
+    border: none;
+    color: #4a4a4a;
+    cursor: pointer;
+}
+.menu-close:hover {
+    background-color: transparent;
+}
+.menu-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+.menu-list li {
+    padding: 15px 10px;
+    cursor: pointer;
+    border-bottom: 1px solid #e6e6e6;
+    color: #4a4a4a;
+    transition: background-color 0.3s ease-in-out;
+    font-size: 13px;
+}
+.menu-list li:hover {
+    background-color: #dbdbdb;
+}
+.menu-category {
+    margin-bottom: 20px;
+    font-weight: bold;
+}
+.menu-category h4 {
+    margin: 0;
+    padding: 10px 10px;
+    background-color: #eaeaea;
+    color: #4a4a4a;
+    font-size: 16px;
+    cursor: default; /* 클릭 불가능하게 설정 */
+    font-size: 14px;
+}
+.menu-category ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+.menu-category ul li {
+    padding: 10px;
+    background-color: white; /* 배경색에 어울리는 색상 */
+    color: #4a4a4a;
+    border-bottom: 1px solid #e6e6e6; /* 경계선 */
+    cursor: pointer;
+    transition: background-color 0.3s;
+    font-size: 13px;
+}
+.menu-category ul li:hover {
+    background-color: #dbdbdb; /* 호버 시 색상 */
+}
+
+/* 옵션 상자 */
+.option-box {
+    width: 100%;
+    max-width: 700px;
+    margin-top: 20px;
+    margin-bottom: -10px;
+}
+.music-button {
+    margin-right: 20px;
+    float: right;
+    width: 35px;
+    height: 35px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: bold;
+    background: #dddddd;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.sort-options {
+    margin: 20px 0;
+    margin-top: -10px;
+    text-align: center;
+    font-size: 15px;
+}
+#sortCriteria {
+    padding: 5px 10px;
+    font-size: 16px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+.day {
+    margin-top: 30px;
+    font-size: 14px;
+    font-weight: bold;
+}
+.title {
+    margin-top: 5px;
+    margin-bottom: 10px;
+    font-weight: bold;
+}
+.color-box {
+    width: 100%;
+    max-width: 400px;
+    height: 110px;
+    background-color: var(--random-color);
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    margin-bottom: 30px;
+    margin-top: 10px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    cursor: pointer;
+}
+.color-box:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+}
+.writeBtn {
+    background-color: #ae978b;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    font-size: 14px;
+    border-radius: 5px;
+    font-weight: bold;
+    cursor: pointer;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    transition: background-color 0.3s ease;
+    margin-bottom: 20px;
+    margin-top: -10px;
+}
+.writeBtn:hover {
+    background-color: #c2afa4;
+}
+.container {
+    width: 90%;
+    max-width: 800px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    justify-content: center;
+    margin-bottom: 110px;
+}
+.card {
+    background: white;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    width: 100%;
+    max-width: 400px;
+    padding: 15px;
+    box-sizing: border-box;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+.card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+}
+.card .row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+    font-size: 15px;
+}
+.card .row.center {
+    justify-content: center;
+    font-size: 17px;
+}
+.card .row p {
+    margin: 0;
+}
+.card .row.likes {
+    justify-content: flex-start;
+    color: #f78fb3;
+    font-weight: bold;
+    float: right;
+    margin-bottom: 0px;
+}
+.card .content {
+    margin: 10px 0;
+    line-height: 1.5;
+    color: #555;
+    margin-bottom: 40px;
+    font-size: 15px;
+    cursor: pointer;
+    white-space: pre-wrap; /* 줄바꿈과 공백을 유지 */
+    word-wrap: break-word; /* 긴 단어 줄바꿈 */
+}
+.card .color-div {
+    margin-top: 15px;
+    width: 100%;
+    max-width: 650px;
+    height: 3px;
+    background: var(--random-color);
+}

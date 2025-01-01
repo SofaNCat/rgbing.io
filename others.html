@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style_others.css">
+
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
+    
+    <title>하루글</title>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@200..900&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
+
+</head>
+<body>
+    <div class="menu-container">
+        <div id="menu-toggle" class="menu-button">☰</div>
+    </div>
+    <div id="side-menu" class="side-menu">
+        <div class="side-menu-header">
+            <div id="menu-close" class="menu-close">×</div>
+        </div>
+        <div class="menu-list">
+            <div class="menu-category">
+                <li onclick="window.location.href='index.html'">🏠 홈으로</li>
+            </div>
+            <div class="menu-category">
+                <h4>🎮 미니 게임</h4>
+                <ul>
+                    <li onclick="window.location.href='rgbing.html'">색 맞추기</li>
+                    <li onclick="window.location.href='gradation.html'">그라데이션</li>
+                    <li onclick="window.location.href='whack.html'">두더지 잡기</li>
+                </ul>
+            </div>
+            <div class="menu-category">
+                <h4>🎨 색 기록장</h4>
+                <ul>
+                    <li onclick="goCollection()">색 컬렉션</li>
+                    <li onclick="window.location.href='month.html'">과거의 색 기록</li>
+                </ul>
+            </div>
+            <div class="menu-category">
+                <h4>✏ 색과 글</h4>
+                <ul>
+                    <li onclick="window.location.href='login.html'">오늘의 글</li>
+                </ul>
+            </div>
+            <div class="menu-category">
+                <h4>📌 기타 링크</h4>
+                <ul>
+                    <li onclick="goInsta()">인스타그램</li>
+                    <li onclick="goBlog()">공식 블로그</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <div class="option-box">
+        <button class="music-button" onclick="window.location.href='keep.html'">🩷</button>
+        <button class="music-button" onclick="window.location.href='mypage.html'">👤</button>
+    </div>
+
+    <div class="day" id="day"></div>
+    <!--<div class="title">오늘의 색</div>-->
+    <div id="color-box" class="color-box" onclick="go_write()">
+        <div class="color-text"><b>오늘의 당신은 어떤가요</b></div>
+    </div>
+    <div class="sort-options">
+        <label for="sortCriteria">정렬 기준:</label>
+        <select id="sortCriteria" onchange="updateSort()">
+            <option value="latest">최신순</option>
+            <option value="oldest">오래된순</option>
+            <option value="mostLiked">좋아요 많은 순</option>
+        </select>
+    </div>
+    <div class="container" id="post-list">
+        <!-- 카드들이 표시될 자리 -->
+    </div>
+      
+    <script>
+        // Firebase 초기화
+        const firebaseConfig = {
+            apiKey: "AIzaSyCyyqlzjApUgvJyysZKJIfY4lVz-lWmyEM",
+            authDomain: "rgbing-3a593.firebaseapp.com",
+            projectId: "rgbing-3a593",
+            storageBucket: "rgbing-3a593.firebasestorage.app",
+            messagingSenderId: "503895940241",
+            appId: "1:503895940241:web:5e42593e93572563ac3330",
+            measurementId: "G-RTREG5QN0D"
+        };
+        firebase.initializeApp(firebaseConfig);
+        const database = firebase.database();
+
+        const today = new Date().toLocaleDateString("ko-KR", {
+            year: "numeric",
+            month: "2-digit",
+            day: "2-digit",
+            timeZone: "Asia/Seoul"
+        }).replace(/\./g, "/").replace(/\s/g, "").replace(/\/$/, "");
+
+        const dayDiv = document.getElementById("day");
+
+        dayDiv.innerHTML = today
+
+        let redValue, greenValue, blueValue;
+
+        // 초기화 시 Firebase에서 색상 가져오기
+        window.onload = () => {
+            loadData();
+        };
+
+        function loadData() {
+            // 데이터를 불러올 참조를 가져옵니다.
+            const colorDataRef = database.ref('/color_data/' + today);
+            colorDataRef.once('value', (snapshot) => {
+                // 데이터를 JSON 객체로 가져옵니다.
+                const colorData = snapshot.val();
+
+                // 원하는 값을 추출합니다.
+                redValue = colorData.red;
+                blueValue = colorData.blue;
+                greenValue = colorData.green;
+                setColorOfTheDay();
+            });
+        };
+        function setColorOfTheDay() {
+            // CSS 변수로 적용
+            document.documentElement.style.setProperty('--random-color', `RGB(${redValue}, ${greenValue}, ${blueValue})`);
+        };
+
+        const postListDiv = document.getElementById("post-list");
+
+        // 글 정렬 및 렌더링
+        function updateSort() {
+            const sortCriteria = document.getElementById("sortCriteria").value; // 선택한 정렬 기준 가져오기
+            const postsPath = `posts/${today}`; // 오늘 날짜의 경로
+            const userId = localStorage.getItem('dailyWrite_user') || "guest"; // 사용자 ID
+
+            firebase.database().ref(postsPath).once("value").then((snapshot) => {
+                const posts = snapshot.val();
+                if (!posts || Object.keys(posts).length === 0) {
+                    postListDiv.innerHTML = `
+                        <div class="no-posts" style="text-align: center; font-size: 18px; color: #999; padding: 20px;">
+                            아직 글이 없습니다!<br>오늘의 색상으로 글을 작성해 보세요.
+                        </div>
+                    `;
+                    return;
+                }
+
+                // 글 목록을 배열로 변환
+                const postsArray = Object.entries(posts).map(([postId, post]) => ({
+                    postId,
+                    ...post
+                }));
+
+                // 정렬 기준에 따라 정렬
+                if (sortCriteria === 'latest') {
+                    postsArray.sort((a, b) => {
+                        const dateA = new Date(`${today} ${a.time}`);
+                        const dateB = new Date(`${today} ${b.time}`);
+                        return dateB - dateA; // 최신순
+                    });
+                } else if (sortCriteria === 'oldest') {
+                    postsArray.sort((a, b) => new Date(a.time) - new Date(b.time)); // 오래된순
+                } else if (sortCriteria === 'mostLiked') {
+                    postsArray.sort((a, b) => (b.like || 0) - (a.like || 0)); // 좋아요 많은 순
+                }
+
+                // 정렬된 글 렌더링
+                renderPosts(postsArray, userId);
+            }).catch((error) => {
+                console.error("글 정렬 중 오류 발생:", error);
+                alert("글 정렬 중 오류가 발생했습니다. 다시 시도해주세요.");
+            });
+        }
+
+        // 글 렌더링 함수
+        function renderPosts(postsArray, userId) {
+            postListDiv.innerHTML = ""; // 기존 글 초기화
+
+            postsArray.forEach(post => {
+                const { postId, title, content, like, time } = post;
+
+                // 카드 요소 생성
+                const cardDiv = document.createElement("div");
+                cardDiv.className = "card";
+
+                const rowDiv = document.createElement("div");
+                rowDiv.className = "row";
+                rowDiv.innerHTML = `<p></p><p>${time}</p>`;
+                cardDiv.appendChild(rowDiv);
+
+                const centerRowDiv = document.createElement("div");
+                centerRowDiv.className = "row center";
+                centerRowDiv.innerHTML = `<h3>${title}</h3>`;
+                cardDiv.appendChild(centerRowDiv);
+
+                const colorDiv = document.createElement("div");
+                colorDiv.className = "color-div";
+                cardDiv.appendChild(colorDiv);
+
+                const contentDiv = document.createElement("div");
+                contentDiv.className = "content";
+
+                const sanitizedContent = content.replace(/<br\s*\/?>/g, "\n");
+                const limitedContent = sanitizedContent.length > 200
+                    ? sanitizedContent.substring(0, 200) + "..."
+                    : sanitizedContent;
+
+                contentDiv.textContent = limitedContent;
+                cardDiv.appendChild(contentDiv);
+
+                const likesDiv = document.createElement("div");
+                likesDiv.className = "row likes";
+
+                const likeBtn = document.createElement("button");
+                likeBtn.style.background = "none";
+                likeBtn.style.border = "none";
+                likeBtn.style.cursor = "pointer";
+                likeBtn.textContent = "🤍";
+                likesDiv.appendChild(likeBtn);
+
+                const likeCountSpan = document.createElement("span");
+                likeCountSpan.textContent = like || 0;
+                likesDiv.appendChild(likeCountSpan);
+
+                cardDiv.appendChild(likesDiv);
+                postListDiv.appendChild(cardDiv);
+
+                // 좋아요 버튼 상태 업데이트
+                firebase.database().ref(`posts/${today}/${postId}/likes/${userId}`).once("value", (snapshot) => {
+                    likeBtn.textContent = snapshot.val() ? "❤️" : "🤍";
+                });
+
+                // 좋아요 버튼 클릭 이벤트 추가
+                likeBtn.addEventListener("click", async () => {
+                    const isLiked = likeBtn.textContent === "❤️";
+                    const newLikeCount = isLiked ? (like || 0) - 1 : (like || 0) + 1;
+
+                    // UI 업데이트
+                    likeBtn.textContent = isLiked ? "🤍" : "❤️";
+                    likeCountSpan.textContent = newLikeCount;
+
+                    try {
+                        // Firebase 업데이트
+                        await firebase.database().ref(`posts/${today}/${postId}/likes/${userId}`).set(!isLiked);
+                        await firebase.database().ref(`posts/${today}/${postId}`).update({
+                            like: newLikeCount
+                        });
+                    } catch (error) {
+                        console.error("좋아요 업데이트 오류:", error);
+                        likeBtn.textContent = isLiked ? "❤️" : "🤍";
+                        likeCountSpan.textContent = like || 0;
+                    }
+                });
+            });
+        }
+
+        function go_write() {
+            const userId = localStorage.getItem('dailyWrite_user') || "guest"; // 사용자 ID
+            const postsPath = `posts/${today}`; // 오늘 날짜 경로
+
+            // Firebase에서 사용자가 오늘 쓴 글이 있는지 확인
+            firebase.database().ref(postsPath).once("value").then((snapshot) => {
+                const posts = snapshot.val();
+                let hasWritten = false;
+
+                if (posts) {
+                    for (const postId in posts) {
+                        if (posts[postId].user === userId) {
+                            hasWritten = true;
+                            break;
+                        }
+                    }
+                }
+
+                if (hasWritten) {
+                    alert("오늘 이미 글을 작성하셨습니다!");
+                } else {
+                    window.location.href = `write.html`;
+                }
+            }).catch((error) => {
+                console.error("글 확인 중 오류 발생:", error);
+                alert("글 확인 중 오류가 발생했습니다. 다시 시도해주세요.");
+            });
+        }
+
+        // 페이지 로드 시 버튼 비활성화 확인
+        document.addEventListener("DOMContentLoaded", () => {
+            const userId = localStorage.getItem('dailyWrite_user') || "guest"; // 사용자 ID
+            const postsPath = `posts/${today}`; // 오늘 날짜 경로
+            const writeButton = document.querySelector(".writeBtn");
+
+            // Firebase에서 사용자가 오늘 쓴 글이 있는지 확인
+            firebase.database().ref(postsPath).once("value").then((snapshot) => {
+                const posts = snapshot.val();
+                let hasWritten = false;
+
+                if (posts) {
+                    for (const postId in posts) {
+                        if (posts[postId].user === userId) {
+                            hasWritten = true;
+                            break;
+                        }
+                    }
+                }
+            }).catch((error) => {
+                console.error("글 확인 중 오류 발생:", error);
+            });
+
+            // 기본 정렬 기준을 최신순으로 설정
+            document.getElementById("sortCriteria").value = "latest";
+            updateSort(); // 최신순 정렬 호출
+        });
+
+        const menuToggle = document.getElementById("menu-toggle");
+        const sideMenu = document.getElementById("side-menu");
+        const menuClose = document.getElementById("menu-close");
+
+        menuToggle.addEventListener("click", () => {
+            sideMenu.style.left = "0";
+            menuToggle.style.display = "none"; // 메뉴 버튼 숨기기
+        });
+
+        menuClose.addEventListener("click", () => {
+            sideMenu.style.left = "-250px";
+            menuToggle.style.display = "block";
+        });
+
+        function goCollection() {
+            let userName = prompt("사용자 ID를 입력해주세요:");
+            if(userName != null) {
+                // 사용자 ID가 이미 존재하는지 확인
+                const userRef = database.ref('users/' + userName);
+                userRef.once('value', function(snapshot) {
+                    if (snapshot.exists()) {
+                        let userPass = prompt("사용자 비밀번호를 입력해주세요:");
+                        const userRef2 = database.ref('users/' + userName + '/password');
+                        userRef2.once('value', function(snapshot) {
+                            if (snapshot.val() == userPass) {
+                                if(userName == '관리자') {
+                                    localStorage.setItem('userName', userName);
+                                    window.location.href = 'collection_manager.html';
+                                }
+                                else {
+                                    localStorage.setItem('userName', userName);
+                                    window.location.href = 'collection.html';
+                                }
+                            } else {
+                                alert("비밀번호가 틀렸습니다.");
+                            }
+                        });
+                    } else {
+                        alert("존재하지 않는 ID 입니다.");
+                    }
+                });
+            }
+            else alert("취소되었습니다.");
+        }
+        function goInsta() {
+            window.location.href = 'https://www.instagram.com/sofancat_com/profilecard/?igsh=MXI1ZDNqNjExNTJ4dQ==';
+        }
+        function goBlog() {
+            window.location.href = 'https://rgbing.tistory.com/';
+        }
+    </script>
+
+</body>
+</html>

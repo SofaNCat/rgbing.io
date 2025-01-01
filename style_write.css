@@ -1,0 +1,240 @@
+body {
+    font-family: "Noto Serif KR", serif;
+    background: linear-gradient(120deg, #e0e7ff, #fef9e7);
+    margin: 0;
+    display: flex;
+    flex-direction: column; /* 세로 배치 설정 */
+    justify-content: flex-start; /* 위쪽 정렬 */
+    align-items: center;
+    min-height: 100vh;
+    color: #4f4f4f;
+    padding: 20px; /* 상하 여백 추가 */
+}
+button {
+  font-family: "Noto Serif KR", serif;
+}
+button:hover {
+  background: rgba(152, 152, 152, 0.9);
+}
+.buttons {
+    font-family: "Noto Serif KR", serif;
+    color: #4a4a4a;
+    color: black;
+    border: none;
+    padding: 10px 20px;
+    font-size: 14px;
+    border-radius: 5px;
+    font-weight: bold;
+    cursor: pointer;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    transition: background-color 0.3s ease;
+    margin-bottom: 10px;
+    margin-top: 5px;
+}
+
+/* 카테고리 상자 */
+.menu-container {
+  position: fixed;
+  top: 25px;
+  left: 20px;
+  z-index: 1100; /* 메뉴보다 위에 위치 */
+}
+.menu-button {
+  font-size: 24px;
+  background-color: transparent;
+  border: none;
+  cursor: pointer;
+  z-index: 1100; /* 메뉴보다 위에 위치 */
+  color: #4a4a4a; /* 버튼 색상 */
+}
+.menu-button:hover {
+  background-color: transparent;
+}
+.side-menu {
+  font-family: Arial, sans-serif;
+  position: fixed;
+  top: 0;
+  left: -250px;
+  width: 250px;
+  height: 100%;
+  background-color: white; /* 어울리는 색상으로 변경 */
+  color: white;
+  box-shadow: 2px 0 5px rgba(0, 0, 0, 0.5);
+  overflow-y: auto;
+  transition: left 0.3s ease-in-out;
+  z-index: 999;
+}
+.side-menu-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px;
+  background-color: #eaeaea;
+  color: #4a4a4a;
+}
+.menu-close {
+  font-size: 24px;
+  background-color: transparent;
+  border: none;
+  color: #4a4a4a;
+  cursor: pointer;
+}
+.menu-close:hover {
+  background-color: transparent;
+}
+.menu-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+.menu-list li {
+  padding: 15px 10px;
+  cursor: pointer;
+  border-bottom: 1px solid #e6e6e6;
+  color: #4a4a4a;
+  transition: background-color 0.3s ease-in-out;
+  font-size: 13px;
+}
+.menu-list li:hover {
+  background-color: #dbdbdb;
+}
+.menu-category {
+  margin-bottom: 20px;
+  font-weight: bold;
+}
+.menu-category h4 {
+  margin: 0;
+  padding: 10px 10px;
+  background-color: #eaeaea;
+  color: #4a4a4a;
+  font-size: 16px;
+  cursor: default; /* 클릭 불가능하게 설정 */
+  font-size: 14px;
+}
+.menu-category ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.menu-category ul li {
+  padding: 10px;
+  background-color: white; /* 배경색에 어울리는 색상 */
+  color: #4a4a4a;
+  border-bottom: 1px solid #e6e6e6; /* 경계선 */
+  cursor: pointer;
+  transition: background-color 0.3s;
+  font-size: 13px;
+}
+.menu-category ul li:hover {
+  background-color: #dbdbdb; /* 호버 시 색상 */
+}
+
+/* 옵션 상자 */
+.option-box {
+  width: 100%;
+  max-width: 700px;
+  margin-top: 20px;
+  margin-bottom: -10px;
+}
+.music-button {
+  margin-right: 20px;
+  float: right;
+  width: 35px;
+  height: 35px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-weight: bold;
+  background: #dddddd;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.notice-box {
+  background: #fff5b7;
+  border: 1px solid #ffec99;
+  padding: 10px;
+  border-radius: 5px;
+  margin-bottom: 15px;
+  font-size: 14px;
+  color: #555;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+.notice-box p {
+  margin: 0;
+  text-align: left;
+}
+
+
+.day {
+  margin-top: 30px;
+  font-size: 14px;
+  font-weight: bold;
+}
+.title {
+  margin-top: 5px;
+  margin-bottom: 10px;
+  font-weight: bold;
+}
+.color-box {
+  width: 100%;
+  max-width: 400px;
+  height: 110px;
+  background-color: var(--random-color);
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  margin-bottom: 30px;
+  margin-top: 10px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.container {
+    background: white;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    width: 100%;
+    max-width: 400px;
+    padding: 15px;
+    box-sizing: border-box;
+    margin-bottom: 110px;
+}
+
+.titleInput, .textInput {
+  font-family: "Noto Serif KR", serif;
+  width: 100%; /* 부모 요소의 너비에 맞춤 */
+  height: 50px; /* 제목 입력창의 고정 높이 */
+  resize: none; /* 크기 조정 비활성화 */
+  padding: 10px;
+  font-size: 16px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  box-sizing: border-box; /* 패딩 포함한 크기 계산 */
+  margin-bottom: 10px; /* 입력창 간 여백 */
+}
+
+/* textInput에 대한 별도 스타일 */
+.textInput {
+  height: 200px; /* 본문 입력창의 고정 높이 */
+}
+
+#preview {
+    margin-top: 20px;
+}
+
+#preview h2 {
+    margin-bottom: 10px;
+}
+
+#textPreview {
+    padding: 10px;
+    background: #f9f9f9;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    min-height: 50px;
+    margin-top: -10px;
+}
+#counter {
+    margin-top: 20px;
+    font-size: 14px;
+    color: #555;
+}

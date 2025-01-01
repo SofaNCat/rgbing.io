@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="description" content="나만의 쿠폰을 만들고 공유해 보세요!">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>쿠퐁 - 나만의 쿠폰 만들기</title>
+    <link rel="icon" href="icon_mini.png" type="image/x-icon">
+    <link rel="shortcut icon" href="icon_mini.png" type="image/x-icon">
+  
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
+
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      margin: 0;
+      background-color: #f9f9f9;
+    }
+    .container {
+      text-align: center;
+      padding: 20px;
+      background-color: white;
+      border-radius: 10px;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+      width: 90%;
+      max-width: 400px;
+    }
+    h1 {
+      margin-bottom: 20px;
+      color: #333;
+    }
+    p {
+      margin-bottom: 20px;
+      color: #666;
+      font-size: 14px;
+    }
+    .input-group {
+      margin-bottom: 0px;
+    }
+    .password {
+        margin-bottom: 5px;
+    }
+    input {
+      width: calc(100% - 20px);
+      padding: 10px;
+      margin-bottom: 10px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      font-size: 14px;
+    }
+    .btn, .passbtn {
+      width: 100%;
+      padding: 10px;
+      background-color: #dddddd;
+      color: black;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 16px;
+      margin-bottom: 20px;
+    }
+    .passbtn {
+        margin-top: -20px;
+    }
+    .btn:hover, .passbtn:hover {
+      background-color: rgba(152, 152, 152, 0.9);
+    }
+    .link {
+      font-size: 14px;
+      color: rgba(152, 152, 152, 0.9);
+      text-decoration: none;
+    }
+    .link:hover {
+      text-decoration: underline;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>회원가입</h1>
+    <form id="signupForm">
+      <div class="input-group">
+        <input type="text" id="userId" placeholder="닉네임" required>
+        <button type="button" id="checkIdBtn" class="btn">중복 확인</button>
+        <p id="idCheckMsg" style="color: red; font-size: 12px;"></p>
+      </div>
+      <div class="input-group">
+        <input type="password" id="password" class="password" placeholder="비밀번호" required>
+      </div>
+      <div class="input-group">
+        <input type="password" id="confirmPassword" class="password" placeholder="비밀번호 확인" required>
+        <p id="passwordCheckMsg" style="color: red; font-size: 12px;"></p>
+      </div>
+      <button type="submit" class="passbtn">회원가입</button>
+    </form>
+    <a href="login.html" class="link">이미 계정이 있나요? 로그인</a>
+  </div>
+
+  <script>
+    // Firebase 초기화
+    const firebaseConfig = {
+      apiKey: "AIzaSyALH2cc2T41m3C8_Bqt98yFP0NJqeTTmKU",
+      authDomain: "coupong-50898.firebaseapp.com",
+      databaseURL: "https://coupong-50898-default-rtdb.firebaseio.com",
+      projectId: "coupong-50898",
+      storageBucket: "coupong-50898.firebasestorage.app",
+      messagingSenderId: "396007126503",
+      appId: "1:396007126503:web:e8caa6aaafb48f54a5b942",
+      measurementId: "G-R2604RJDDV"
+    };
+    const app = firebase.initializeApp(firebaseConfig);
+    const database = firebase.database(app);
+
+    const checkIdBtn = document.getElementById('checkIdBtn');
+    const signupForm = document.getElementById('signupForm');
+    const idCheckMsg = document.getElementById('idCheckMsg');
+    const passwordCheckMsg = document.getElementById('passwordCheckMsg');
+
+    let isIdAvailable = false; // 아이디 중복 확인 결과
+
+    // 아이디 중복 확인
+    checkIdBtn.addEventListener('click', async () => {
+      const userId = document.getElementById('userId').value;
+
+      if (!userId) {
+        idCheckMsg.textContent = "아이디를 입력하세요.";
+        return;
+      }
+
+      const userRef = firebase.database().ref(`users/${userId}`);
+      userRef.once('value', (snapshot) => {
+        if (snapshot.exists()) {
+          idCheckMsg.textContent = "이미 사용 중인 아이디입니다.";
+          isIdAvailable = false;
+        } else {
+          idCheckMsg.textContent = "사용 가능한 아이디입니다.";
+          idCheckMsg.style.color = "green";
+          isIdAvailable = true;
+        }
+      });
+    });
+
+    // 회원가입 처리
+    signupForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+
+      const userId = document.getElementById('userId').value;
+      const password = document.getElementById('password').value;
+      const confirmPassword = document.getElementById('confirmPassword').value;
+
+      if (!isIdAvailable) {
+        alert('아이디 중복 확인을 해주세요.');
+        return;
+      }
+
+      if (password !== confirmPassword) {
+        passwordCheckMsg.textContent = "비밀번호가 일치하지 않습니다.";
+        return;
+      }
+
+      try {
+        // Firebase에 사용자 데이터 저장
+        const userRef = firebase.database().ref(`users/${userId}`);
+        await userRef.set({ password });
+        alert('회원가입 성공! 로그인 페이지로 이동합니다.');
+        window.location.href = 'index.html';
+      } catch (error) {
+        console.error('회원가입 에러:', error);
+        alert('회원가입 중 문제가 발생했습니다.');
+      }
+    });
+  </script>
+</body>
+</html>
