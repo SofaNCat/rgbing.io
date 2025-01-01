@@ -33,15 +33,21 @@
                 <h4>🎮 미니 게임</h4>
                 <ul>
                     <li onclick="window.location.href='rgbing.html'">색 맞추기</li>
-                    <li onclick="goCollection()">┖ 색 컬렉션</li>
                     <li onclick="window.location.href='gradation.html'">그라데이션</li>
                     <li onclick="window.location.href='whack.html'">두더지 잡기</li>
                 </ul>
             </div>
             <div class="menu-category">
-                <h4>🎨 오늘의 색</h4>
+                <h4>🎨 색 기록장</h4>
                 <ul>
+                    <li onclick="goCollection()">색 컬렉션</li>
                     <li onclick="window.location.href='month.html'">과거의 색 기록</li>
+                </ul>
+            </div>
+            <div class="menu-category">
+                <h4>✏ 색과 글</h4>
+                <ul>
+                    <li onclick="window.location.href='login.html'">오늘의 글</li>
                 </ul>
             </div>
             <div class="menu-category">
@@ -115,7 +121,7 @@
             // 오늘이 1일인 경우 메시지 표시
             if (endDay < startDay) {
                 const container = document.getElementById("color-container");
-                container.innerHTML = "<p>오늘은 1일이기 때문에 내일부터 추가가 됩니다!</p>";
+                container.innerHTML = "<p>새로운 한 달이 시작되었습니다.<br>내일부터 과거의 색이 기록됩니다.</p>";
                 return;
             }
 
