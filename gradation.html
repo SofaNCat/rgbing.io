@@ -18,6 +18,7 @@
   <div class="menu-container">
     <div id="menu-toggle" class="menu-button">☰</div>
   </div>
+  <div class="overlay" id="overlay"></div>
   <div id="side-menu" class="side-menu">
       <div class="side-menu-header">
           <div id="menu-close" class="menu-close">×</div>
@@ -331,55 +332,63 @@
     generateNewQuestion();
 
     const menuToggle = document.getElementById("menu-toggle");
-        const sideMenu = document.getElementById("side-menu");
-        const menuClose = document.getElementById("menu-close");
+    const sideMenu = document.getElementById("side-menu");
+    const menuClose = document.getElementById("menu-close");
+    const overlay = document.getElementById('overlay');
 
-        menuToggle.addEventListener("click", () => {
-            sideMenu.style.left = "0";
-            menuToggle.style.display = "none"; // 메뉴 버튼 숨기기
-        });
+    menuToggle.addEventListener("click", () => {
+        sideMenu.style.left = "0";
+        menuToggle.style.display = "none"; // 메뉴 버튼 숨기기
+        overlay.classList.add('active');
+    });
+    menuClose.addEventListener("click", () => {
+        sideMenu.style.left = "-250px";
+        menuToggle.style.display = "block";
+        overlay.classList.remove('active');
+    });
+    // 오버레이 클릭 시 사이드바 닫기
+    overlay.addEventListener('click', () => {
+        sideMenu.style.left = "-250px";
+        menuToggle.style.display = "block";
+        overlay.classList.remove('active');
+    });
 
-        menuClose.addEventListener("click", () => {
-            sideMenu.style.left = "-250px";
-            menuToggle.style.display = "block";
-        });
-
-        function goCollection() {
-            let userName = prompt("사용자 ID를 입력해주세요:");
-            if(userName != null) {
-                // 사용자 ID가 이미 존재하는지 확인
-                const userRef = database.ref('users/' + userName);
-                userRef.once('value', function(snapshot) {
-                    if (snapshot.exists()) {
-                        let userPass = prompt("사용자 비밀번호를 입력해주세요:");
-                        const userRef2 = database.ref('users/' + userName + '/password');
-                        userRef2.once('value', function(snapshot) {
-                            if (snapshot.val() == userPass) {
-                                if(userName == '관리자') {
-                                    localStorage.setItem('userName', userName);
-                                    window.location.href = 'collection_manager.html';
-                                }
-                                else {
-                                    localStorage.setItem('userName', userName);
-                                    window.location.href = 'collection.html';
-                                }
-                            } else {
-                                alert("비밀번호가 틀렸습니다.");
+    function goCollection() {
+        let userName = prompt("사용자 ID를 입력해주세요:");
+        if(userName != null) {
+            // 사용자 ID가 이미 존재하는지 확인
+            const userRef = database.ref('users/' + userName);
+            userRef.once('value', function(snapshot) {
+                if (snapshot.exists()) {
+                    let userPass = prompt("사용자 비밀번호를 입력해주세요:");
+                    const userRef2 = database.ref('users/' + userName + '/password');
+                    userRef2.once('value', function(snapshot) {
+                        if (snapshot.val() == userPass) {
+                            if(userName == '관리자') {
+                                localStorage.setItem('userName', userName);
+                                window.location.href = 'collection_manager.html';
                             }
-                        });
-                    } else {
-                        alert("존재하지 않는 ID 입니다.");
-                    }
-                });
-            }
-            else alert("취소되었습니다.");
+                            else {
+                                localStorage.setItem('userName', userName);
+                                window.location.href = 'collection.html';
+                            }
+                        } else {
+                            alert("비밀번호가 틀렸습니다.");
+                        }
+                    });
+                } else {
+                    alert("존재하지 않는 ID 입니다.");
+                }
+            });
         }
-        function goInsta() {
-            window.location.href = 'https://www.instagram.com/sofancat_com/profilecard/?igsh=MXI1ZDNqNjExNTJ4dQ==';
-        }
-        function goBlog() {
-            window.location.href = 'https://rgbing.tistory.com/';
-        }
+        else alert("취소되었습니다.");
+    }
+    function goInsta() {
+        window.location.href = 'https://www.instagram.com/sofancat_com/profilecard/?igsh=MXI1ZDNqNjExNTJ4dQ==';
+    }
+    function goBlog() {
+        window.location.href = 'https://rgbing.tistory.com/';
+    }
   </script>
 </body>
 </html>
