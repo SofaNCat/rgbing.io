@@ -42,13 +42,13 @@
                 </ul>
             </div>
             <div class="menu-category">
-                <h4>✏ 색과 글</h4>
+                <h4>📖 색과 글</h4>
                 <ul>
                     <li onclick="window.location.href='login.html'">오늘의 글</li>
                 </ul>
             </div>
             <div class="menu-category">
-                <h4>📌 기타 링크</h4>
+                <h2>📌 기타 링크</h2>
                 <ul>
                     <li onclick="goInsta()">인스타그램</li>
                     <li onclick="goBlog()">공식 블로그</li>
@@ -337,6 +337,8 @@
     function startGame() {
         score = 0;
         lives = 3;
+        timeLimit = 1500; // 초기 색상 표시 시간 (1.5초)
+        speedLevel = 2000;
         updateScoreboard();
         createGrid();
         clearInterval(gameInterval); // 이전 게임이 끝났으면 인터벌을 정리
