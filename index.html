@@ -1,0 +1,500 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="RGBing은 색을 맞추며 색감의 재미를 느낄 수 있는 게임 사이트입니다. 매일 새롭게 도전해 보세요!">
+    <link rel="stylesheet" href="style_index.css">
+    <link rel="icon" href="icon.png" type="image/x-icon">
+    <link rel="shortcut icon" href="icon.png" type="image/x-icon">
+
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
+
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5483486229407301" crossorigin="anonymous"></script>
+    
+    <title>RGBing(알지빙)</title>
+    <style>
+       
+    </style>
+</head>
+<body>
+    <div class="menu-container">
+        <div id="menu-toggle" class="menu-button">☰</div>
+    </div>
+    <div class="overlay" id="overlay"></div>
+    <div id="side-menu" class="side-menu">
+        <div class="side-menu-header">
+            <div id="menu-close" class="menu-close">×</div>
+        </div>
+        <div class="menu-list">
+            <div class="menu-category">
+                <li onclick="window.location.href='index.html'">🏠 홈으로</li>
+            </div>
+            <div class="menu-category">
+                <h4>🎮 미니 게임</h4>
+                <ul>
+                    <li onclick="window.location.href='rgbing.html'">색 맞추기</li>
+                    <li onclick="window.location.href='gradation.html'">그라데이션</li>
+                    <li onclick="window.location.href='whack.html'">두더지 잡기</li>
+                </ul>
+            </div>
+            <div class="menu-category">
+                <h4>🎨 색 기록장</h4>
+                <ul>
+                    <li onclick="goCollection()">색 컬렉션</li>
+                    <li onclick="window.location.href='month.html'">과거의 색 기록</li>
+                </ul>
+            </div>
+            <div class="menu-category">
+                <h4>📖 색과 글</h4>
+                <ul>
+                    <li onclick="window.location.href='login.html'">오늘의 글</li>
+                </ul>
+            </div>
+            <div class="menu-category">
+                <h4>📌 기타 링크</h4>
+                <ul>
+                    <li onclick="goInsta()">인스타그램</li>
+                    <li onclick="goBlog()">공식 블로그</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <div class="option-box"><!--
+        <button id="music-toggle" class="music-button">🔕</button>
+        <audio id="background-music" src="Strollin' - TrackTribe.mp3" loop></audio>
+        <button id="share-toggle" class="music-button" onclick="shareContent()">💌</button>-->
+    </div>
+
+    <div class="top-box">
+        <h1>RGBing</h1>
+        <p id="top-1" class="top-1"><b>하루마다 정해지는 색을<br>다양하게 즐겨보세요!</b></p>
+    </div>
+
+    <div class="show-box-2">
+        <div id="color-box" class="color-box"></div>
+        <div class="hash-big-box">
+            <div id="date" class="date"></div>
+            <div id="name" class="name"></div>
+            <div id="desc4" class="desc4"></div>
+            <div id="hash" class="hash"></div>
+        </div>
+    </div>
+
+    <div class="description-box1">
+        <p class="description-title">색 설명</p>
+        <p class="description-1">오늘의 색은 이런 색이에요!</p>
+        <div class="color-div"></div>
+        <div id="colorDescription" class="color-description"></div>
+        <button id="copy-hex-button" class="copy-hex-button">#</button>
+    </div>
+    
+    <div class="description-box2">
+        <p class="description-title">흰색 vs 검정색</p>
+        <p class="description-1">어느 쪽과 더 어울릴까요?</p>
+        <div class="color-div"></div>
+        <div class="colab-grid">
+            <div class="white-box">
+                <div class="vs-color"></div>
+                <div class="colab-info">
+                    <div class="vs-text">흰색과 어울릴까요</div>
+                </div>
+            </div>
+            <div class="black-box">
+                <div class="vs-color"></div>
+                <div class="colab-info">
+                    <div class="vs-text">검정색과 어울릴까요</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="description-box2">
+        <p class="description-title">어울리는 색 #1</p>
+        <p class="description-1">오늘의 색이 배경색이라면?</p>
+        <div class="color-div"></div>
+        <div class="colab-grid">
+            <div class="colab-box" id="colab-color-hex1">
+                <div class="colab-color" id="colabColor1"></div>
+                <div class="colab-info">
+                    <div class="colab-color-name" id="colabColorName1"></div>
+                    <div class="colab-color-rgb" id="colabColorRGB1"></div>
+                </div>
+            </div>
+            <div class="colab-box" id="colab-color-hex2">
+                <div class="colab-color" id="colabColor2"></div>
+                <div class="colab-info">
+                    <div class="colab-color-name" id="colabColorName2"></div>
+                    <div class="colab-color-rgb" id="colabColorRGB2"></div>
+                </div>
+            </div>
+            <div class="colab-box" id="colab-color-hex3">
+                <div class="colab-color" id="colabColor3"></div>
+                <div class="colab-info">
+                    <div class="colab-color-name" id="colabColorName3"></div>
+                    <div class="colab-color-rgb" id="colabColorRGB3"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="description-box2">
+        <p class="description-title">어울리는 색 #2</p>
+        <p class="description-1">오늘의 색이 컨텐츠의 색이라면?</p>
+        <div class="color-div"></div>
+        <div class="colab-grid">
+            <div class="colab-box" id="colab-color-hex4">
+                <div class="colab-color-2"></div>
+                <div class="colab-info">
+                    <div class="colab-color-name" id="colabColorName4"></div>
+                    <div class="colab-color-rgb" id="colabColorRGB4"></div>
+                </div>
+            </div>
+            <div class="colab-box" id="colab-color-hex5">
+                <div class="colab-color-2"></div>
+                <div class="colab-info">
+                    <div class="colab-color-name" id="colabColorName5"></div>
+                    <div class="colab-color-rgb" id="colabColorRGB5"></div>
+                </div>
+            </div>
+            <div class="colab-box" id="colab-color-hex6">
+                <div class="colab-color-2"></div>
+                <div class="colab-info">
+                    <div class="colab-color-name" id="colabColorName6"></div>
+                    <div class="colab-color-rgb" id="colabColorRGB6"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="description-box2">
+        <p class="description-title">어울리는 감정</p>
+        <p class="description-1">(ChatGPT 기반의 설명이라 오류가 있을 수도 있어요)</p>
+        <div class="color-div"></div>
+        <div id="colorDescription2" class="color-description"></div>
+    </div>
+
+    <script>
+        const today = new Date().toLocaleDateString("ko-KR", {
+            year: "numeric",
+            month: "2-digit",
+            day: "2-digit",
+            timeZone: "Asia/Seoul"
+        }).replace(/\./g, "/").replace(/\s/g, "").replace(/\/$/, "");
+        const savedate = today;
+
+        let redValue, greenValue, blueValue, desc1, desc2, desc4;
+        let cnt, name, hash;
+        let colab1_n, colab1_c, colab1_h;
+        let colab2_n, colab2_c, colab2_h;
+        let colab3_n, colab3_c, colab3_h;
+        let colab4_n, colab4_c, colab4_h;
+        let colab5_n, colab5_c, colab5_h;
+        let colab6_n, colab6_c, colab6_h;
+
+        // Firebase 초기화
+        const firebaseConfig = {
+            apiKey: "AIzaSyCyyqlzjApUgvJyysZKJIfY4lVz-lWmyEM",
+            authDomain: "rgbing-3a593.firebaseapp.com",
+            projectId: "rgbing-3a593",
+            storageBucket: "rgbing-3a593.firebasestorage.app",
+            messagingSenderId: "503895940241",
+            appId: "1:503895940241:web:5e42593e93572563ac3330",
+            measurementId: "G-RTREG5QN0D"
+        };
+
+        // Firebase 앱 초기화
+        const app = firebase.initializeApp(firebaseConfig);
+        const database = firebase.database();
+
+        // 초기화 시 Firebase에서 색상 가져오기
+        window.onload = () => {
+            loadData();
+        };
+
+        function loadData() {
+            // 데이터를 불러올 참조를 가져옵니다.
+            const colorDataRef = database.ref('/color_data/' + today);
+            colorDataRef.once('value', (snapshot) => {
+                // 데이터를 JSON 객체로 가져옵니다.
+                const colorData = snapshot.val();
+
+                // 원하는 값을 추출합니다.
+                redValue = colorData.red;
+                blueValue = colorData.blue;
+                greenValue = colorData.green;
+
+                desc1 = colorData.desc1;
+                desc2 = colorData.desc2;
+
+                desc4 = colorData.desc4;
+                cnt = colorData.cnt;
+                name = colorData.name;
+                hash = colorData.hash;
+                setColorOfTheDay();
+            });
+
+            // 데이터를 불러올 참조를 가져옵니다.
+            const colabDataRef1 = database.ref('/colab/' + today + '/1/');
+            colabDataRef1.once('value', (snapshot) => {
+                // 데이터를 JSON 객체로 가져옵니다.
+                const colabData1 = snapshot.val();
+
+                // 원하는 값을 추출합니다.
+                colab1_n = colabData1.name;
+                colab1_c = colabData1.color;
+                colab1_h = colabData1.hex;
+                setColorOfTheDay();
+            });
+
+            const colabDataRef2 = database.ref('/colab/' + today + '/2/');
+            colabDataRef2.once('value', (snapshot) => {
+                // 데이터를 JSON 객체로 가져옵니다.
+                const colabData2 = snapshot.val();
+
+                // 원하는 값을 추출합니다.
+                colab2_n = colabData2.name;
+                colab2_c = colabData2.color;
+                colab2_h = colabData2.hex;
+                setColorOfTheDay();
+            });
+
+            const colabDataRef3 = database.ref('/colab/' + today + '/3/');
+            colabDataRef3.once('value', (snapshot) => {
+                // 데이터를 JSON 객체로 가져옵니다.
+                const colabData3 = snapshot.val();
+
+                // 원하는 값을 추출합니다.
+                colab3_n = colabData3.name;
+                colab3_c = colabData3.color;
+                colab3_h = colabData3.hex;
+                setColorOfTheDay();
+            });
+
+            const colabDataRef4 = database.ref('/colab/' + today + '/4/');
+            colabDataRef4.once('value', (snapshot) => {
+                // 데이터를 JSON 객체로 가져옵니다.
+                const colabData4 = snapshot.val();
+
+                // 원하는 값을 추출합니다.
+                colab4_n = colabData4.name;
+                colab4_c = colabData4.color;
+                colab4_h = colabData4.hex;
+                setColorOfTheDay();
+            });
+
+            const colabDataRef5 = database.ref('/colab/' + today + '/5/');
+            colabDataRef5.once('value', (snapshot) => {
+                // 데이터를 JSON 객체로 가져옵니다.
+                const colabData5 = snapshot.val();
+
+                // 원하는 값을 추출합니다.
+                colab5_n = colabData5.name;
+                colab5_c = colabData5.color;
+                colab5_h = colabData5.hex;
+                setColorOfTheDay();
+            });
+
+            const colabDataRef6 = database.ref('/colab/' + today + '/6/');
+            colabDataRef6.once('value', (snapshot) => {
+                // 데이터를 JSON 객체로 가져옵니다.
+                const colabData6 = snapshot.val();
+
+                // 원하는 값을 추출합니다.
+                colab6_n = colabData6.name;
+                colab6_c = colabData6.color;
+                colab6_h = colabData6.hex;
+                setColorOfTheDay();
+            });
+        }
+
+        // Firebase에서 가져온 색상으로 업데이트
+        function setColorOfTheDay() {
+            // CSS 변수로 적용
+            document.documentElement.style.setProperty('--random-color', `RGB(${redValue}, ${greenValue}, ${blueValue})`);
+
+            document.getElementById("date").innerHTML = `${today} 오늘의 색`;
+            document.getElementById("name").innerHTML = `${cnt}. ${name}`;
+            document.getElementById("desc4").innerHTML = `${desc4}`;
+            document.getElementById("hash").innerHTML = `${hash}`;
+
+            document.getElementById("colorDescription").innerHTML = `${desc1}`;
+            document.getElementById("colorDescription2").innerHTML = `${desc2}`;
+
+            document.getElementById("colabColor1").style.backgroundColor = `${colab1_c}`;
+            document.getElementById("colabColorName1").textContent = `${colab1_n}`;
+            document.getElementById("colabColorName1").style.color = `${colab1_c}`;
+            document.getElementById("colabColorRGB1").textContent = `${colab1_c}`;
+            document.getElementById("colabColorRGB1").style.color = `${colab1_c}`;
+
+            document.getElementById("colabColor2").style.backgroundColor = `${colab2_c}`;
+            document.getElementById("colabColorName2").textContent = `${colab2_n}`;
+            document.getElementById("colabColorName2").style.color = `${colab2_c}`;
+            document.getElementById("colabColorRGB2").textContent = `${colab2_c}`;
+            document.getElementById("colabColorRGB2").style.color = `${colab2_c}`;
+
+            document.getElementById("colabColor3").style.backgroundColor = `${colab3_c}`;
+            document.getElementById("colabColorName3").textContent = `${colab3_n}`;
+            document.getElementById("colabColorName3").style.color = `${colab3_c}`;
+            document.getElementById("colabColorRGB3").textContent = `${colab3_c}`;
+            document.getElementById("colabColorRGB3").style.color = `${colab3_c}`;
+
+            document.getElementById("colab-color-hex4").style.backgroundColor = `${colab4_c}`;
+            document.getElementById("colabColorName4").textContent = `${colab4_n}`;
+            document.getElementById("colabColorName4").style.color = `RGB(${redValue}, ${greenValue}, ${blueValue})`;
+            document.getElementById("colabColorRGB4").textContent = `${colab4_c}`;
+            document.getElementById("colabColorRGB4").style.color = `RGB(${redValue}, ${greenValue}, ${blueValue})`;
+
+            document.getElementById("colab-color-hex5").style.backgroundColor = `${colab5_c}`;
+            document.getElementById("colabColorName5").textContent = `${colab5_n}`;
+            document.getElementById("colabColorName5").style.color = `RGB(${redValue}, ${greenValue}, ${blueValue})`;
+            document.getElementById("colabColorRGB5").textContent = `${colab5_c}`;
+            document.getElementById("colabColorRGB5").style.color = `RGB(${redValue}, ${greenValue}, ${blueValue})`;
+
+            document.getElementById("colab-color-hex6").style.backgroundColor = `${colab6_c}`;
+            document.getElementById("colabColorName6").textContent = `${colab6_n}`;
+            document.getElementById("colabColorName6").style.color = `RGB(${redValue}, ${greenValue}, ${blueValue})`;
+            document.getElementById("colabColorRGB6").textContent = `${colab6_c}`;
+            document.getElementById("colabColorRGB6").style.color = `RGB(${redValue}, ${greenValue}, ${blueValue})`;
+        }
+
+        function goHome() {
+            window.location.href = 'index.html';
+        }
+
+        function shareContent() {
+            if (navigator.share) {
+                navigator.share({
+                    title: '🎨RGBing - 색 맞추기 게임🎨',
+                    text: '여러분들의 색감 센스를 활용해서 오늘의 색을 맞춰보세요.',
+                    url: window.location.href
+                })
+                .then(() => console.log('공유 성공'))
+                .catch((error) => console.log('공유 실패', error));
+            } else {
+                alert("공유 기능을 지원하지 않는 브라우저입니다.");
+            }
+        }
+
+        // RGB 값을 HEX 값으로 변환하는 함수
+        function rgbToHex() {
+            return "#" + ((1 << 24) + (redValue << 16) + (greenValue << 8) + blueValue).toString(16).slice(1).toUpperCase();
+        }
+
+        document.getElementById("copy-hex-button").addEventListener("click", function() {
+            const hexValue = rgbToHex( );
+
+            navigator.clipboard.writeText(hexValue).then(() => {
+                alert("HEX 값이 복사되었습니다.");
+            }).catch(err => {
+                console.error("복사에 실패했습니다.", err);
+            });
+        });
+
+        document.getElementById("colab-color-hex1").addEventListener("click", function() {
+            navigator.clipboard.writeText(colab1_h).then(() => {
+                alert("HEX 값이 복사되었습니다.");
+            }).catch(err => {
+                console.error("복사에 실패했습니다.", err);
+            });
+        });
+        document.getElementById("colab-color-hex2").addEventListener("click", function() {
+            navigator.clipboard.writeText(colab2_h).then(() => {
+                alert("HEX 값이 복사되었습니다.");
+            }).catch(err => {
+                console.error("복사에 실패했습니다.", err);
+            });
+        });
+        document.getElementById("colab-color-hex3").addEventListener("click", function() {
+            navigator.clipboard.writeText(colab3_h).then(() => {
+                alert("HEX 값이 복사되었습니다.");
+            }).catch(err => {
+                console.error("복사에 실패했습니다.", err);
+            });
+        });
+        document.getElementById("colab-color-hex4").addEventListener("click", function() {
+            navigator.clipboard.writeText(colab4_h).then(() => {
+                alert("HEX 값이 복사되었습니다.");
+            }).catch(err => {
+                console.error("복사에 실패했습니다.", err);
+            });
+        });
+        document.getElementById("colab-color-hex5").addEventListener("click", function() {
+            navigator.clipboard.writeText(colab5_h).then(() => {
+                alert("HEX 값이 복사되었습니다.");
+            }).catch(err => {
+                console.error("복사에 실패했습니다.", err);
+            });
+        });
+        document.getElementById("colab-color-hex6").addEventListener("click", function() {
+            navigator.clipboard.writeText(colab6_h).then(() => {
+                alert("HEX 값이 복사되었습니다.");
+            }).catch(err => {
+                console.error("복사에 실패했습니다.", err);
+            });
+        });
+
+        const menuToggle = document.getElementById("menu-toggle");
+        const sideMenu = document.getElementById("side-menu");
+        const menuClose = document.getElementById("menu-close");
+        const overlay = document.getElementById('overlay');
+
+        menuToggle.addEventListener("click", () => {
+            sideMenu.style.left = "0";
+            menuToggle.style.display = "none"; // 메뉴 버튼 숨기기
+            overlay.classList.add('active');
+        });
+        menuClose.addEventListener("click", () => {
+            sideMenu.style.left = "-250px";
+            menuToggle.style.display = "block";
+            overlay.classList.remove('active');
+        });
+        // 오버레이 클릭 시 사이드바 닫기
+        overlay.addEventListener('click', () => {
+            sideMenu.style.left = "-250px";
+            menuToggle.style.display = "block";
+            overlay.classList.remove('active');
+        });
+
+        function goCollection() {
+            let userName = prompt("사용자 ID를 입력해주세요:");
+            if(userName != null) {
+                // 사용자 ID가 이미 존재하는지 확인
+                const userRef = database.ref('users/' + userName);
+                userRef.once('value', function(snapshot) {
+                    if (snapshot.exists()) {
+                        let userPass = prompt("사용자 비밀번호를 입력해주세요:");
+                        const userRef2 = database.ref('users/' + userName + '/password');
+                        userRef2.once('value', function(snapshot) {
+                            if (snapshot.val() == userPass) {
+                                if(userName == '관리자') {
+                                    localStorage.setItem('userName', userName);
+                                    window.location.href = 'collection_manager.html';
+                                }
+                                else {
+                                    localStorage.setItem('userName', userName);
+                                    window.location.href = 'collection.html';
+                                }
+                            } else {
+                                alert("비밀번호가 틀렸습니다.");
+                            }
+                        });
+                    } else {
+                        alert("존재하지 않는 ID 입니다.");
+                    }
+                });
+            }
+            else alert("취소되었습니다.");
+        }
+        function goInsta() {
+            window.location.href = 'https://www.instagram.com/sofancat_com/profilecard/?igsh=MXI1ZDNqNjExNTJ4dQ==';
+        }
+        function goBlog() {
+            window.location.href = 'https://rgbing.tistory.com/';
+        }
+    </script>
+
+</body>
+</html>
